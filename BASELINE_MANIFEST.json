@@ -1,0 +1,121 @@
+{
+  "code_version": "0.1.0",
+  "document_revision": "1.1",
+  "files": [
+    {
+      "path": "PhoneWorkbench/README.md",
+      "bytes": 3067,
+      "sha256": "a97688f6223df189be578a925deca5f994b26d319e54f30d34d0fe74850fdcfb"
+    },
+    {
+      "path": "PhoneWorkbench/app/__init__.py",
+      "bytes": 70,
+      "sha256": "396030cdcb2ed39f50197c56b60500da3ff5dc00095941d6fc78437d9e2c7b9b"
+    },
+    {
+      "path": "PhoneWorkbench/app/adapters/__init__.py",
+      "bytes": 72,
+      "sha256": "7cc70fff45bd3fd85921dbb0ebce9f7f005de7063e73a12ca4082272866765fe"
+    },
+    {
+      "path": "PhoneWorkbench/app/adapters/yingdao.py",
+      "bytes": 452,
+      "sha256": "4936d5e0073bc57fcbd5852190d3d0c3b375a82cf6e7b788ac524981661c7530"
+    },
+    {
+      "path": "PhoneWorkbench/app/instance.py",
+      "bytes": 929,
+      "sha256": "8fa04dca3fa4f211d6871159663d17f2de1c1b66afa76e885ca80dd62f36d605"
+    },
+    {
+      "path": "PhoneWorkbench/app/server.py",
+      "bytes": 3961,
+      "sha256": "4b430835a98a9b11f925068704df287f30bd06711a440ee24ef90d2b5491e107"
+    },
+    {
+      "path": "PhoneWorkbench/app/store.py",
+      "bytes": 9691,
+      "sha256": "226686cfdaee4435c39d4ba838a916e1863542936c561078e043c151084dcffa"
+    },
+    {
+      "path": "PhoneWorkbench/docs/交给本地AI.md",
+      "bytes": 2553,
+      "sha256": "cd1147643f2717aa6b2ac6b781a2ee0a32fdc3a63981b333c8c1446803ffb7ae"
+    },
+    {
+      "path": "PhoneWorkbench/docs/架构说明.md",
+      "bytes": 4586,
+      "sha256": "5021f9cda3973f9743ecf378e1fc9fe74b1eb858fb7e5a806be6b0c5a1c882e9"
+    },
+    {
+      "path": "PhoneWorkbench/docs/验证记录.md",
+      "bytes": 1344,
+      "sha256": "24b1178367a4fb0796c0cda38712ce0cb62ae2cda3662a82ffe2d5796ce90aa5"
+    },
+    {
+      "path": "PhoneWorkbench/run.py",
+      "bytes": 1452,
+      "sha256": "6b08527b1c196621f292cc04b7b0030bc2ac50abbe163f67b86360a959df3b9b"
+    },
+    {
+      "path": "PhoneWorkbench/tests/test_core.py",
+      "bytes": 5669,
+      "sha256": "adf8ae3870e2e019cef0140e94525c6a36e6db2d44c17e7f85c1b41d5a04fb03"
+    },
+    {
+      "path": "PhoneWorkbench/tests/test_ui.cjs",
+      "bytes": 2125,
+      "sha256": "8080e706ddae2a5a14e38eb62ee9f591c190f67488716d929f162ad058f22a2c"
+    },
+    {
+      "path": "PhoneWorkbench/web/app.js",
+      "bytes": 8632,
+      "sha256": "5179b60a88986e9bf8db126cb3e741b2b868fd8e0d382ad4d16114562057cc49"
+    },
+    {
+      "path": "PhoneWorkbench/web/index.html",
+      "bytes": 990,
+      "sha256": "e63189fc7e0a16846cb6017e1f27d26145d05249bcdc1cdd1281400047cb65aa"
+    },
+    {
+      "path": "PhoneWorkbench/web/style.css",
+      "bytes": 3188,
+      "sha256": "9e1aacd86a115e350c31d1722bc5aa8af28050b61573d88bb7be4b42826e6493"
+    },
+    {
+      "path": "PhoneWorkbench/启动工作台.bat",
+      "bytes": 317,
+      "sha256": "775cf29ce0c34beb15a45ecf6c379f7b11eabb3438c7c11c32c8504eb3c70f9d"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 51,
+      "sha256": "7b84eb8446b0f218d859656780b4c385cbcdba8debbaa38fe395c5dc85858776"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 941,
+      "sha256": "111551690b177c4686ebd7ff810e230fceaa6e21c457c1d241b8836f6c453689"
+    },
+    {
+      "path": "PROJECT_RULES.md",
+      "bytes": 1601,
+      "sha256": "b50694a152d74498fc50acbcaf468d2d61f2fc2f6a4fd5c5ab9e961c4d3bfa13"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1990,
+      "sha256": "92dfbb5f6d99a90a9c6af04b1fdb960b9d40476f7819a4e082cb9d1f13cb111e"
+    },
+    {
+      "path": "docs/影刀多手机项目_需求与会话交接文档.docx",
+      "bytes": 43885,
+      "sha256": "f9ab9a3f6e76029fd777966bb978d2dacb2809f05d28a3f93f96dfd0456174b6"
+    },
+    {
+      "path": "dist/PhoneWorkbench_v0.1.0_基础框架.zip",
+      "bytes": 23211,
+      "sha256": "12f6e7656810122f53f04a0601d0c116aa875ea91b7301f1bb42ec0f6ba57a87"
+    }
+  ]
+}
