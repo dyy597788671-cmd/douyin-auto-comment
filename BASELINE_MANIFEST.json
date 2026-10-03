@@ -1,11 +1,11 @@
 {
   "code_version": "0.1.0",
-  "document_revision": "1.1",
+  "document_revision": "1.2",
   "files": [
     {
       "path": "PhoneWorkbench/README.md",
-      "bytes": 3067,
-      "sha256": "a97688f6223df189be578a925deca5f994b26d319e54f30d34d0fe74850fdcfb"
+      "bytes": 3118,
+      "sha256": "911ed380942b320505d43828de45230fb8eb8b346e6f84215b351fe9df314001"
     },
     {
       "path": "PhoneWorkbench/app/__init__.py",
@@ -39,13 +39,13 @@
     },
     {
       "path": "PhoneWorkbench/docs/交给本地AI.md",
-      "bytes": 2553,
-      "sha256": "cd1147643f2717aa6b2ac6b781a2ee0a32fdc3a63981b333c8c1446803ffb7ae"
+      "bytes": 2649,
+      "sha256": "9e3e7bf70311c518e4ea8b1f6e114d37f517f964565b894e0c120ffefd2af3d5"
     },
     {
       "path": "PhoneWorkbench/docs/架构说明.md",
-      "bytes": 4586,
-      "sha256": "5021f9cda3973f9743ecf378e1fc9fe74b1eb858fb7e5a806be6b0c5a1c882e9"
+      "bytes": 4694,
+      "sha256": "2e1ef8b97fabebd2aed6fb5e32843434f81956618169e964d44e8bdb95c50ff7"
     },
     {
       "path": "PhoneWorkbench/docs/验证记录.md",
@@ -94,28 +94,28 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 941,
-      "sha256": "111551690b177c4686ebd7ff810e230fceaa6e21c457c1d241b8836f6c453689"
+      "bytes": 1424,
+      "sha256": "b4e17bfe92cca7567668c01e2c1cd1654fc100a9fa2d308a1bf94326d43c959e"
     },
     {
       "path": "PROJECT_RULES.md",
-      "bytes": 1601,
-      "sha256": "b50694a152d74498fc50acbcaf468d2d61f2fc2f6a4fd5c5ab9e961c4d3bfa13"
+      "bytes": 1754,
+      "sha256": "91bed2945666a3a5ee257192316e837570312ccaf360c654d5a70108b213837d"
     },
     {
       "path": "README.md",
-      "bytes": 1990,
-      "sha256": "92dfbb5f6d99a90a9c6af04b1fdb960b9d40476f7819a4e082cb9d1f13cb111e"
+      "bytes": 2038,
+      "sha256": "41d32d2bee9e1f10572ae082a6f03e04d2a60254f0df092de6b74b351b7b6017"
     },
     {
       "path": "docs/影刀多手机项目_需求与会话交接文档.docx",
-      "bytes": 43885,
-      "sha256": "f9ab9a3f6e76029fd777966bb978d2dacb2809f05d28a3f93f96dfd0456174b6"
+      "bytes": 43834,
+      "sha256": "ed9be2e75369cf7b2f86c69a726ecf103fa3814158a702f68310eba9a6ffd543"
     },
     {
       "path": "dist/PhoneWorkbench_v0.1.0_基础框架.zip",
-      "bytes": 23211,
-      "sha256": "12f6e7656810122f53f04a0601d0c116aa875ea91b7301f1bb42ec0f6ba57a87"
+      "bytes": 23290,
+      "sha256": "1800171d6bda87d7e9ec787c90ecb37ed093bd790348300fd6cb0254ec879596"
     }
   ]
 }
