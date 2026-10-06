@@ -1,21 +1,21 @@
 # 当前影刀实际流程
 
-## 2026-10-06 18:40 执行检查点
+## 2026-10-06 18:52 执行检查点
 
-- 已完成第1—3批；第4批同屏候选循环和MATCH退出已由用户逐项确认，尚待补末屏section_finished=True。当前推算96行，1—85启用、86—96原互动块禁用；尚无完整导出复核和新流程手机实测。
-- 用户已自行备份，影刀内module1已替换；不要重复备份、替换模块、捕获昵称/封面/头像。
-- 原昵称IF未删除：右键菜单没有直接替换结构入口。当前50行保留昵称IF，51行候选ForEach包住原核验动作，75结束候选循环、76结束昵称IF。只增加和移动外层指令，原动作复用。
-- 45设置section_finished=False；46 While条件Python `(not section_finished) and author_check_result != "MATCH"` 等于True；47读取已验证搜索结果作者昵称，48打印栏目、目标、本屏昵称，49创建candidate_numbers。
-- 52调用build_author_cover_xpath，参数expected_author=task_data["expected_author"]、occurrence=current_candidate_number，返回字符串candidate_xpath；53原获取元素对象XPath改用candidate_xpath → mobile_element_result；54原点击复用。
-- 65 IF MATCH，66退出51候选循环；68 IF MISMATCH，69 saw_id_mismatch=True，70返回结果；71结束MISMATCH。72 IF UNCERTAIN、73 Raise、74 End IF原样保留。
-- 77 IF MATCH、78退出46 While、79 End IF。当前80为原末尾图像IF，81仍是原退出循环，82 End IF，83原上滑，84结束While，85结束外层栏目ForEach。
-- 下一步：在当前80末尾图像IF内、81退出循环之前插入布尔设置section_finished=True。随后在While结束与外层栏目循环结束之间添加MATCH判断退出栏目循环，最后添加最终日志。
-- 完整目标改为109行（实现修订FINAL-3）：保留原昵称IF和End IF两条，比FINAL-2的107行增加2条；业务规则不变，最终98条启用、99—109互动禁用。当前不是最终109行，不能用最终行号指挥后续。
-- Python中的目标昵称直接使用已有task_data["expected_author"]，避免把全局变量名当普通局部变量；nav_section仍由第16行通过fx选择全局变量赋值并绑定元素text。
-- 21等待超时保持用户指定5秒；28/30滑动800毫秒、执行后延迟1秒。新导航、等待超时返回、XPath候选对应关系及跨手机定位待实测，不得写已经跑通。
-- ID读取失败自然停止；ID不同继续候选、屏和栏目，全部查完无MATCH提示“抖音号不同”；企业和互动本阶段不接入。
+- 用户已逐项确认第1—5批配置全部完成。当前按修改链推算109行，1—98启用、99—109原互动块整体禁用；尚无全流程导出复核，尚未新流程手机实测。不能写“已全部跑通”。
+- 用户已自行备份并替换影刀内module1；不得重复备份、换模块或捕获已验证元素。原昵称IF/End IF保留50/76，候选ForEach在51/75，原点击作品和主页核验动作全部复用。
+- 第45行section_finished=False；第46行While条件Python `(not section_finished) and author_check_result != "MATCH"` 等于True。47读取搜索结果作者昵称，48信息日志含栏目/目标/本屏昵称，49创建candidate_numbers。
+- 第52行调用build_author_cover_xpath，expected_author=task_data["expected_author"]、occurrence=current_candidate_number，返回字符串candidate_xpath；53原获取元素对象XPath改用candidate_xpath，54原点击mobile_element_result。
+- 第65/66/67行MATCH判断/退出候选/End IF；68/69/70/71行MISMATCH判断/saw_id_mismatch=True/返回结果/End IF；72—74原UNCERTAIN Raise分叉保留。
+- 第77—79行MATCH退出46 While。80原真实末尾图像IF，81 section_finished=True，82退出While，83 End IF，84原上滑，85 While结束。86—88 MATCH退出15外层栏目循环，89栏目循环结束。
+- 第90 MATCH IF，91成功日志，92 Else；93 saw_id_mismatch=True IF，94信息日志“抖音号不同”，95 Else，96信息日志“未找到目标作品”，97 End IF，98 End IF。99—109互动全部禁用。
+- 下一步：Ctrl+S保存，从第1行运行一次，获取运行日志/首个报错。依赖phone_device/task_data，不从中间孤立运行。不得清空runtime_state，不调用prepare_interactions/finish_task。
+- 21等待元素超时保持用户指定5秒，28/30滑动800毫秒、执行后延迟1秒。nav_section全局字符串默认图文，由第16行赋current_section，元素text通过fx选全局变量绑定；不再手输变量名冒充绑定。
+- Python目标昵称读取直接使用task_data["expected_author"]；ID读取失败自然报错，企业号本轮不处理；ID不同继续所有候选、屏和栏目，有MATCH优先成功，全部查完无MATCH才提示“抖音号不同”。
+- FINAL-3保持原业务定稿，只保留原昵称IF/End IF两条以复用内部动作；完整目标由FINAL-2的107行改为109行。109行控制块配对及退出目标静态检查已完成。原模块未改，不重复既有模块检查。
+- 手机待验证：导航结构XPath/bounds、等待超时返回与隐藏栏目、动态栏目点击及跨手机定位、候选昵称与同卡片封面对应、ID不同后继续、MATCH退出三层且停留作品、真实到底切换综合及最终日志。
 
-## 当前96行（按用户逐次确认推算）
+## 当前109行（按用户逐次确认推算）
 
 | 当前行 | 影刀指令 | 配置与输出 | 来源 | 状态 |
 |---|---|---|---|---|
@@ -99,22 +99,35 @@
 | 78 | 退出循环 | 退出46行逐屏循环 | 新增 | 启用 |
 | 79 | End IF | 结束77行 | 新增 | 启用 |
 | 80 | IF 图像存在(手机) | 原“暂无更多，查看所有内容”匹配图与原参数；先处理完本屏候选再判到底 | 原46 | 启用 |
-| 81 | 退出循环 | 退出46行逐屏循环 | 原47 | 启用 |
-| 82 | End IF | 结束80行 | 原48 | 启用 |
-| 83 | 滑动手机屏幕 | 向上滑动结果列表；保留原49参数；不滑顶部导航 | 原49 | 启用 |
-| 84 | 循环结束标记 | 结束46行逐屏循环 | 原50 | 启用 |
-| 85 | 循环结束标记 | 结束15行栏目循环；只有类型栏目到底未匹配才进入综合 | 新增 | 启用 |
-| 86 | IF 条件 | author_check_result 等于"MATCH"；整个后续互动块暂禁用 | 原51 | 禁用 |
-| 87 | 调用模块 | module1.prepare_interactions(task_data) → interaction_plan；本阶段禁用 | 原52 | 禁用 |
-| 88 | 设置变量 | executed_actions = []；本阶段禁用 | 原53 | 禁用 |
-| 89 | ForEach列表循环 | interaction_plan["execution_order"] → current_action；本阶段禁用，恢复时核实实际键名 | 原54 | 禁用 |
-| 90 | IF 条件 | current_action 等于"Like"；本阶段禁用 | 原55 | 禁用 |
-| 91 | IF 条件 | interaction_plan["content_type"] 等于"视频"；本阶段禁用 | 原56 | 禁用 |
-| 92 | 获取手机元素信息 | 视频——点赞按钮；原属性参数 → like_state_raw；本阶段禁用 | 原57 | 禁用 |
-| 93 | End IF | 结束91行；本阶段禁用 | 原58 | 禁用 |
-| 94 | End IF | 结束90行；本阶段禁用 | 原59 | 禁用 |
-| 95 | 循环结束标记 | 结束89行；本阶段禁用 | 原60 | 禁用 |
-| 96 | End IF | 结束86行；本阶段禁用 | 原61 | 禁用 |
+| 81 | 设置变量 | section_finished = True（布尔） | 新增 | 启用 |
+| 82 | 退出循环 | 退出46行逐屏循环 | 原47 | 启用 |
+| 83 | End IF | 结束80行 | 原48 | 启用 |
+| 84 | 滑动手机屏幕 | 向上滑动结果列表；保留原49参数；不滑顶部导航 | 原49 | 启用 |
+| 85 | 循环结束标记 | 结束46行逐屏循环 | 原50 | 启用 |
+| 86 | IF 条件 | author_check_result 等于"MATCH" | 新增 | 启用 |
+| 87 | 退出循环 | 退出15行栏目循环，不再查综合 | 新增 | 启用 |
+| 88 | End IF | 结束86行 | 新增 | 启用 |
+| 89 | 循环结束标记 | 结束15行栏目循环；只有类型栏目到底未匹配才进入综合 | 新增 | 启用 |
+| 90 | IF 条件 | author_check_result 等于"MATCH" | 新增 | 启用 |
+| 91 | 打印日志 | 作者抖音号核验成功；当前保留作品页，尚未执行互动 | 新增 | 启用 |
+| 92 | Else | 对应90行 | 新增 | 启用 |
+| 93 | IF 条件 | saw_id_mismatch 等于True | 新增 | 启用 |
+| 94 | 打印日志 | 抖音号不同；仅两个栏目查完仍无MATCH才到此处 | 新增 | 启用 |
+| 95 | Else | 对应93行 | 新增 | 启用 |
+| 96 | 打印日志 | 未找到目标作品；只用于全程未遇到ID不同且没有MATCH | 新增 | 启用 |
+| 97 | End IF | 结束93行 | 新增 | 启用 |
+| 98 | End IF | 结束90行 | 新增 | 启用 |
+| 99 | IF 条件 | author_check_result 等于"MATCH"；整个后续互动块暂禁用 | 原51 | 禁用 |
+| 100 | 调用模块 | module1.prepare_interactions(task_data) → interaction_plan；本阶段禁用 | 原52 | 禁用 |
+| 101 | 设置变量 | executed_actions = []；本阶段禁用 | 原53 | 禁用 |
+| 102 | ForEach列表循环 | interaction_plan["execution_order"] → current_action；本阶段禁用，恢复时核实实际键名 | 原54 | 禁用 |
+| 103 | IF 条件 | current_action 等于"Like"；本阶段禁用 | 原55 | 禁用 |
+| 104 | IF 条件 | interaction_plan["content_type"] 等于"视频"；本阶段禁用 | 原56 | 禁用 |
+| 105 | 获取手机元素信息 | 视频——点赞按钮；原属性参数 → like_state_raw；本阶段禁用 | 原57 | 禁用 |
+| 106 | End IF | 结束104行；本阶段禁用 | 原58 | 禁用 |
+| 107 | End IF | 结束103行；本阶段禁用 | 原59 | 禁用 |
+| 108 | 循环结束标记 | 结束102行；本阶段禁用 | 原60 | 禁用 |
+| 109 | End IF | 结束99行；本阶段禁用 | 原61 | 禁用 |
 
 ## 原61行基线（历史，禁止当成当前行号）
 
