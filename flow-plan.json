@@ -768,14 +768,16 @@
       "disabled": true
     }
   ],
-  "current_runtime_lines": 96,
+  "current_runtime_lines": 109,
   "completed_batches": [
     1,
     2,
-    3
+    3,
+    4,
+    5
   ],
-  "checkpoint_time": "2026-10-06T18:40:46+08:00",
-  "batch4_status": "候选循环及MATCH退出已配置；末屏section_finished=True待添加",
+  "checkpoint_time": "2026-10-06T18:52:23+08:00",
+  "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
       "line": 1,
@@ -1339,115 +1341,207 @@
     },
     {
       "line": 81,
+      "command": "设置变量",
+      "config": "section_finished = True（布尔）",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 82,
       "command": "退出循环",
       "config": "退出46行逐屏循环",
       "source": "原47",
       "disabled": false
     },
     {
-      "line": 82,
+      "line": 83,
       "command": "End IF",
       "config": "结束80行",
       "source": "原48",
       "disabled": false
     },
     {
-      "line": 83,
+      "line": 84,
       "command": "滑动手机屏幕",
       "config": "向上滑动结果列表；保留原49参数；不滑顶部导航",
       "source": "原49",
       "disabled": false
     },
     {
-      "line": 84,
+      "line": 85,
       "command": "循环结束标记",
       "config": "结束46行逐屏循环",
       "source": "原50",
       "disabled": false
     },
     {
-      "line": 85,
+      "line": 86,
+      "command": "IF 条件",
+      "config": "author_check_result 等于\"MATCH\"",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 87,
+      "command": "退出循环",
+      "config": "退出15行栏目循环，不再查综合",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 88,
+      "command": "End IF",
+      "config": "结束86行",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 89,
       "command": "循环结束标记",
       "config": "结束15行栏目循环；只有类型栏目到底未匹配才进入综合",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 86,
+      "line": 90,
+      "command": "IF 条件",
+      "config": "author_check_result 等于\"MATCH\"",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 91,
+      "command": "打印日志",
+      "config": "作者抖音号核验成功；当前保留作品页，尚未执行互动",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 92,
+      "command": "Else",
+      "config": "对应90行",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 93,
+      "command": "IF 条件",
+      "config": "saw_id_mismatch 等于True",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 94,
+      "command": "打印日志",
+      "config": "抖音号不同；仅两个栏目查完仍无MATCH才到此处",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 95,
+      "command": "Else",
+      "config": "对应93行",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 96,
+      "command": "打印日志",
+      "config": "未找到目标作品；只用于全程未遇到ID不同且没有MATCH",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 97,
+      "command": "End IF",
+      "config": "结束93行",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 98,
+      "command": "End IF",
+      "config": "结束90行",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 99,
       "command": "IF 条件",
       "config": "author_check_result 等于\"MATCH\"；整个后续互动块暂禁用",
       "source": "原51",
       "disabled": true
     },
     {
-      "line": 87,
+      "line": 100,
       "command": "调用模块",
       "config": "module1.prepare_interactions(task_data) → interaction_plan；本阶段禁用",
       "source": "原52",
       "disabled": true
     },
     {
-      "line": 88,
+      "line": 101,
       "command": "设置变量",
       "config": "executed_actions = []；本阶段禁用",
       "source": "原53",
       "disabled": true
     },
     {
-      "line": 89,
+      "line": 102,
       "command": "ForEach列表循环",
       "config": "interaction_plan[\"execution_order\"] → current_action；本阶段禁用，恢复时核实实际键名",
       "source": "原54",
       "disabled": true
     },
     {
-      "line": 90,
+      "line": 103,
       "command": "IF 条件",
       "config": "current_action 等于\"Like\"；本阶段禁用",
       "source": "原55",
       "disabled": true
     },
     {
-      "line": 91,
+      "line": 104,
       "command": "IF 条件",
       "config": "interaction_plan[\"content_type\"] 等于\"视频\"；本阶段禁用",
       "source": "原56",
       "disabled": true
     },
     {
-      "line": 92,
+      "line": 105,
       "command": "获取手机元素信息",
       "config": "视频——点赞按钮；原属性参数 → like_state_raw；本阶段禁用",
       "source": "原57",
       "disabled": true
     },
     {
-      "line": 93,
+      "line": 106,
       "command": "End IF",
-      "config": "结束91行；本阶段禁用",
+      "config": "结束104行；本阶段禁用",
       "source": "原58",
       "disabled": true
     },
     {
-      "line": 94,
+      "line": 107,
       "command": "End IF",
-      "config": "结束90行；本阶段禁用",
+      "config": "结束103行；本阶段禁用",
       "source": "原59",
       "disabled": true
     },
     {
-      "line": 95,
+      "line": 108,
       "command": "循环结束标记",
-      "config": "结束89行；本阶段禁用",
+      "config": "结束102行；本阶段禁用",
       "source": "原60",
       "disabled": true
     },
     {
-      "line": 96,
+      "line": 109,
       "command": "End IF",
-      "config": "结束86行；本阶段禁用",
+      "config": "结束99行；本阶段禁用",
       "source": "原61",
       "disabled": true
     }
-  ]
+  ],
+  "batch5_status": "已配置，手机实测待执行"
 }
