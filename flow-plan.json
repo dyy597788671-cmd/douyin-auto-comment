@@ -1,6 +1,6 @@
 {
-  "version": "2026-10-06-FINAL-1",
-  "total_lines": 104,
+  "version": "2026-10-06-FINAL-2",
+  "total_lines": 107,
   "current_runtime_original_lines": 61,
   "phone_tested": false,
   "rows": [
@@ -62,568 +62,568 @@
     },
     {
       "line": 9,
-      "command": "获取手机元素信息",
-      "config": "元素“抖音搜索顶部栏目条”；读取bounds属性 → nav_bounds_raw",
+      "command": "获取元素对象(手机)",
+      "config": "phone_device；XPath \"//android.widget.HorizontalScrollView[.//androidx.appcompat.app.ActionBar.Tab]\" → nav_container",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 10,
+      "command": "获取手机元素信息",
+      "config": "phone_device；操作目标nav_container；获取属性bounds → nav_bounds_raw",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 11,
       "command": "调用模块",
       "config": "module1.make_nav_swipe_points(nav_bounds_raw) → nav_swipe_points",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 11,
+      "line": 12,
       "command": "设置变量",
       "config": "search_sections = [task_data[\"content_type\"], \"综合\"]（列表）",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 12,
+      "line": 13,
       "command": "设置变量",
       "config": "saw_id_mismatch = False（布尔）；当前任务范围，仅初始化一次",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 13,
+      "line": 14,
       "command": "设置变量",
       "config": "author_check_result = \"NOT_FOUND\"（字符串）",
       "source": "原19",
       "disabled": false
     },
     {
-      "line": 14,
+      "line": 15,
       "command": "ForEach列表循环",
       "config": "遍历search_sections → current_section；外层栏目循环",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 15,
+      "line": 16,
+      "command": "设置变量",
+      "config": "字符串；变量值Python current_section；输出通过fx选择全局变量nav_section（glv[\"nav_section\"]）；每轮栏目开始赋值",
+      "source": "复制原2",
+      "disabled": false
+    },
+    {
+      "line": 17,
       "command": "设置变量",
       "config": "nav_found = False（布尔）；每轮栏目初始化",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 16,
+      "line": 18,
       "command": "设置变量",
       "config": "nav_directions = ([\"right\", \"left\"] if current_section == \"综合\" else [\"left\", \"right\"])（列表）",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 17,
+      "line": 19,
       "command": "ForEach列表循环",
       "config": "遍历nav_directions → nav_direction；仅处理顶部导航",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 18,
-      "command": "For次数循环",
-      "config": "12次；只为导航找栏目设置异常上限，不限制结果屏数",
-      "source": "新增",
-      "disabled": false
-    },
-    {
-      "line": 19,
-      "command": "IF 元素存在(手机)",
-      "config": "元素“抖音搜索栏目”；导航区域内文本动态等于current_section",
-      "source": "新增",
-      "disabled": false
-    },
-    {
       "line": 20,
-      "command": "点击元素(手机)",
-      "config": "抖音搜索栏目；单击中心；点击后延迟1秒",
+      "command": "For次数循环",
+      "config": "起始数1；结束数12；递增值1；当前循环项loop_index；仅为导航上限，不限制结果分页",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 21,
+      "command": "等待元素(手机)",
+      "config": "phone_device；已有抖音搜索栏目；等待元素出现；超时5秒 → nav_exists；错误处理默认（超时行为待手机实测）",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 22,
+      "command": "IF 条件",
+      "config": "对象1 Python nav_exists；关系等于；对象2 Python True",
+      "source": "原9复用",
+      "disabled": false
+    },
+    {
+      "line": 23,
+      "command": "点击元素(手机)",
+      "config": "phone_device；已有抖音搜索栏目（text通过fx绑定全局nav_section）；单击中心点一次；点击后延迟1秒；等待元素存在5秒",
+      "source": "原10复用",
+      "disabled": false
+    },
+    {
+      "line": 24,
       "command": "设置变量",
       "config": "nav_found = True（布尔）",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 22,
-      "command": "退出循环",
-      "config": "退出18行次数循环",
-      "source": "新增",
-      "disabled": false
-    },
-    {
-      "line": 23,
-      "command": "Else",
-      "config": "对应19行",
-      "source": "新增",
-      "disabled": false
-    },
-    {
-      "line": 24,
-      "command": "IF 条件",
-      "config": "nav_direction == \"left\" 等于True",
-      "source": "新增",
-      "disabled": false
-    },
-    {
       "line": 25,
-      "command": "滑动手机屏幕",
-      "config": "指定起终点；nav_swipe_points[\"left\"]的start_x/start_y/end_x/end_y；phone_device；时长0.5秒、滑后延迟1秒",
+      "command": "退出循环",
+      "config": "退出20行次数循环",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 26,
       "command": "Else",
-      "config": "对应24行",
+      "config": "对应22行",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 27,
-      "command": "滑动手机屏幕",
-      "config": "指定起终点；nav_swipe_points[\"right\"]的start_x/start_y/end_x/end_y；其余同25行",
+      "command": "IF 条件",
+      "config": "对象1 Python nav_direction；关系等于；对象2 Python \"left\"",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 28,
-      "command": "End IF",
-      "config": "结束24行",
-      "source": "新增",
+      "command": "滑动手机屏幕",
+      "config": "phone_device；在整个屏幕中；坐标；四项Python nav_swipe_points[\"left\"][\"start_x\"/\"start_y\"/\"end_x\"/\"end_y\"]；滑动时间800毫秒；执行后延迟1秒；错误处理默认",
+      "source": "复制原49，原49保留",
       "disabled": false
     },
     {
       "line": 29,
-      "command": "End IF",
-      "config": "结束19行",
+      "command": "Else",
+      "config": "对应27行",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 30,
-      "command": "循环结束标记",
-      "config": "结束18行次数循环",
-      "source": "新增",
+      "command": "滑动手机屏幕",
+      "config": "phone_device；在整个屏幕中；坐标；四项Python nav_swipe_points[\"right\"][\"start_x\"/\"start_y\"/\"end_x\"/\"end_y\"]；滑动时间800毫秒；执行后延迟1秒；错误处理默认",
+      "source": "复制左滑",
       "disabled": false
     },
     {
       "line": 31,
-      "command": "IF 条件",
-      "config": "nav_found 等于True",
+      "command": "End IF",
+      "config": "结束27行",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 32,
-      "command": "退出循环",
-      "config": "退出17行方向循环",
+      "command": "End IF",
+      "config": "结束22行",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 33,
-      "command": "End IF",
-      "config": "结束31行",
+      "command": "循环结束标记",
+      "config": "结束20行次数循环",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 34,
-      "command": "循环结束标记",
-      "config": "结束17行方向循环",
-      "source": "新增",
+      "command": "IF 条件",
+      "config": "nav_found 等于True",
+      "source": "原12复用",
       "disabled": false
     },
     {
       "line": 35,
+      "command": "退出循环",
+      "config": "退出19行方向循环",
+      "source": "复制导航退出循环，替换原13点击",
+      "disabled": false
+    },
+    {
+      "line": 36,
+      "command": "End IF",
+      "config": "结束34行",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 37,
+      "command": "循环结束标记",
+      "config": "结束19行方向循环",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 38,
       "command": "IF 条件",
       "config": "nav_found 等于False",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 36,
+      "line": 39,
       "command": "Raise",
       "config": "\"未找到搜索栏目：\" + current_section；定位异常终止，不冒充结果到底",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 37,
+      "line": 40,
       "command": "End IF",
-      "config": "结束35行",
+      "config": "结束38行",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 38,
+      "line": 41,
       "command": "点击元素(手机)",
       "config": "抖音筛选入口；保留原参数",
       "source": "原15",
       "disabled": false
     },
     {
-      "line": 39,
+      "line": 42,
       "command": "点击屏幕(手机)",
       "config": "原“最新发布”匹配图与原参数，不改为固定坐标",
       "source": "原16",
       "disabled": false
     },
     {
-      "line": 40,
+      "line": 43,
       "command": "点击屏幕(手机)",
       "config": "原“一天内”匹配图与原参数",
       "source": "原17",
       "disabled": false
     },
     {
-      "line": 41,
+      "line": 44,
       "command": "点击屏幕(手机)",
       "config": "原红底“查看结果”匹配图与原参数",
       "source": "原18",
       "disabled": false
     },
     {
-      "line": 42,
+      "line": 45,
       "command": "设置变量",
       "config": "section_finished = False（布尔）",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 43,
+      "line": 46,
       "command": "While条件循环",
       "config": "(not section_finished) and author_check_result != \"MATCH\" 等于True；结果逐屏循环",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 44,
+      "line": 47,
       "command": "获取相似元素列表(手机)",
       "config": "搜索结果作者昵称；读取文本 → author_name_list；复用已验证元素",
       "source": "原21",
       "disabled": false
     },
     {
-      "line": 45,
+      "line": 48,
       "command": "打印日志",
       "config": "\"栏目=\" + repr(current_section) + \"；目标昵称=\" + repr(target_author) + \"；本屏读取昵称=\" + repr(author_name_list)",
       "source": "原22",
       "disabled": false
     },
     {
-      "line": 46,
+      "line": 49,
       "command": "设置变量",
       "config": "candidate_numbers = list(range(1, author_name_list.count(target_author) + 1))（列表）；与原23精确匹配一致",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 47,
+      "line": 50,
       "command": "ForEach列表循环",
       "config": "遍历candidate_numbers → current_candidate_number；同屏同名候选循环",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 48,
+      "line": 51,
       "command": "调用模块",
       "config": "module1.build_author_cover_xpath(target_author, current_candidate_number) → candidate_xpath",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 49,
+      "line": 52,
       "command": "获取元素对象(手机)",
       "config": "phone_device；XPath值candidate_xpath → mobile_element_result；不把昵称列表和封面列表按索引对应",
       "source": "原24",
       "disabled": false
     },
     {
-      "line": 50,
+      "line": 53,
       "command": "点击元素(手机)",
       "config": "mobile_element_result；单击中心；保留原参数",
       "source": "原25",
       "disabled": false
     },
     {
-      "line": 51,
+      "line": 54,
       "command": "设置变量",
       "config": "is_tuwen = (task_data[\"content_type\"] == \"图文\")（布尔）；与current_section分开",
       "source": "原26",
       "disabled": false
     },
     {
-      "line": 52,
+      "line": 55,
       "command": "IF 条件",
       "config": "is_tuwen 等于True",
       "source": "原27",
       "disabled": false
     },
     {
-      "line": 53,
+      "line": 56,
       "command": "点击元素(手机)",
       "config": "图文作者头像；保留原参数",
       "source": "原28",
       "disabled": false
     },
     {
-      "line": 54,
+      "line": 57,
       "command": "Else",
-      "config": "对应52行",
+      "config": "对应55行",
       "source": "原29",
       "disabled": false
     },
     {
-      "line": 55,
+      "line": 58,
       "command": "点击元素(手机)",
       "config": "视频作者头像；保留原参数",
       "source": "原30",
       "disabled": false
     },
     {
-      "line": 56,
+      "line": 59,
       "command": "End IF",
-      "config": "结束52行",
+      "config": "结束55行",
       "source": "原31",
       "disabled": false
     },
     {
-      "line": 57,
+      "line": 60,
       "command": "获取手机元素信息",
       "config": "抖音主页_账号；文本 → profile_douyin_id_raw；读取异常自然停止",
       "source": "原32",
       "disabled": false
     },
     {
-      "line": 58,
+      "line": 61,
       "command": "获取手机元素信息",
       "config": "主页_作者昵称；文本 → profile_author_name_raw",
       "source": "原33",
       "disabled": false
     },
     {
-      "line": 59,
+      "line": 62,
       "command": "调用模块",
       "config": "module1.verify_author；传task_data/profile_douyin_id_raw/profile_author_name_raw → author_check_result；沿用已确认设置",
       "source": "原34",
       "disabled": false
     },
     {
-      "line": 60,
+      "line": 63,
       "command": "点击按键",
       "config": "phone_device；后退；从作者主页返回作品",
       "source": "原35",
       "disabled": false
     },
     {
-      "line": 61,
+      "line": 64,
       "command": "IF 条件",
       "config": "author_check_result 等于\"MATCH\"",
       "source": "原36",
       "disabled": false
     },
     {
-      "line": 62,
+      "line": 65,
       "command": "退出循环",
-      "config": "退出47行当前屏候选循环",
+      "config": "退出50行当前屏候选循环",
       "source": "原37",
       "disabled": false
     },
     {
-      "line": 63,
+      "line": 66,
       "command": "End IF",
-      "config": "结束61行",
+      "config": "结束64行",
       "source": "原38",
       "disabled": false
     },
     {
-      "line": 64,
+      "line": 67,
       "command": "IF 条件",
       "config": "author_check_result 等于\"MISMATCH\"",
       "source": "原39",
       "disabled": false
     },
     {
-      "line": 65,
+      "line": 68,
       "command": "设置变量",
       "config": "saw_id_mismatch = True（布尔）；之后不因滑屏或切栏目清空",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 66,
+      "line": 69,
       "command": "点击按键",
       "config": "phone_device；后退；从作品返回当前栏目结果；继续下一候选",
       "source": "原40",
       "disabled": false
     },
     {
-      "line": 67,
+      "line": 70,
       "command": "End IF",
-      "config": "结束64行",
+      "config": "结束67行",
       "source": "原41",
       "disabled": false
     },
     {
-      "line": 68,
+      "line": 71,
       "command": "IF 条件",
       "config": "author_check_result 等于\"UNCERTAIN\"；保留原有核验不确定处理，不增加读取失败IF",
       "source": "原42",
       "disabled": false
     },
     {
-      "line": 69,
+      "line": 72,
       "command": "Raise",
       "config": "作者抖音号核验不确定，请检查任务表中的抖音号及主页读取结果",
       "source": "原43",
       "disabled": false
     },
     {
-      "line": 70,
+      "line": 73,
       "command": "End IF",
-      "config": "结束68行",
+      "config": "结束71行",
       "source": "原44",
       "disabled": false
     },
     {
-      "line": 71,
+      "line": 74,
       "command": "循环结束标记",
-      "config": "结束47行候选循环",
+      "config": "结束50行候选循环",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 72,
+      "line": 75,
       "command": "IF 条件",
       "config": "author_check_result 等于\"MATCH\"",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 73,
+      "line": 76,
       "command": "退出循环",
-      "config": "退出43行逐屏循环",
+      "config": "退出46行逐屏循环",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 74,
+      "line": 77,
       "command": "End IF",
-      "config": "结束72行",
+      "config": "结束75行",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 75,
+      "line": 78,
       "command": "IF 图像存在(手机)",
       "config": "原“暂无更多，查看所有内容”匹配图与原参数；先处理完本屏候选再判到底",
       "source": "原46",
       "disabled": false
     },
     {
-      "line": 76,
+      "line": 79,
       "command": "设置变量",
       "config": "section_finished = True（布尔）",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 77,
+      "line": 80,
       "command": "退出循环",
-      "config": "退出43行逐屏循环",
+      "config": "退出46行逐屏循环",
       "source": "原47",
       "disabled": false
     },
     {
-      "line": 78,
+      "line": 81,
       "command": "End IF",
-      "config": "结束75行",
+      "config": "结束78行",
       "source": "原48",
       "disabled": false
     },
     {
-      "line": 79,
+      "line": 82,
       "command": "滑动手机屏幕",
       "config": "向上滑动结果列表；保留原49参数；不滑顶部导航",
       "source": "原49",
       "disabled": false
     },
     {
-      "line": 80,
+      "line": 83,
       "command": "循环结束标记",
-      "config": "结束43行逐屏循环",
+      "config": "结束46行逐屏循环",
       "source": "原50",
       "disabled": false
     },
     {
-      "line": 81,
+      "line": 84,
       "command": "IF 条件",
       "config": "author_check_result 等于\"MATCH\"",
-      "source": "新增",
-      "disabled": false
-    },
-    {
-      "line": 82,
-      "command": "退出循环",
-      "config": "退出14行栏目循环，不再查综合",
-      "source": "新增",
-      "disabled": false
-    },
-    {
-      "line": 83,
-      "command": "End IF",
-      "config": "结束81行",
-      "source": "新增",
-      "disabled": false
-    },
-    {
-      "line": 84,
-      "command": "循环结束标记",
-      "config": "结束14行栏目循环；只有类型栏目到底未匹配才进入综合",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 85,
-      "command": "IF 条件",
-      "config": "author_check_result 等于\"MATCH\"",
+      "command": "退出循环",
+      "config": "退出15行栏目循环，不再查综合",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 86,
-      "command": "打印日志",
-      "config": "作者抖音号核验成功；当前保留作品页，尚未执行互动",
+      "command": "End IF",
+      "config": "结束84行",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 87,
-      "command": "Else",
-      "config": "对应85行",
+      "command": "循环结束标记",
+      "config": "结束15行栏目循环；只有类型栏目到底未匹配才进入综合",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 88,
       "command": "IF 条件",
-      "config": "saw_id_mismatch 等于True",
+      "config": "author_check_result 等于\"MATCH\"",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 89,
       "command": "打印日志",
-      "config": "抖音号不同；仅两个栏目查完仍无MATCH才到此处",
+      "config": "作者抖音号核验成功；当前保留作品页，尚未执行互动",
       "source": "新增",
       "disabled": false
     },
@@ -636,101 +636,129 @@
     },
     {
       "line": 91,
+      "command": "IF 条件",
+      "config": "saw_id_mismatch 等于True",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 92,
+      "command": "打印日志",
+      "config": "抖音号不同；仅两个栏目查完仍无MATCH才到此处",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 93,
+      "command": "Else",
+      "config": "对应91行",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 94,
       "command": "打印日志",
       "config": "未找到目标作品；只用于全程未遇到ID不同且没有MATCH",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 92,
+      "line": 95,
+      "command": "End IF",
+      "config": "结束91行",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 96,
       "command": "End IF",
       "config": "结束88行",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 93,
-      "command": "End IF",
-      "config": "结束85行",
-      "source": "新增",
-      "disabled": false
-    },
-    {
-      "line": 94,
+      "line": 97,
       "command": "IF 条件",
       "config": "author_check_result 等于\"MATCH\"；整个后续互动块暂禁用",
       "source": "原51",
       "disabled": true
     },
     {
-      "line": 95,
+      "line": 98,
       "command": "调用模块",
       "config": "module1.prepare_interactions(task_data) → interaction_plan；本阶段禁用",
       "source": "原52",
       "disabled": true
     },
     {
-      "line": 96,
+      "line": 99,
       "command": "设置变量",
       "config": "executed_actions = []；本阶段禁用",
       "source": "原53",
       "disabled": true
     },
     {
-      "line": 97,
+      "line": 100,
       "command": "ForEach列表循环",
       "config": "interaction_plan[\"execution_order\"] → current_action；本阶段禁用，恢复时核实实际键名",
       "source": "原54",
       "disabled": true
     },
     {
-      "line": 98,
+      "line": 101,
       "command": "IF 条件",
       "config": "current_action 等于\"Like\"；本阶段禁用",
       "source": "原55",
       "disabled": true
     },
     {
-      "line": 99,
+      "line": 102,
       "command": "IF 条件",
       "config": "interaction_plan[\"content_type\"] 等于\"视频\"；本阶段禁用",
       "source": "原56",
       "disabled": true
     },
     {
-      "line": 100,
+      "line": 103,
       "command": "获取手机元素信息",
       "config": "视频——点赞按钮；原属性参数 → like_state_raw；本阶段禁用",
       "source": "原57",
       "disabled": true
     },
     {
-      "line": 101,
+      "line": 104,
       "command": "End IF",
-      "config": "结束99行；本阶段禁用",
+      "config": "结束102行；本阶段禁用",
       "source": "原58",
       "disabled": true
     },
     {
-      "line": 102,
+      "line": 105,
       "command": "End IF",
-      "config": "结束98行；本阶段禁用",
+      "config": "结束101行；本阶段禁用",
       "source": "原59",
       "disabled": true
     },
     {
-      "line": 103,
+      "line": 106,
       "command": "循环结束标记",
-      "config": "结束97行；本阶段禁用",
+      "config": "结束100行；本阶段禁用",
       "source": "原60",
       "disabled": true
     },
     {
-      "line": 104,
+      "line": 107,
       "command": "End IF",
-      "config": "结束94行；本阶段禁用",
+      "config": "结束97行；本阶段禁用",
       "source": "原61",
       "disabled": true
     }
-  ]
+  ],
+  "current_runtime_lines": 87,
+  "completed_batches": [
+    1,
+    2,
+    3
+  ],
+  "checkpoint_time": "2026-10-06T18:19:43+08:00"
 }
