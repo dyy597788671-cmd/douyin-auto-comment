@@ -2,7 +2,7 @@
   "version": "2026-10-06-FINAL-3",
   "total_lines": 109,
   "current_runtime_original_lines": 61,
-  "phone_tested": false,
+  "phone_tested": true,
   "rows": [
     {
       "line": 1,
@@ -1543,5 +1543,24 @@
       "disabled": true
     }
   ],
-  "batch5_status": "已配置，手机实测待执行"
+  "batch5_status": "已配置，手机实测待执行",
+  "phone_test_complete": false,
+  "phone_test_passed": false,
+  "cross_device_tested": false,
+  "phone_test_status": "partial_failed_at_image_filter",
+  "last_filter_test": {
+    "reported_date": "2026-10-07",
+    "scope": "one_template_one_phone",
+    "first_flow_stop_line": 42,
+    "first_flow_error": "找不到对应图像",
+    "below_percent": 52,
+    "below_result": "含部分相同文本的其他筛选项误匹配；越低误匹配越多",
+    "above_percent": 58,
+    "above_result": "无匹配",
+    "current_threshold_percent": 55,
+    "threshold_status": "provisional_not_cross_device_validated",
+    "other_templates_tested": false,
+    "ocr_status": "capability_verified_configuration_not_inserted_or_tested",
+    "next_step": "搜索影刀离线OCR并打开配置核对实际字段，暂不插入"
+  }
 }
