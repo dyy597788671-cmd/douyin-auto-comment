@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T09:48:00+08:00",
+  "checkpoint_time": "2026-10-07T09:57:37+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1568,7 +1568,7 @@
   "phone_test_complete": false,
   "phone_test_passed": false,
   "cross_device_tested": false,
-  "phone_test_status": "partial_ocr_read_result_page_failed_at_image_filter",
+  "phone_test_status": "图文筛选弹窗截图/OCR/日志逐步运行验证；文字点击、连续运行与整流程未通过",
   "last_filter_test": {
     "reported_date": "2026-10-07",
     "scope": "one_template_one_phone",
@@ -1597,8 +1597,8 @@
     "per_phone_template_capture_allowed": false,
     "existing_clicks_preserved": true,
     "logging_line": 44,
-    "runtime_verified_scope": "screenshot_ocr_logging_only",
-    "target_filter_panel_verified": false,
+    "runtime_verified_scope": "single_phone_tuwen_filter_popup_screenshot_ocr_logging",
+    "target_filter_panel_verified": true,
     "text_click_implemented": false,
     "output_schema": {
       "container": "list",
@@ -1622,6 +1622,58 @@
       "seconds": 5,
       "inserted": null,
       "status": "user_did_not_explicitly_confirm_insertion; no_longer_next_action"
+    },
+    "last_panel_verification": {
+      "tested_at": "2026-10-07T09:57:37+08:00",
+      "debugging_button": "下一步",
+      "single_phone": true,
+      "section": "图文",
+      "targets": [
+        {
+          "text": "最新发布",
+          "score": 0.99427426,
+          "box": [
+            339,
+            477,
+            487,
+            521
+          ],
+          "exact_match_count": 1
+        },
+        {
+          "text": "一天内",
+          "score": 0.9901774,
+          "box": [
+            353,
+            780,
+            472,
+            830
+          ],
+          "exact_match_count": 1
+        },
+        {
+          "text": "查看结果",
+          "score": 0.9961338,
+          "box": [
+            710,
+            1315,
+            877,
+            1359
+          ],
+          "exact_match_count": 1
+        }
+      ]
+    },
+    "next_action": {
+      "command": "设置变量",
+      "insert_between": [
+        "打印筛选OCR日志",
+        "原点击最新发布"
+      ],
+      "variable_type": "列表",
+      "variable_name": "filter_text_points",
+      "python_expression": "[\n    {\n        \"text\": item[\"text\"].strip(),\n        \"x\": (item[\"box\"][0] + item[\"box\"][2]) // 2,\n        \"y\": (item[\"box\"][1] + item[\"box\"][3]) // 2\n    }\n    for item in filter_ocr_result\n    if item[\"text\"].strip() in (\"最新发布\", \"一天内\", \"查看结果\")\n]",
+      "status": "pending_user_insertion_confirmation"
     }
   },
   "filter_click_diagnosis": {
@@ -1643,7 +1695,9 @@
       ]
     },
     "calibration_matches": 1,
-    "runtime_effect_confirmed": false,
-    "next_step": "break_at_41_run_from_start_then_single_step_41_after_result_page_loaded"
+    "runtime_effect_confirmed": true,
+    "next_step": "compute_text_points_then_reuse_existing_clicks",
+    "runtime_effect_scope": "paused_then_下一步_executed_line41",
+    "continuous_run_resolved": false
   }
 }
