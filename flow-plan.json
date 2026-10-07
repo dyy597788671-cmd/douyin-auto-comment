@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T14:33:09+08:00",
+  "checkpoint_time": "2026-10-07T14:39:22+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1646,7 +1646,7 @@
   "phone_test_complete": false,
   "phone_test_passed": false,
   "cross_device_tested": false,
-  "phone_test_status": "未找到分支已通过；新可找到任务在图文命中昵称后59获取封面元素报未找到元素，作者核验未执行，等待核对已有封面条目定位",
+  "phone_test_status": "未找到分支已通过；可找到任务在59封面XPath失败。已按已有封面层级更新仓库辅助函数并通过18项模拟XML/参数检查，等待用户替换影刀module1并手机验证",
   "last_filter_test": {
     "reported_date": "2026-10-07",
     "scope": "one_template_one_phone",
@@ -1744,23 +1744,11 @@
       ]
     },
     "next_action": {
-      "command": "检查已有元素库条目",
-      "element_name": "抖音搜索结果封面",
-      "status": "awaiting_current_element_selector_evidence",
-      "needed_evidence": "打开现有条目的编辑界面，显示已勾选层级及属性；不重新捕获；据此核对58同卡片XPath",
-      "preserve_rows": [
-        46,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59
-      ],
-      "note": "59截图已显示Python candidate_xpath，保存至mobile_element_result名称正确；诊断前不盲改XPath、序号或直接点击任意封面"
+      "command": "替换影刀module1.py中的build_author_cover_xpath整个函数",
+      "status": "repository_updated_awaiting_user_local_replacement",
+      "preserve": "make_nav_swipe_points及其余函数、58行调用参数和59行获取元素对象参数保持",
+      "after_replacement": "保存后从手机主界面完整运行，验证59是否获取正确候选封面、60是否打开对应作品",
+      "source_commit": "67c475d2952711bf48d34ed023487b1cd1889aae"
     },
     "text_points_implemented": true,
     "text_points_line": 46,
@@ -1867,7 +1855,7 @@
     "task_age_verified": false,
     "actual_bottom_screen_available": true,
     "root_cause_confirmed": false,
-    "next_action": "resolve_candidate_cover_locator_then_resume_known_work_test",
+    "next_action": "replace_existing_module_helper_then_retest_candidate_lookup",
     "fixed_iteration_cap_allowed": false,
     "loop_end_line": 96,
     "actual_bottom_screen_text": "暂无更多，查看所有内容",
@@ -1963,10 +1951,10 @@
   },
   "progress_sync": {
     "requested_by_user": true,
-    "checkpoint_at": "2026-10-07T14:33:09+08:00",
+    "checkpoint_at": "2026-10-07T14:39:22+08:00",
     "confirmed_current_rows": 120,
     "row_count_basis": "由119行记录增加90计数卡；新增普通IF替换旧图像IF净增0；88—99截图确认，未全面重审所有行",
-    "next_action": "inspect_existing_verified_cover_selector_for_same_card_xpath"
+    "next_action": "confirm_user_local_helper_replacement_and_run_found_branch"
   },
   "last_not_found_test": {
     "reported_at": "2026-10-07T14:27:57+08:00",
@@ -1984,23 +1972,11 @@
     "interactions_executed": false
   },
   "next_found_test": {
-    "command": "检查已有元素库条目",
-    "element_name": "抖音搜索结果封面",
-    "status": "awaiting_current_element_selector_evidence",
-    "needed_evidence": "打开现有条目的编辑界面，显示已勾选层级及属性；不重新捕获；据此核对58同卡片XPath",
-    "preserve_rows": [
-      46,
-      51,
-      52,
-      53,
-      54,
-      55,
-      56,
-      57,
-      58,
-      59
-    ],
-    "note": "59截图已显示Python candidate_xpath，保存至mobile_element_result名称正确；诊断前不盲改XPath、序号或直接点击任意封面"
+    "command": "替换影刀module1.py中的build_author_cover_xpath整个函数",
+    "status": "repository_updated_awaiting_user_local_replacement",
+    "preserve": "make_nav_swipe_points及其余函数、58行调用参数和59行获取元素对象参数保持",
+    "after_replacement": "保存后从手机主界面完整运行，验证59是否获取正确候选封面、60是否打开对应作品",
+    "source_commit": "67c475d2952711bf48d34ed023487b1cd1889aae"
   },
   "candidate_click_diagnosis": {
     "reported_at": "2026-10-07T14:33:09+08:00",
@@ -2017,7 +1993,22 @@
     "output_variable": "mobile_element_result",
     "module_function": "module1.build_author_cover_xpath",
     "module_blob_sha": "7c2d536d1012d996bf09b82ee064e6b800ae2762",
-    "current_generator_constraints": {
+    "root_cause_confirmed": false,
+    "runtime_xpath_full_value_available": false,
+    "current_phone_xml_available": false,
+    "existing_cover_selector_current_attributes_available": true,
+    "existing_cover_element_known_verified": "抖音搜索结果封面；此前综合、视频、图文均校验通过，应复用、不重捕获",
+    "next_action": {
+      "command": "替换影刀module1.py中的build_author_cover_xpath整个函数",
+      "status": "repository_updated_awaiting_user_local_replacement",
+      "preserve": "make_nav_swipe_points及其余函数、58行调用参数和59行获取元素对象参数保持",
+      "after_replacement": "保存后从手机主界面完整运行，验证59是否获取正确候选封面、60是否打开对应作品",
+      "source_commit": "67c475d2952711bf48d34ed023487b1cd1889aae"
+    },
+    "code_modified": true,
+    "flow_modified": false,
+    "forbidden_shortcut": "不能把独立昵称/封面列表按索引盲配，或用任意封面点击替代同卡片关联",
+    "previous_runtime_generator_constraints": {
       "card_resource_id": "com.ss.android.ugc.aweme:id/dp7",
       "cover_resource_id": "com.ss.android.ugc.aweme:id/rej",
       "author_resource_id": "com.ss.android.ugc.aweme:id/-+",
@@ -2025,32 +2016,48 @@
       "cover_count_per_card": 1,
       "global_occurrence": "current_candidate_number，从1开始"
     },
-    "root_cause_confirmed": false,
-    "runtime_xpath_full_value_available": false,
-    "current_phone_xml_available": false,
-    "existing_cover_selector_current_attributes_available": false,
-    "existing_cover_element_known_verified": "抖音搜索结果封面；此前综合、视频、图文均校验通过，应复用、不重捕获",
-    "next_action": {
-      "command": "检查已有元素库条目",
+    "existing_cover_selector_evidence": {
+      "provided_at": "2026-10-07T14:39:22+08:00",
       "element_name": "抖音搜索结果封面",
-      "status": "awaiting_current_element_selector_evidence",
-      "needed_evidence": "打开现有条目的编辑界面，显示已勾选层级及属性；不重新捕获；据此核对58同卡片XPath",
-      "preserve_rows": [
-        46,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59
+      "checked_nodes": [
+        "mobile",
+        "hierarchy",
+        "androidx.recyclerview.widget.RecyclerView",
+        "android.widget.LinearLayout",
+        "android.widget.LinearLayout",
+        "android.widget.LinearLayout",
+        "android.widget.FrameLayout",
+        "android.view.ViewGroup",
+        "android.view.View"
       ],
-      "note": "59截图已显示Python candidate_xpath，保存至mobile_element_result名称正确；诊断前不盲改XPath、序号或直接点击任意封面"
+      "leaf_class": "android.view.View",
+      "leaf_checked_attributes": {
+        "index": "0"
+      },
+      "leaf_unchecked_attributes": {
+        "id": "com.ss.android.ugc.aweme:id/rej",
+        "index-attribute": "1"
+      },
+      "ancestor_property_panels_available": false
     },
-    "code_modified": false,
-    "flow_modified": false,
-    "forbidden_shortcut": "不能把独立昵称/封面列表按索引盲配，或用任意封面点击替代同卡片关联"
+    "code_modification_scope": "GitHub module1.py及当前工作副本；用户影刀内版本尚未确认替换",
+    "repository_patch": {
+      "function": "build_author_cover_xpath",
+      "commit": "67c475d2952711bf48d34ed023487b1cd1889aae",
+      "status": "saved_pending_user_replacement",
+      "no_resource_id_constraint": true,
+      "cover_xpath": "/hierarchy//androidx.recyclerview.widget.RecyclerView/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@index='0']",
+      "card_relationship": "封面的LinearLayout祖先须位于同RecyclerView内、包含目标昵称精确text、且包含唯一FrameLayout/ViewGroup/View[index=0]封面；避免整屏昵称/封面列表按索引对应",
+      "same_name_occurrence_preserved": true,
+      "arguments_and_return_type_preserved": true,
+      "other_module_functions_unchanged": true,
+      "validation": {
+        "type": "synthetic_xml_xpath_and_parameter_checks",
+        "checks_passed": 18,
+        "full_module_syntax_valid": true,
+        "real_phone_xml_tested": false,
+        "phone_runtime_tested": false
+      }
+    }
   }
 }
