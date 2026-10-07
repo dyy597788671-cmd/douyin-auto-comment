@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T16:36:33+08:00",
+  "checkpoint_time": "2026-10-07T17:44:09+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1230,10 +1230,10 @@
       "pending_change": {
         "command": "XPath恢复Python candidate_xpath，手机phone_device、输出mobile_element_result原样",
         "confirmed": true,
-        "expected_line_if_tree_inserted": 60,
-        "confirmation_basis": "运行行为与XML定位共同支持恢复，非字段截图"
+        "expected_line_if_tree_inserted": null,
+        "confirmation_basis": "UI树删除后恢复59获取对象和60点击；用户运行截图确认"
       },
-      "runtime_verification_source": "用户报告两次下一步后进入作品；新XPath匹配本次真实XML1项，旧探测路径0项；未取得字段截图"
+      "runtime_verification_source": "2026-10-07 UI树删除后获取元素对象与点击恢复；17:02:49图文作者核验成功回退作品"
     },
     {
       "line": 60,
@@ -1242,7 +1242,7 @@
       "source": "原25",
       "disabled": false,
       "runtime_verified": true,
-      "runtime_verification_source": "用户报告第二次下一步进入作品；若UI树已插入则该卡为新61"
+      "runtime_verification_source": "2026-10-07 UI树删除后获取元素对象与点击恢复；17:02:49图文作者核验成功回退作品"
     },
     {
       "line": 61,
@@ -1985,14 +1985,14 @@
     "checkpoint_at": "2026-10-07T15:05:12+08:00",
     "confirmed_current_rows": 120,
     "row_count_basis": "由119行记录增加90计数卡；新增普通IF替换旧图像IF净增0；88—99截图确认，未全面重审所有行",
-    "next_action": "confirm_line47_disabled_and_test_new_filter_policy",
-    "last_checkpoint": "2026-10-07T16:36:33+08:00",
+    "next_action": "adapt_task_reader_account_state_comment_allocation_and_action_strategy",
+    "last_checkpoint": "2026-10-07T17:44:09+08:00",
     "repository": "dyy597788671-cmd/dy-auto-comment",
     "branch": "main",
     "module_fix_commit": "ff6cdb955424f83fc39eede7b2c83ccc4f1fbaee",
     "library_record_id": "libfile_d824b90ccdfc8191940764a6d10f8637",
-    "status": "图文核验通过和简化实现要求已同步；新会话继续互动",
-    "library_version": 33
+    "status": "新表和互动需求已确认并同步，代码适配及手机动作待修改",
+    "library_version": 36
   },
   "last_not_found_test": {
     "reported_at": "2026-10-07T14:27:57+08:00",
@@ -2037,8 +2037,8 @@
     "existing_cover_selector_current_attributes_available": true,
     "existing_cover_element_known_verified": "抖音搜索结果封面；此前综合、视频、图文均校验通过，应复用、不重捕获",
     "next_action": {
-      "command": "新会话直接复用禁用互动块，补齐点赞/评论/分享与结果回写",
-      "status": "search_verification_complete_continue_interactions",
+      "command": "先适配表格和账号策略，再复用互动块补齐点赞/评论/收藏与随机分享；不重测已通过的封面核验",
+      "status": "requirements_confirmed_runtime_adaptation_pending",
       "no_repeat_candidate_xpath_diagnosis": true,
       "no_repeat_variable_request": true
     },
@@ -2310,37 +2310,23 @@
   },
   "pending_diagnostic_insertion": {
     "command": "获取手机UI树",
-    "status": "xml_retrieval_confirmed_actual_row_position_not_screenshot_verified",
+    "status": "removed_after_diagnostic_and_verified_run",
     "current_runtime_lines_before": 120,
-    "expected_runtime_lines_after": 121,
+    "expected_runtime_lines_after": null,
     "insert_at_line": 59,
     "insert_after_line": 58,
     "shift_original_rows_from": 59,
     "shift_delta": 1,
     "config": "手机连接对象phone_device；保存UI树至page_source；返回XML字符串",
-    "expected_local_rows": [
-      {
-        "line": 59,
-        "command": "获取手机UI树"
-      },
-      {
-        "line": 60,
-        "command": "获取元素对象(手机)",
-        "source_original_line": 59
-      },
-      {
-        "line": 61,
-        "command": "点击元素(手机)",
-        "source_original_line": 60
-      }
-    ],
-    "breakpoint_line": 60,
+    "expected_local_rows": [],
+    "breakpoint_line": null,
     "copy_variable": "page_source",
     "xml_retrieved": true,
     "xml_file_id": "file_0000000074e081f789991edcb3c684d3",
     "actual_position_verified": false,
-    "next_step": "保留UI树卡；封面获取/点击已通过，继续作者核验",
-    "latest_xml_file_id": "file_000000008ba881fa95855936a4d5488b"
+    "next_step": "不再插入UI树；保留59获取元素对象和60点击",
+    "latest_xml_file_id": "file_000000008ba881fa95855936a4d5488b",
+    "business_dependency": false
   },
   "module_source_comparison": {
     "provided_at": "2026-10-07T16:23:51+08:00",
@@ -2415,19 +2401,17 @@
     "cross_device_verified": false
   },
   "next_stage": {
-    "name": "完善影刀互动流程",
-    "status": "not_implemented",
-    "entry": "NEW_SESSION_START.md最新16:36段落",
+    "name": "先适配已确认表格和账号策略，再补齐影刀互动",
+    "status": "requirements_confirmed_implementation_pending",
+    "entry": "NEW_SESSION_START.md最新已确认表格与互动规则",
     "reuse_disabled_block": {
       "last_confirmed_lines": [
         110,
         120
       ],
-      "expected_lines_after_ui_tree_insert": [
-        111,
-        121
-      ],
-      "actual_tail_line_map_verified": false
+      "expected_lines_after_ui_tree_insert": null,
+      "actual_tail_line_map_verified": false,
+      "ui_tree_diagnostic_removed": true
     },
     "reuse_module_interfaces": [
       "prepare_interactions",
@@ -2435,13 +2419,110 @@
       "finish_task"
     ],
     "required_actions": [
-      "按已有策略随机选择1—3项点赞/评论/分享",
-      "用影刀指令执行",
-      "记录真实动作结果",
-      "回写任务结果",
+      "读取Content_Type和每项目Comments",
+      "按真实发送账号独立处理任务及评论分配",
+      "固定点赞/评论/收藏，随机是否分享到好友",
+      "复用影刀互动骨架执行并记录真实结果",
+      "回写账号对应的任务结果",
       "返回手机桌面"
     ],
     "do_not_enable_unfinished_block": true,
     "do_not_rebuild_verified_search_chain": true
+  },
+  "confirmed_requirements": {
+    "confirmed_at": "2026-10-07T17:44:09+08:00",
+    "implementation_status": "requirements_and_table_confirmed_runtime_changes_pending",
+    "one_project_one_work": true,
+    "multiple_sender_accounts_per_project": true,
+    "table": {
+      "sheet": "Sheet1",
+      "headers": [
+        "Task_ID",
+        "Query_Keyword",
+        "Expected_Author",
+        "Scheduled_Time",
+        "Status",
+        "Executed_Actions",
+        "Result_Message",
+        "Expected_Douyin_ID",
+        "Content_Type",
+        "Comments"
+      ],
+      "removed_fields": [
+        "Search_Section"
+      ],
+      "content_type_column": "I",
+      "content_type_options": [
+        "图文",
+        "视频"
+      ],
+      "comments_column": "J",
+      "comments_separator": "newline",
+      "library_file_id": "libfile_1fa6375c0b4c8191b47c772a19292e90",
+      "library_version": 1,
+      "placeholder_count": 6
+    },
+    "search": {
+      "first": "task_data.content_type",
+      "fallback": "综合",
+      "fallback_when": "no_verified_match_in_type_section",
+      "stop_after_verified_match": true,
+      "existing_section_loop_reused": true
+    },
+    "actions": {
+      "always": [
+        "Like",
+        "Comment",
+        "Favorite"
+      ],
+      "order": "unspecified",
+      "optional": [
+        "Share"
+      ],
+      "share_destination": "friend",
+      "share_probability": null,
+      "share_friend": null,
+      "prefer_existing_native_element_capture": true
+    },
+    "comments": {
+      "source": "per_project_Comments",
+      "selection": "random_without_replacement_across_sender_accounts",
+      "one_per_sender_account": true,
+      "text_uniqueness_required": true,
+      "ignore_blank_lines": true,
+      "trim_whitespace": true,
+      "deduplicate_text": true,
+      "shortage": "require_more_candidates_no_reuse_no_generation",
+      "retry": "retain_existing_assignment",
+      "allocation": "shared_atomic_reservation",
+      "success_recording": "after_confirmed_send"
+    },
+    "execution_state": {
+      "key": [
+        "task_id",
+        "sender_account_id"
+      ],
+      "one_account_completion_does_not_complete_other_accounts": true,
+      "replace_default_device_identity": true,
+      "preserve_existing_recovery_guards": true
+    },
+    "changes_pending": [
+      "core_runner task field mapping",
+      "per-account scheduling and progress",
+      "shared distinct comment allocation",
+      "Like Comment Favorite plus optional Share strategy",
+      "result validation",
+      "module1 sender identity adaptation",
+      "ShadowBot action cards"
+    ]
+  },
+  "latest_ui_tree_removal": {
+    "status": "removed",
+    "get_element_line": 59,
+    "click_line": 60,
+    "get_element_output": "mobile_element_result",
+    "xpath": "candidate_xpath",
+    "verified_tuwen_author_match_after_removal": true,
+    "full_tail_row_map_verified": false
   }
 }
