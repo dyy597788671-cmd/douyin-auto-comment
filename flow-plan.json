@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T09:39:00+08:00",
+  "checkpoint_time": "2026-10-07T09:48:00+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1582,7 +1582,7 @@
     "threshold_status": "provisional_not_cross_device_validated",
     "other_templates_tested": false,
     "ocr_status": "runtime_output_verified_wrong_screen_captured",
-    "next_step": "41筛选点击后、42截图前插入固定等待5秒验证时机；未插入"
+    "next_step": "第41设置断点，从头运行，结果页加载完成后单步执行41，观察筛选弹窗是否打开；不继续新增固定等待"
   },
   "current_runtime_revision": "2026-10-07-OCR-TEST-1",
   "ocr_validation": {
@@ -1620,7 +1620,30 @@
     "pending_wait": {
       "insert_after_line": 41,
       "seconds": 5,
-      "inserted": false
+      "inserted": null,
+      "status": "user_did_not_explicitly_confirm_insertion; no_longer_next_action"
     }
+  },
+  "filter_click_diagnosis": {
+    "line": 41,
+    "phone": "phone_device",
+    "target": "抖音筛选入口",
+    "click_mode": "单击",
+    "anchor": "中心点",
+    "after_delay_seconds": 1,
+    "wait_element_exists_seconds": 5,
+    "selector": {
+      "leaf_class": "android.view.ViewGroup",
+      "checked_attribute": "accessibility-id",
+      "value": "筛选，按钮",
+      "unchecked_attributes": [
+        "id",
+        "index-attribute",
+        "index"
+      ]
+    },
+    "calibration_matches": 1,
+    "runtime_effect_confirmed": false,
+    "next_step": "break_at_41_run_from_start_then_single_step_41_after_result_page_loaded"
   }
 }
