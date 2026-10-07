@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T10:12:08+08:00",
+  "checkpoint_time": "2026-10-07T10:22:30+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1061,16 +1061,16 @@
     },
     {
       "line": 41,
-      "command": "点击元素(手机)",
-      "config": "抖音筛选入口；保留原参数",
-      "source": "原15",
+      "command": "等待",
+      "config": "5到6秒；10:15截图确认已移至点击筛选入口之前",
+      "source": "OCR首次运行后新增（10:12截图确认）",
       "disabled": false
     },
     {
       "line": 42,
-      "command": "等待",
-      "config": "5到6秒；实际已添加，目前位于点击筛选入口之后",
-      "source": "OCR首次运行后新增（10:12截图确认）",
+      "command": "点击元素(手机)",
+      "config": "抖音筛选入口；保留原参数",
+      "source": "原15",
       "disabled": false
     },
     {
@@ -1104,9 +1104,11 @@
     {
       "line": 47,
       "command": "点击屏幕(手机)",
-      "config": "原“最新发布”匹配图与原参数，不改为固定坐标",
+      "config": "phone_device；通过坐标指定；横坐标Python [item[\"x\"] for item in filter_text_points if item[\"text\"] == \"最新发布\"][0]；纵坐标Python [item[\"y\"] for item in filter_text_points if item[\"text\"] == \"最新发布\"][0]；单击；高级/错误处理保留原设置",
       "source": "原16",
-      "disabled": false
+      "disabled": false,
+      "configuration_confirmed": true,
+      "runtime_click_verified": false
     },
     {
       "line": 48,
@@ -1582,7 +1584,7 @@
   "phone_test_complete": false,
   "phone_test_passed": false,
   "cross_device_tested": false,
-  "phone_test_status": "连续运行未观察到筛选弹窗；第47原图片点击失败；待将已有等待移至筛选点击之前验证",
+  "phone_test_status": "移动等待后单次连续运行成功打开筛选；第47动态点击已配置但未实测，48已提供49待设置",
   "last_filter_test": {
     "reported_date": "2026-10-07",
     "scope": "one_template_one_phone",
@@ -1598,7 +1600,7 @@
     "ocr_status": "runtime_output_verified_wrong_screen_captured",
     "next_step": "第41设置断点，从头运行，结果页加载完成后单步执行41，观察筛选弹窗是否打开；不继续新增固定等待"
   },
-  "current_runtime_revision": "2026-10-07-OCR-TEST-2",
+  "current_runtime_revision": "2026-10-07-OCR-TEST-3",
   "ocr_validation": {
     "basis": "完整文字精确匹配",
     "screenshot_line": 43,
@@ -1613,7 +1615,7 @@
     "logging_line": 45,
     "runtime_verified_scope": "single_phone_tuwen_filter_popup_screenshot_ocr_logging",
     "target_filter_panel_verified": true,
-    "text_click_implemented": false,
+    "text_click_implemented": true,
     "output_schema": {
       "container": "list",
       "item_keys": [
@@ -1633,10 +1635,10 @@
     },
     "pending_wait": {
       "inserted": true,
-      "current_line": 42,
+      "current_line": 41,
       "seconds_min": 5,
       "seconds_max": 6,
-      "status": "confirmed_screenshot; move_before_filter_click_pending"
+      "status": "confirmed_moved_before_filter_click"
     },
     "last_panel_verification": {
       "tested_at": "2026-10-07T09:57:37+08:00",
@@ -1680,11 +1682,22 @@
       ]
     },
     "next_action": {
-      "command": "移动已有等待",
-      "from_line": 42,
-      "to_before_line": 41,
-      "status": "pending_user_confirmation",
-      "params_unchanged": true
+      "command": "修改已有点击屏幕(手机)",
+      "line": 49,
+      "target": "查看结果",
+      "config": {
+        "line": 49,
+        "text": "查看结果",
+        "phone": "phone_device",
+        "click_position": "通过坐标指定",
+        "click_type": "单击",
+        "python_x": "[item[\"x\"] for item in filter_text_points if item[\"text\"] == \"查看结果\"][0]",
+        "python_y": "[item[\"y\"] for item in filter_text_points if item[\"text\"] == \"查看结果\"][0]",
+        "advanced": "保留原设置",
+        "error_handling": "保留原设置",
+        "status": "config_next_to_provide"
+      },
+      "status": "pending_user_confirmation"
     },
     "text_points_implemented": true,
     "text_points_line": 46,
@@ -1697,10 +1710,60 @@
       "error": "找不到对应图像",
       "filter_open_observed": false,
       "full_ocr_text_available": false
+    },
+    "text_click_implementation_scope": "latest_publish_configuration_only_not_runtime_verified",
+    "dynamic_clicks": [
+      {
+        "line": 47,
+        "text": "最新发布",
+        "phone": "phone_device",
+        "click_position": "通过坐标指定",
+        "click_type": "单击",
+        "python_x": "[item[\"x\"] for item in filter_text_points if item[\"text\"] == \"最新发布\"][0]",
+        "python_y": "[item[\"y\"] for item in filter_text_points if item[\"text\"] == \"最新发布\"][0]",
+        "advanced": "保留原设置",
+        "error_handling": "保留原设置",
+        "status": "user_confirmed_configured"
+      },
+      {
+        "line": 48,
+        "text": "一天内",
+        "phone": "phone_device",
+        "click_position": "通过坐标指定",
+        "click_type": "单击",
+        "python_x": "[item[\"x\"] for item in filter_text_points if item[\"text\"] == \"一天内\"][0]",
+        "python_y": "[item[\"y\"] for item in filter_text_points if item[\"text\"] == \"一天内\"][0]",
+        "advanced": "保留原设置",
+        "error_handling": "保留原设置",
+        "status": "config_provided_user_requested_continue"
+      },
+      {
+        "line": 49,
+        "text": "查看结果",
+        "phone": "phone_device",
+        "click_position": "通过坐标指定",
+        "click_type": "单击",
+        "python_x": "[item[\"x\"] for item in filter_text_points if item[\"text\"] == \"查看结果\"][0]",
+        "python_y": "[item[\"y\"] for item in filter_text_points if item[\"text\"] == \"查看结果\"][0]",
+        "advanced": "保留原设置",
+        "error_handling": "保留原设置",
+        "status": "config_next_to_provide"
+      }
+    ],
+    "text_click_verified": false,
+    "last_continuous_run_after_wait_moved": {
+      "started_at": "2026-10-07T10:14:25.599+08:00",
+      "ocr_logged_at": "2026-10-07T10:14:54.626+08:00",
+      "error_at": "2026-10-07T10:14:58.590+08:00",
+      "stop_line": 48,
+      "error": "找不到对应图像",
+      "filter_open_observed": true,
+      "latest_publish_selected": true,
+      "latest_publish_method": "原图像匹配"
     }
   },
   "filter_click_diagnosis": {
-    "line": 41,
+    "line": 42,
     "phone": "phone_device",
     "target": "抖音筛选入口",
     "click_mode": "单击",
@@ -1719,8 +1782,9 @@
     },
     "calibration_matches": 1,
     "runtime_effect_confirmed": true,
-    "next_step": "move_existing_5_to_6_second_wait_before_filter_click_then_continuous_run",
+    "next_step": "configure_existing_three_click_cards_to_consume_dynamic_ocr_points_then_run",
     "runtime_effect_scope": "paused_then_下一步_executed_line41",
-    "continuous_run_resolved": false
+    "continuous_run_resolved": true,
+    "continuous_run_resolution_scope": "single_phone_single_run_after_wait_moved"
   }
 }
