@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T10:44:35+08:00",
+  "checkpoint_time": "2026-10-07T10:54:21+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1605,7 +1605,7 @@
   "phone_test_complete": false,
   "phone_test_passed": false,
   "cross_device_tested": false,
-  "phone_test_status": "筛选OCR点击通过；结果页截图/OCR已添加，待读取日志并修改到底判断",
+  "phone_test_status": "筛选动态OCR点击通过；结果页截图与OCR已添加；日志配置已提供待确认；到底退出未修复",
   "last_filter_test": {
     "reported_date": "2026-10-07",
     "scope": "one_template_one_phone",
@@ -1813,7 +1813,7 @@
     "task_age_verified": false,
     "actual_bottom_screen_available": true,
     "root_cause_confirmed": false,
-    "next_action": "insert_result_ocr_log_then_capture_last_log_at_actual_bottom",
+    "next_action": "confirm_logging_card_added_then_get_last_result_ocr_output_at_bottom",
     "fixed_iteration_cap_allowed": false,
     "loop_end_line": 92,
     "actual_bottom_screen_text": "暂无更多，查看所有内容",
@@ -1829,9 +1829,18 @@
       "insert_after": 86,
       "expression": "\"结果页OCR完整结果=\" + repr(result_ocr_result)",
       "level": "信息",
-      "inserted": false
+      "inserted": null,
+      "status": "full_config_provided_10_44_user_has_not_explicitly_confirmed_insertion",
+      "last_output_available": false
     },
     "ocr_end_if_implemented": false,
     "no_progress_handling_implemented": false
+  },
+  "progress_sync": {
+    "requested_by_user": true,
+    "synced_at": "2026-10-07T10:54:21+08:00",
+    "confirmed_current_rows": 116,
+    "possible_rows_after_pending_log": 117,
+    "next_action": "confirm_result_ocr_logging_card_then_collect_last_bottom_ocr_output"
   }
 }
