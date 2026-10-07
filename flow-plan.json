@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T15:36:12+08:00",
+  "checkpoint_time": "2026-10-07T15:43:06+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1214,14 +1214,16 @@
       "source": "原24",
       "disabled": false,
       "runtime_verified": false,
-      "last_runtime_error": "2026-10-07 15:17再次反馈未找到元素；本次完整candidate_xpath与实跑模块版本未提供",
+      "last_runtime_error": "2026-10-07 15:41:23.800：临时基础封面路径未找到元素",
       "pending_diagnostic": {
         "expression": "\"(/hierarchy//androidx.recyclerview.widget.RecyclerView/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@index='0'])[1]\"",
         "user_confirmed": true,
         "restore_target": "Python candidate_xpath，正式条件待诊断",
         "stop_before_line": 60,
         "installed_at": "2026-10-07T15:36:12+08:00",
-        "runtime_tested": false
+        "runtime_tested": true,
+        "result": "未找到元素",
+        "status": "failed_awaiting_real_phone_xml"
       },
       "production_config_before_probe": "phone_device；查找方式XPath；XPath值Python candidate_xpath → mobile_element_result；复用原获取元素对象卡片"
     },
@@ -1991,8 +1993,8 @@
     "interactions_executed": false
   },
   "next_found_test": {
-    "command": "59基础封面XPath临时探测，观察获取成功或未找到；停在60点击前",
-    "status": "probe_installed_awaiting_runtime_result",
+    "command": "打开获取手机UI树真实参数窗口；取得目标出现时的实际XML后修正封面定位",
+    "status": "blocked_base_path_probe_failed_awaiting_ui_tree_command_parameters",
     "preserve": "46的OCR坐标表达式、48一天内、49查看结果、58/59封面定位卡片保持",
     "test_scope": "按新筛选策略验证可找到任务的封面点击与作者ID核验，互动110—120仍禁用",
     "module_installation": "15:27实际candidate_xpath确认新版build_author_cover_xpath参与生成；其它模块函数部署不扩展推断"
@@ -2018,19 +2020,20 @@
     "existing_cover_selector_current_attributes_available": true,
     "existing_cover_element_known_verified": "抖音搜索结果封面；此前综合、视频、图文均校验通过，应复用、不重捕获",
     "next_action": {
-      "command": "保留59断点，从头运行至暂停；仅点一次下一步执行59，停在60点击前，报告取得元素或未找到",
-      "status": "probe_installed_awaiting_single_step_result",
-      "phone": "phone_device",
-      "find_mode": "XPath",
-      "field_mode": "Python表达式",
-      "temporary_expression": "\"(/hierarchy//androidx.recyclerview.widget.RecyclerView/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@index='0'])[1]\"",
-      "save_to": "mobile_element_result",
-      "stop_before_line": 60,
-      "interpretation": {
-        "success": "基础封面路径可匹配，再诊断昵称关联和唯一封面条件；不能点击本探测元素",
-        "failure": "基础封面路径未匹配，需真实节点结构证据"
-      },
-      "user_confirmed_at": "2026-10-07T15:36:12+08:00"
+      "command": "标准指令栏搜索获取手机UI树，打开实际配置窗口并提供截图，先不点确定",
+      "status": "awaiting_real_ui_tree_command_configuration",
+      "standard_command_verified_by_official_docs": true,
+      "official_document_url": "https://www.yingdao.com/yddoc/rpa/zh-CN/711295701280829440",
+      "documented_return_type": "当前页面树结构的XML字符串",
+      "user_version_parameters_verified": false,
+      "phone_state": "保留54读到目标时的搜索结果",
+      "inserted": false,
+      "no_current_line_change": true,
+      "preserve_existing_elements": [
+        "搜索结果作者昵称",
+        "抖音搜索结果封面"
+      ],
+      "next_goal": "取得真实XML核对标签名、父子关系与同卡片作者封面关联"
     },
     "code_modified": true,
     "flow_modified": false,
@@ -2112,6 +2115,21 @@
       "xpath_version": "structural_helper_67c475d2952711bf48d34ed023487b1cd1889aae",
       "xpath_full_value_source": "用户复制文本；截图用于变量序号和昵称值",
       "screenshot_file_id": "file_00000000b19481faa8e9fe48d103210b"
+    },
+    "base_path_probe": {
+      "expression": "\"(/hierarchy//androidx.recyclerview.widget.RecyclerView/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@index='0'])[1]\"",
+      "installed_confirmed_at": "2026-10-07T15:36:12+08:00",
+      "reported_at": "2026-10-07T15:43:06+08:00",
+      "error_at": "2026-10-07T15:41:23.800+08:00",
+      "status": "failed_not_found",
+      "line": 59,
+      "section": "图文",
+      "nickname_read_success": true,
+      "author_predicate_in_probe": false,
+      "unique_cover_count_in_probe": false,
+      "screenshot_file_id": "file_00000000beb481fda39348b1021eb7e1",
+      "log_execution_end_at": "2026-10-07T15:41:06.017+08:00",
+      "delay_root_cause_confirmed": false
     }
   },
   "filter_policy": {
