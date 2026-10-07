@@ -16,6 +16,7 @@ Project files:
       {"uid": "123", "nicknames": ["测试作者"]}]}
   data/runtime_state.json           managed; do not edit/delete while running
   logs/execution.log
+  execution_data/执行数据_<账号>.csv   completed action counts for this account
 
 Initialize an empty project: python core_runner.py --root PATH --init
 Call through Python: gateway = UnifiedGateway(PATH, device_id="phone-01")
@@ -36,6 +37,7 @@ Exceptions expose .code; the CLI returns a JSON error envelope and exit code 1.
 from __future__ import annotations
 
 import argparse
+import csv
 import errno
 import hashlib
 import io
@@ -886,6 +888,32 @@ class UnifiedGateway:
             raise EngineError("TASK_NOT_OWNED", "任务或运行令牌不属于当前设备")
         return active
 
+    def _write_execution_data(self, state: Dict[str, Any], sender_account_id: str) -> Path:
+        """Export this account's recorded results; one row per task, no totals."""
+        filename_id = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", sender_account_id).strip(" .")[:80]
+        filename_id = filename_id or "account"
+        if filename_id != sender_account_id:
+            filename_id += "_" + hashlib.sha256(sender_account_id.encode("utf-8")).hexdigest()[:16]
+        path = self.root / "execution_data" / ("执行数据_" + filename_id + ".csv")
+        output = io.StringIO(newline="")
+        writer = csv.writer(output)
+        writer.writerow(("执行账号", "项目ID", "点赞次数", "收藏次数", "评论次数", "分享次数"))
+        for task_id, project in state["project_accounts"].items():
+            entry = project["accounts"].get(sender_account_id)
+            result = entry.get("result") if entry else None
+            if result is None:
+                continue
+            passed = {item["action"] for item in result["executed_actions"]
+                      if item["status"] == "PASSED"}
+            writer.writerow((sender_account_id, task_id,
+                             int("Like" in passed), int("Favorite" in passed),
+                             int("Comment" in passed), int("Share" in passed)))
+        try:
+            _atomic_bytes(path, output.getvalue().encode("utf-8-sig"))
+        except OSError as exc:
+            raise EngineError("EXECUTION_DATA_WRITE_FAILED", "执行数据输出失败：" + str(path)) from exc
+        return path
+
     def _finish(self, state: Dict[str, Any], device_id: str, device: Dict[str, Any],
                 status: str, actions: List[Dict[str, str]], error_code: str,
                 message: str, blocked: bool = False) -> Dict[str, Any]:
@@ -913,6 +941,7 @@ class UnifiedGateway:
                      comment_sent=any(value["action"] == "Comment" and value["status"] == "PASSED"
                                       for value in actions))
         self._commit(state, self._project_update(state, active["task_id"]))
+        self._write_execution_data(state, device_id)
         return _copy(result)
 
     def get_next_task(self) -> Optional[Dict[str, Any]]:
@@ -1066,6 +1095,7 @@ class UnifiedGateway:
                 stored = (last["status"], last["executed_actions"], last["error_code"], last["log_message"])
                 if expected != stored:
                     raise EngineError("RESULT_CONFLICT", "同一次运行已经提交了不同结果")
+                self._write_execution_data(state, self.device_id)
                 return _copy(last)
             active = self._owned(device, identity, run_token)
             if status == "SUCCESS":
