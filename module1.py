@@ -111,11 +111,11 @@ def build_author_cover_xpath(expected_author, occurrence=1):
         raise ValueError("expected_author 必须是非空昵称")
     if isinstance(occurrence, bool) or not isinstance(occurrence, int) or occurrence < 1:
         raise ValueError("occurrence 必须是从1开始的整数")
-    # 复用已校验封面的节点结构与index，不绑定抖音混淆resource-id。
+    # 复用封面层级，以可点击层识别封面，不固定index或resource-id。
     author_literal = "concat(''," + ", \"'\", ".join(
         "'" + part + "'" for part in expected_author.split("'")
     ) + ")"
-    cover_tail = "/android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@index='0']"
+    cover_tail = "/android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@clickable='true']"
     cover = (
         "/hierarchy//androidx.recyclerview.widget.RecyclerView"
         "/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout"
