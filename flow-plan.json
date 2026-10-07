@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T19:28:50+08:00",
+  "checkpoint_time": "2026-10-07T19:37:55+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -2308,7 +2308,9 @@
     "preserve_source_format_when_full_replacement_is_needed": true,
     "avoid_retesting_already_passed_chain_without_new_failure": true,
     "use_exact_visible_field_labels": true,
-    "do_not_call_save_element_object_output_variable": true
+    "do_not_call_save_element_object_output_variable": true,
+    "no_text_flow_tree_instructions": true,
+    "require_line_number_instruction_field_value_format": true
   },
   "pending_diagnostic_insertion": {
     "command": "获取手机UI树",
@@ -2402,7 +2404,7 @@
     "interaction_executed": false,
     "cross_device_verified": false
   },
-  "next_stage": "保存图文点赞获取元素对象卡片，放回Else并保持互动块禁用；随后按真实界面配置图文状态读取",
+  "next_stage": "恢复第110—123整段启用，继续第119行图文状态读取配置，配置完成后再测试",
   "confirmed_requirements": {
     "confirmed_at": "2026-10-07T17:44:09+08:00",
     "implementation_status": "offline_code_verified_user_install_and_phone_actions_pending",
@@ -2512,7 +2514,7 @@
     "user_install_confirmed": true,
     "live_phone_interactions_verified": false,
     "first_user_step": "stop debugging, install adjusted task table and core_runner.py",
-    "next_user_step": "保存图文点赞获取元素对象卡片，放回Else并保持互动块禁用；随后按真实界面配置图文状态读取",
+    "next_user_step": "恢复第110—123整段启用，继续第119行图文状态读取配置，配置完成后再测试",
     "account_example": "手机01",
     "legacy_adoption_argument": "adopt_legacy=True",
     "preserve_runtime_state": true,
@@ -2528,7 +2530,7 @@
       "strategy": null,
       "adopt_legacy": true
     },
-    "next_step": "保存图文点赞获取元素对象卡片，放回Else并保持互动块禁用；随后按真实界面配置图文状态读取",
+    "next_step": "恢复第110—123整段启用，继续第119行图文状态读取配置，配置完成后再测试",
     "photo_like_locator": {
       "instruction": "获取元素对象(手机)",
       "ui_labels": {
@@ -2542,11 +2544,15 @@
       "selector_python": "\"/hierarchy//android.widget.LinearLayout[contains(@content-desc,'喜欢')]\"",
       "save_element_object_to": "photo_like_element",
       "configuration_visible": true,
-      "saved_confirmed": false,
-      "moved_into_else_confirmed": false,
+      "saved_confirmed": true,
+      "moved_into_else_confirmed": true,
       "live_test_passed": false
     },
     "interaction_else_added_confirmed": true,
-    "phone_dropdown_restored_confirmed": true
+    "phone_dropdown_restored_confirmed": true,
+    "interaction_block_enable_instruction": "enable_whole_block_110_to_123",
+    "interaction_block_enabled_confirmed": false,
+    "disabled_block_guidance_withdrawn": true,
+    "photo_state_read_target_configured": false
   }
 }
