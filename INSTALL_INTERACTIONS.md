@@ -1,3 +1,22 @@
+## 2026-10-07 20:25 点赞分支配置完成，运行待验证（当前接续点）
+
+### 固定提供步骤格式
+- 用户明确要求位置必须写“第N行后、第N+1行前”；禁止“内部”“原多少行”等替代说法。一次给齐一条指令的实际面板、字段、填写内容、Python/普通文字格式及确定按钮。新会话保持此格式，不自行更换。
+- 禁止每配置一条就更新MD。只在一段流程配置完成、测试结果确定或准备切换会话时统一同步。本次为点赞分支配置完成的统一检查点。
+
+### 已确认当前流程
+- 114 IF current_action == Like；115 IF content_type == 视频；116原视频获取手机元素信息，以accessibility-id读取like_state_raw；117 Else；118图文XPath获取photo_like_element；119设置字符串like_state_raw=Python photo_like_element.get_attribute("content-desc")；120 End IF。
+- 121 IF Python "未点赞" in like_state_raw 等于 Python True；122 IF Python interaction_plan["content_type"] 等于 Python "视频"；123点击元素(手机)，既有视频——点赞按钮；124 Else；125设置布尔变量photo_like_clicked=Python photo_like_element.click() is None；126 End IF结束122；127 End IF结束121；128 End IF结束114 Like。20:25截图明确核实121—128配置与缩进。
+- 上述两处“视频——点赞按钮”分别用于116读取状态和123点击，同名出现两次正常，保留；图文使用118取得的对象。
+- 图文125曾尝试复制60点击元素(手机)再替换mobile_element_result；用户20:17、20:19截图均落入元素库搜索，搜不到photo_like_element。撤回要求从元素库搜索变量及“直接替换”未解决的引导。125已改成设置变量调用元素对象click，不再按元素库入口反复尝试。
+- 已核实MobileElement.click()为单击手机元素，默认成功后延迟1秒、无返回值；布尔表达式仅承接返回，不证明按钮已变为点赞状态。原影刀开发手册：https://geekdaxue.co/read/shibu@winrobot/kvaafl 。
+- 整个互动区块已由用户启用；phone_device来自第3行已确认连接设置，不重复问连接参数，不重捕正确视频元素。
+
+### 下一步待测试
+- 仅先检验状态读取：在第120行设置断点，保存流程，从头调试运行，停在120后查看like_state_raw真实值。截图122已有断点可保留。此测试指令尚未执行，不宣称状态读取、图文点击或跨手机成功。
+- 不盲目反复从头运行：prepare_interactions会持久化计划；module1.read_task存在已有计划保护。第一次测试若在prepare之后失败或停住，后续先根据实际状态继续，不删除runtime_state或换任务掩盖失败。
+- 点赞点击实际效果、必要结果回读与record_action_result/executed_actions仍未完成；Comment、Favorite、Share执行与收尾未配置。
+
 ## 2026-10-07 20:03 第121、122行IF结构截图确认
 
 - 最新截图确认117 Else、118图文XPath获取对象、119读取like_state_raw、120结束类型判断。

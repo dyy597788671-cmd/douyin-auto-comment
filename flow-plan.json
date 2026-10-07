@@ -2590,5 +2590,27 @@
       "操作目标": "视频——点赞按钮",
       "other_settings": "default"
     }
+  },
+  "latest_checkpoint_2026_10_07_2025": {
+    "status": "like_branch_configured_runtime_not_verified",
+    "fixed_step_format": "第N行后、第N+1行前；一条指令一次给齐面板字段格式确定",
+    "sync_policy": "段流程完成、测试结果确定或切换会话统一同步",
+    "row125": {
+      "command": "设置变量",
+      "变量类型": "布尔值",
+      "变量值_python": "photo_like_element.click() is None",
+      "变量名": "photo_like_clicked"
+    },
+    "confirmed_rows_121_128": {
+      "121": "IF 未点赞",
+      "122": "IF 视频",
+      "123": "点击视频——点赞按钮",
+      "124": "Else",
+      "125": "设置变量调用图文元素click",
+      "126": "End IF类型点击",
+      "127": "End IF未点赞",
+      "128": "End IF Like"
+    },
+    "next_test_pending": "120设置断点，首次从头调试运行，停120查看like_state_raw，不宣称已运行成功"
   }
 }
