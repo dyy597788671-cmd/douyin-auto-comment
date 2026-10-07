@@ -768,7 +768,7 @@
       "disabled": true
     }
   ],
-  "current_runtime_lines": 116,
+  "current_runtime_lines": 117,
   "completed_batches": [
     1,
     2,
@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T10:54:21+08:00",
+  "checkpoint_time": "2026-10-07T11:52:04+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1392,211 +1392,218 @@
     },
     {
       "line": 87,
+      "command": "打印日志",
+      "config": "信息；Python \"结果页OCR完整结果=\" + repr(result_ocr_result)；错误处理默认",
+      "source": "复用45复制；11:49运行日志确认",
+      "disabled": false
+    },
+    {
+      "line": 88,
       "command": "IF 图像存在(手机)",
       "config": "原“暂无更多，查看所有内容”匹配图与原参数；先处理完本屏候选再判到底",
       "source": "原46",
       "disabled": false
     },
     {
-      "line": 88,
+      "line": 89,
       "command": "设置变量",
       "config": "section_finished = True（布尔）",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 89,
+      "line": 90,
       "command": "退出循环",
       "config": "退出51行逐屏循环",
       "source": "原47",
       "disabled": false
     },
     {
-      "line": 90,
+      "line": 91,
       "command": "End IF",
-      "config": "结束87行",
+      "config": "结束88行",
       "source": "原48",
       "disabled": false
     },
     {
-      "line": 91,
+      "line": 92,
       "command": "滑动手机屏幕",
       "config": "向上滑动结果列表；保留原49参数；不滑顶部导航",
       "source": "原49",
       "disabled": false
     },
     {
-      "line": 92,
+      "line": 93,
       "command": "循环结束标记",
       "config": "结束51行逐屏循环",
       "source": "原50",
       "disabled": false
     },
     {
-      "line": 93,
+      "line": 94,
       "command": "IF 条件",
       "config": "author_check_result 等于\"MATCH\"",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 94,
+      "line": 95,
       "command": "退出循环",
       "config": "退出15行栏目循环，不再查综合",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 95,
+      "line": 96,
       "command": "End IF",
-      "config": "结束93行",
+      "config": "结束94行",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 96,
+      "line": 97,
       "command": "循环结束标记",
       "config": "结束15行栏目循环；只有类型栏目到底未匹配才进入综合",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 97,
+      "line": 98,
       "command": "IF 条件",
       "config": "author_check_result 等于\"MATCH\"",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 98,
+      "line": 99,
       "command": "打印日志",
       "config": "作者抖音号核验成功；当前保留作品页，尚未执行互动",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 99,
+      "line": 100,
       "command": "Else",
-      "config": "对应97行",
+      "config": "对应98行",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 100,
+      "line": 101,
       "command": "IF 条件",
       "config": "saw_id_mismatch 等于True",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 101,
+      "line": 102,
       "command": "打印日志",
       "config": "抖音号不同；仅两个栏目查完仍无MATCH才到此处",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 102,
+      "line": 103,
       "command": "Else",
-      "config": "对应100行",
+      "config": "对应101行",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 103,
+      "line": 104,
       "command": "打印日志",
       "config": "未找到目标作品；只用于全程未遇到ID不同且没有MATCH",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 104,
-      "command": "End IF",
-      "config": "结束100行",
-      "source": "新增",
-      "disabled": false
-    },
-    {
       "line": 105,
       "command": "End IF",
-      "config": "结束97行",
+      "config": "结束101行",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 106,
+      "command": "End IF",
+      "config": "结束98行",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 107,
       "command": "IF 条件",
       "config": "author_check_result 等于\"MATCH\"；整个后续互动块暂禁用",
       "source": "原51",
       "disabled": true
     },
     {
-      "line": 107,
+      "line": 108,
       "command": "调用模块",
       "config": "module1.prepare_interactions(task_data) → interaction_plan；本阶段禁用",
       "source": "原52",
       "disabled": true
     },
     {
-      "line": 108,
+      "line": 109,
       "command": "设置变量",
       "config": "executed_actions = []；本阶段禁用",
       "source": "原53",
       "disabled": true
     },
     {
-      "line": 109,
+      "line": 110,
       "command": "ForEach列表循环",
       "config": "interaction_plan[\"execution_order\"] → current_action；本阶段禁用，恢复时核实实际键名",
       "source": "原54",
       "disabled": true
     },
     {
-      "line": 110,
+      "line": 111,
       "command": "IF 条件",
       "config": "current_action 等于\"Like\"；本阶段禁用",
       "source": "原55",
       "disabled": true
     },
     {
-      "line": 111,
+      "line": 112,
       "command": "IF 条件",
       "config": "interaction_plan[\"content_type\"] 等于\"视频\"；本阶段禁用",
       "source": "原56",
       "disabled": true
     },
     {
-      "line": 112,
+      "line": 113,
       "command": "获取手机元素信息",
       "config": "视频——点赞按钮；原属性参数 → like_state_raw；本阶段禁用",
       "source": "原57",
       "disabled": true
     },
     {
-      "line": 113,
+      "line": 114,
       "command": "End IF",
-      "config": "结束111行；本阶段禁用",
+      "config": "结束112行；本阶段禁用",
       "source": "原58",
       "disabled": true
     },
     {
-      "line": 114,
+      "line": 115,
       "command": "End IF",
-      "config": "结束110行；本阶段禁用",
+      "config": "结束111行；本阶段禁用",
       "source": "原59",
       "disabled": true
     },
     {
-      "line": 115,
+      "line": 116,
       "command": "循环结束标记",
-      "config": "结束109行；本阶段禁用",
+      "config": "结束110行；本阶段禁用",
       "source": "原60",
       "disabled": true
     },
     {
-      "line": 116,
+      "line": 117,
       "command": "End IF",
-      "config": "结束106行；本阶段禁用",
+      "config": "结束107行；本阶段禁用",
       "source": "原61",
       "disabled": true
     }
@@ -1605,7 +1612,7 @@
   "phone_test_complete": false,
   "phone_test_passed": false,
   "cross_device_tested": false,
-  "phone_test_status": "筛选动态OCR点击通过；结果页截图与OCR已添加；日志配置已提供待确认；到底退出未修复",
+  "phone_test_status": "筛选OCR点击通过；结果页OCR日志已运行；用户授权连续三次无新内容结束栏目，尚未实施",
   "last_filter_test": {
     "reported_date": "2026-10-07",
     "scope": "one_template_one_phone",
@@ -1621,7 +1628,7 @@
     "ocr_status": "runtime_output_verified_wrong_screen_captured",
     "next_step": "第41设置断点，从头运行，结果页加载完成后单步执行41，观察筛选弹窗是否打开；不继续新增固定等待"
   },
-  "current_runtime_revision": "2026-10-07-RESULT-OCR-SETUP-1",
+  "current_runtime_revision": "2026-10-07-RESULT-OCR-LOGGED-1",
   "ocr_validation": {
     "basis": "完整文字精确匹配",
     "screenshot_line": 43,
@@ -1703,9 +1710,10 @@
       ]
     },
     "next_action": {
-      "command": "复制并修改打印日志",
-      "insert_after_line": 86,
-      "expression": "\"结果页OCR完整结果=\" + repr(result_ocr_result)",
+      "command": "复制设置变量",
+      "insert_before_line": 50,
+      "variable_name": "result_scan_state",
+      "python_expression": "[[], 0]",
       "status": "pending_user_confirmation"
     },
     "text_points_implemented": true,
@@ -1797,14 +1805,14 @@
     "continuous_run_resolved": true,
     "continuous_run_resolution_scope": "single_phone_single_run_after_wait_moved"
   },
-  "current_runtime_reference_basis": 116,
+  "current_runtime_reference_basis": 117,
   "results_loop_diagnosis": {
     "while_line": 51,
     "nickname_line": 52,
-    "bottom_image_if_line": 87,
-    "set_finished_line": 88,
-    "exit_while_line": 89,
-    "swipe_line": 91,
+    "bottom_image_if_line": 88,
+    "set_finished_line": 89,
+    "exit_while_line": 90,
+    "swipe_line": 92,
     "reported_repeated_lines": [
       85,
       89
@@ -1813,9 +1821,9 @@
     "task_age_verified": false,
     "actual_bottom_screen_available": true,
     "root_cause_confirmed": false,
-    "next_action": "confirm_logging_card_added_then_get_last_result_ocr_output_at_bottom",
+    "next_action": "copy_setting_variable_before_line50_init_result_scan_state",
     "fixed_iteration_cap_allowed": false,
-    "loop_end_line": 92,
+    "loop_end_line": 93,
     "actual_bottom_screen_text": "暂无更多，查看所有内容",
     "other_end_states_reported": true,
     "other_end_texts_verified": false,
@@ -1823,18 +1831,41 @@
     "result_screenshot_line": 85,
     "result_ocr_line": 86,
     "result_ocr_variable": "result_ocr_result",
-    "result_ocr_runtime_verified": false,
+    "result_ocr_runtime_verified": true,
     "pending_logging_card": {
-      "line_after_insertion": 87,
-      "insert_after": 86,
-      "expression": "\"结果页OCR完整结果=\" + repr(result_ocr_result)",
-      "level": "信息",
-      "inserted": null,
-      "status": "full_config_provided_10_44_user_has_not_explicitly_confirmed_insertion",
-      "last_output_available": false
+      "line": 87,
+      "inserted": true,
+      "status": "runtime_log_screenshot_confirmed"
     },
     "ocr_end_if_implemented": false,
-    "no_progress_handling_implemented": false
+    "no_progress_handling_implemented": false,
+    "result_ocr_logging_line": 87,
+    "actual_bottom_without_end_text_reported": true,
+    "last_runtime_evidence": "11:49截图第53/87重复，无新内容（用户观察）",
+    "full_result_ocr_output_available": false,
+    "no_progress_rule": {
+      "user_authorized": true,
+      "authorized_at": "2026-10-07T11:52:04+08:00",
+      "consecutive_stagnant_swipes": 3,
+      "reset_on_new_content": true,
+      "reset_per_section": true,
+      "applies_to": [
+        "task_data.content_type",
+        "综合"
+      ],
+      "on_type_section_end": "continue_to_综合",
+      "on_综合_end": "finish_original_search_result_branch",
+      "is_total_page_cap": false,
+      "status": "pending_implementation"
+    },
+    "pending_state_initializer": {
+      "copy_from_line": 46,
+      "insert_before_line": 50,
+      "variable_type": "列表",
+      "variable_name": "result_scan_state",
+      "python_value": "[[], 0]",
+      "inserted": false
+    }
   },
   "progress_sync": {
     "requested_by_user": true,
