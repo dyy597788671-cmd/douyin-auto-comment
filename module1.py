@@ -111,14 +111,23 @@ def build_author_cover_xpath(expected_author, occurrence=1):
         raise ValueError("expected_author 必须是非空昵称")
     if isinstance(occurrence, bool) or not isinstance(occurrence, int) or occurrence < 1:
         raise ValueError("occurrence 必须是从1开始的整数")
-    # 沿用原24行的引号处理及卡片条件，最后仅增加全局匹配序号。
+    # 复用已校验封面的节点结构与index，不绑定抖音混淆resource-id。
     author_literal = "concat(''," + ", \"'\", ".join(
         "'" + part + "'" for part in expected_author.split("'")
     ) + ")"
-    card = "//*[@resource-id='com.ss.android.ugc.aweme:id/dp7']"
-    cover = ".//*[@resource-id='com.ss.android.ugc.aweme:id/rej']"
-    author = ".//*[@resource-id='com.ss.android.ugc.aweme:id/-+' and @text=" + author_literal + "]"
-    base = card + "[count(" + cover + ")=1 and " + author + "]" + cover[1:]
+    cover_tail = "/android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@index='0']"
+    cover = (
+        "/hierarchy//androidx.recyclerview.widget.RecyclerView"
+        "/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout"
+        + cover_tail
+    )
+    relative_cover = ".//" + cover_tail[1:]
+    same_card = (
+        "ancestor::android.widget.LinearLayout["
+        "ancestor::androidx.recyclerview.widget.RecyclerView and "
+        "count(" + relative_cover + ")=1 and .//*[@text=" + author_literal + "]]"
+    )
+    base = cover + "[" + same_card + "]"
     return "(" + base + ")[" + str(occurrence) + "]"
 
 
