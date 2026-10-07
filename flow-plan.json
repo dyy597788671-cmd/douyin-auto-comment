@@ -1982,17 +1982,17 @@
   },
   "progress_sync": {
     "requested_by_user": true,
-    "checkpoint_at": "2026-10-07T21:14:34+08:00",
+    "checkpoint_at": "2026-10-07T21:29:44+08:00",
     "confirmed_current_rows": 120,
     "row_count_basis": "由119行记录增加90计数卡；新增普通IF替换旧图像IF净增0；88—99截图确认，未全面重审所有行",
-    "next_action": "apply_project_rules_before_resuming_comment_element_configuration",
-    "last_checkpoint": "2026-10-07T21:14:34+08:00",
+    "next_action": "configure_photo_comment_entry_then_comment_input_send_close",
+    "last_checkpoint": "2026-10-07T21:29:44+08:00",
     "repository": "dyy597788671-cmd/dy-auto-comment",
     "branch": "main",
     "module_fix_commit": "ff6cdb955424f83fc39eede7b2c83ccc4f1fbaee",
     "library_record_id": "libfile_d824b90ccdfc8191940764a6d10f8637",
-    "status": "安装与任务读取已通过；Like114—128已配置未实测；Comment129/130已添加，131定位未确认",
-    "library_version": 44
+    "status": "安装与任务读取已通过；Like114—128已配置；Comment129/130及131视频评论点击已添加保存，运行与跨手机未验证",
+    "library_version": 45
   },
   "last_not_found_test": {
     "reported_at": "2026-10-07T14:27:57+08:00",
@@ -2412,7 +2412,7 @@
     "interaction_executed": false,
     "cross_device_verified": false
   },
-  "next_stage": "第131行视频评论元素定位尚未确定；先核对完整历史成功方法和当前截图，补齐互动与收尾后再统一运行测试",
+  "next_stage": "第131行视频评论点击已添加；继续图文评论入口，再接输入评论、发送、收藏、随机好友分享及收尾；完整配置后统一运行测试",
   "confirmed_requirements": {
     "confirmed_at": "2026-10-07T17:44:09+08:00",
     "implementation_status": "installation_and_task_read_verified_shadowbot_actions_configuring",
@@ -2666,6 +2666,78 @@
       "continuation": {
         "library_file_id": "libfile_775a9181c9f48191ad6607ae188ae26d",
         "version": 51
+      }
+    },
+    "superseded_by": "latest_checkpoint_2026_10_07_2129"
+  },
+  "latest_checkpoint_2026_10_07_2129": {
+    "status": "video_comment_click_added_user_confirmed",
+    "rules": "PROJECT_RULES.md",
+    "confirmed_by": "user_completed_addition_2026_10_07_212944",
+    "row131": {
+      "command": "点击元素(手机)",
+      "phone_connection": "phone_device",
+      "element": "视频——评论按钮",
+      "saved_confirmed": true,
+      "static_validation_result_reported": false,
+      "runtime_tested": false,
+      "cross_device_tested": false
+    },
+    "selector": {
+      "left_keep": [
+        "mobile",
+        "hierarchy"
+      ],
+      "bottom_contiguous_nodes": [
+        {
+          "from_bottom": 4,
+          "class": "android.widget.FrameLayout",
+          "right_keep": {
+            "index-attribute": "6"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 3,
+          "class": "android.widget.LinearLayout",
+          "right_keep": {},
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 2,
+          "class": "android.widget.FrameLayout",
+          "right_keep": {},
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 1,
+          "class": "android.widget.ImageView",
+          "right_keep": {
+            "index": "0"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        }
+      ],
+      "other_left_nodes_checked": false,
+      "id_checked": false,
+      "accessibility_id_checked": false
+    },
+    "next_action": "photo_comment_entry_then_shared_comment_input_send_close",
+    "line_numbers_after_131_verified": false,
+    "comment_source": "task_data[\"comment_content\"]",
+    "runtime_test_order": "after_all_actions_results_and_finish_configured",
+    "sync_policy": "explicit_user_request_or_completed_full_phase_testing",
+    "older_four_node_proposal_without_parent_index6_withdrawn": true,
+    "library_records": {
+      "plan": {
+        "library_file_id": "libfile_d824b90ccdfc8191940764a6d10f8637",
+        "version": 45
+      },
+      "continuation": {
+        "library_file_id": "libfile_775a9181c9f48191ad6607ae188ae26d",
+        "version": 52
       }
     }
   }

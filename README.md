@@ -1,3 +1,5 @@
+> 2026-10-07 21:29：用户确认第131行“视频——评论按钮”点击已添加。完整左右配置和下一步见 [NEW_SESSION_START.md](NEW_SESSION_START.md)；运行与跨手机验证未确认。
+
 > 操作指导先完整读取 [PROJECT_RULES.md](PROJECT_RULES.md) 与 [NEW_SESSION_START.md](NEW_SESSION_START.md)。下方旧日期内容是历史依据，已撤回方案不能继续执行。
 
 ## 2026-10-07 20:25 点赞分支配置记录（历史检查点）
