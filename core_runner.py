@@ -17,6 +17,14 @@ Project files:
   data/runtime_state.json           managed; do not edit/delete while running
   logs/execution.log
   execution_data/执行数据_<账号>.csv   completed action counts for this account
+  execution_data/project_progress.json  assigned devices, per-account results and totals
+  workspaces/<account>/<claim>/         isolated screenshot/OCR files
+
+Target_Device_Count is the requested participant count. For these projects,
+allocate_task(task_id, connected_devices) must first receive ShadowBot's actual
+connection snapshot; settings.sender_accounts is never a connection inventory.
+Workers must pass their real physical_device_id when claiming/restoring tasks.
+The ten-column legacy input remains readable without resetting prior progress.
 
 Initialize an empty project: python core_runner.py --root PATH --init
 Call through Python: gateway = UnifiedGateway(PATH, device_id="phone-01")
@@ -68,7 +76,9 @@ except ImportError as exc:
 
 HEADERS = ("Task_ID", "Query_Keyword", "Expected_Author", "Scheduled_Time",
            "Status", "Executed_Actions", "Result_Message")
-OPTIONAL_HEADERS = ("Expected_Douyin_ID", "Search_Section", "Content_Type", "Comments")
+OPTIONAL_HEADERS = ("Expected_Douyin_ID", "Search_Section", "Content_Type", "Comments",
+                    "Target_Device_Count")
+TERMINAL_STATUSES = ("SUCCESS", "NOT_FOUND", "FAILED")
 ACTIONS = ("Like", "Comment", "Favorite", "Share")
 REQUIRED_ACTIONS = ("Like", "Comment", "Favorite")
 DEFAULTS = {"worksheet": "", "timezone_offset_minutes": 480,
@@ -142,6 +152,41 @@ def _task_id(value: Any) -> str:
     result = _text(value)
     if not result or len(result) > 256:
         raise EngineError("INVALID_TASK_ID", "Task_ID 必须非空且不超过 256 字符")
+    return result
+
+
+def _target_count(value: Any) -> Optional[int]:
+    """Blank retains the legacy input contract; explicit counts require allocation."""
+    if value is None or value == "":
+        return None
+    if isinstance(value, bool):
+        raise EngineError("INVALID_TARGET_COUNT", "Target_Device_Count 必须为正整数")
+    try:
+        text = _text(value)
+    except EngineError as exc:
+        raise EngineError("INVALID_TARGET_COUNT", "Target_Device_Count 必须为正整数") from exc
+    if not re.fullmatch(r"[1-9]\d*", text):
+        raise EngineError("INVALID_TARGET_COUNT", "Target_Device_Count 必须为正整数")
+    return int(text)
+
+
+def _connected_devices(values: Any) -> List[Dict[str, str]]:
+    """A fresh actual-device snapshot supplied by ShadowBot, never settings.json."""
+    if not isinstance(values, list) or not values:
+        raise EngineError("CONNECTED_DEVICES_REQUIRED", "请传入影刀当前实际连接的设备及执行账号列表")
+    devices, accounts, result = set(), set(), []
+    for value in values:
+        if not isinstance(value, dict):
+            raise EngineError("INVALID_CONNECTED_DEVICES", "设备项须包含device_id和sender_account_id")
+        physical, account = value.get("device_id"), value.get("sender_account_id")
+        if any(not isinstance(v, str) or not v.strip() or v != v.strip() or len(v) > 256
+               for v in (physical, account)):
+            raise EngineError("INVALID_CONNECTED_DEVICES", "设备和账号标识须为非空固定字符串")
+        if physical in devices or account in accounts:
+            raise EngineError("DUPLICATE_DEVICE_ACCOUNT", "同一批连接设备不能重复设备或执行账号")
+        devices.add(physical)
+        accounts.add(account)
+        result.append({"device_id": physical, "sender_account_id": account})
     return result
 
 
@@ -327,6 +372,24 @@ class TaskScheduler:
         finally:
             workbook.close()
 
+    @staticmethod
+    def task_from_row(sheet: Any, columns: Dict[str, int], row: int,
+                      identity: str) -> Dict[str, Any]:
+        content_type = _text(sheet.cell(row, columns["Content_Type"]).value)
+        _validate_route(content_type, content_type, columns)
+        task = {"task_id": identity,
+                "keyword": _text(sheet.cell(row, columns["Query_Keyword"]).value),
+                "expected_author": _text(sheet.cell(row, columns["Expected_Author"]).value),
+                "expected_douyin_id": (_douyin_id(sheet.cell(row, columns["Expected_Douyin_ID"]).value)
+                                       if "Expected_Douyin_ID" in columns else ""),
+                "content_type": content_type, "search_section": content_type,
+                "comments": _comment_pool(sheet.cell(row, columns["Comments"]).value),
+                "target_device_count": (_target_count(sheet.cell(row, columns["Target_Device_Count"]).value)
+                                        if "Target_Device_Count" in columns else None)}
+        if not task["keyword"] or not task["expected_author"]:
+            raise EngineError("INVALID_TASK", "关键词和预期作者必须非空")
+        return task
+
     def due_at(self, identity: str, raw: Any, state: Dict[str, Any],
                now: datetime) -> datetime:
         if isinstance(raw, datetime):
@@ -362,7 +425,7 @@ class TaskScheduler:
             raise EngineError("INVALID_SCHEDULE", "不支持的计划时间：" + text) from exc
 
     def select(self, state: Dict[str, Any], now: datetime,
-               device_id: str = "default-device") -> Optional[Dict[str, Any]]:
+               device_id: str = "default-device", allocation_only: bool = False) -> Optional[Dict[str, Any]]:
         workbook, sheet, columns, rows, _ = self.read()
         try:
             owners = {device["active_task"]["task_id"]
@@ -374,31 +437,35 @@ class TaskScheduler:
                 status = _text(sheet.cell(row, columns["Status"]).value).upper()
                 project = projects.get(identity)
                 account = project["accounts"].get(device_id) if project else None
-                if status == "RUNNING" and identity not in owners:
+                assignment = project.get("assignment") if project else None
+                if allocation_only and not assignment:
+                    count = sheet.cell(row, columns["Target_Device_Count"]).value if "Target_Device_Count" in columns else None
+                    if count is None or count == "":
+                        continue
+                if status == "RUNNING" and identity not in owners and not assignment:
                     raise EngineError("ORPHAN_RUNNING", "缺少运行归属，需人工核验：" + identity)
-                if account is not None:
+                if assignment and device_id not in assignment["selected_accounts"]:
+                    continue
+                if account is not None and (not assignment or account["status"] != "PENDING"):
                     continue
                 if status != "PENDING" and project is None:
                     continue
                 try:
-                    content_type = _text(sheet.cell(row, columns["Content_Type"]).value)
-                    _validate_route(content_type, content_type, columns)
-                    task = {
-                        "task_id": identity,
-                        "keyword": _text(sheet.cell(row, columns["Query_Keyword"]).value),
-                        "expected_author": _text(sheet.cell(row, columns["Expected_Author"]).value),
-                        "expected_douyin_id": (_douyin_id(sheet.cell(row, columns["Expected_Douyin_ID"]).value)
-                                               if "Expected_Douyin_ID" in columns else ""),
-                        "content_type": content_type, "search_section": content_type,
-                        "comments": _comment_pool(sheet.cell(row, columns["Comments"]).value),
-                        "sender_account_id": device_id,
-                    }
-                    if not task["keyword"] or not task["expected_author"]:
-                        raise EngineError("INVALID_TASK", "关键词和预期作者必须非空")
+                    task = self.task_from_row(sheet, columns, row, identity)
+                    task["sender_account_id"] = device_id
                     if project and project["source_key"] != _source_key(task):
                         raise EngineError("TASK_SOURCE_CHANGED", "已执行项目的作品信息被更改；请使用新的Task_ID")
+                    if assignment:
+                        if task["target_device_count"] != assignment["target_device_count"]:
+                            raise EngineError("ASSIGNMENT_CHANGED", "已经分配的设备数量不能更改；请使用新的Task_ID")
+                        if account["comment_content"] not in task["comments"]:
+                            raise EngineError("ASSIGNMENT_CHANGED", "已经预留的评论不能删除")
+                        task.update(assignment_id=assignment["assignment_id"],
+                                    physical_device_id=account["physical_device_id"])
+                    elif task["target_device_count"] is not None:
+                        raise EngineError("ALLOCATION_REQUIRED", "项目" + identity + "需先按影刀实际连接设备分配")
                     configured = self.settings["sender_accounts"]
-                    if configured and len(task["comments"]) < len(configured):
+                    if not assignment and configured and len(task["comments"]) < len(configured):
                         raise EngineError("COMMENTS_INSUFFICIENT", "评论数量少于参与账号数：" + identity)
                     due = self.due_at(identity, sheet.cell(row, columns["Scheduled_Time"]).value, state, now)
                     if due <= now:
@@ -684,6 +751,8 @@ class UnifiedGateway:
                 if device["state"] == "BLOCKED" and not isinstance(device["block_info"], dict):
                     raise ValueError("BLOCKED 设备缺少熔断信息")
             projects = state.setdefault("project_accounts", {})
+            if not isinstance(state.setdefault("exports_dirty", False), bool):
+                raise ValueError("输出恢复标记无效")
             if not isinstance(projects, dict):
                 raise ValueError("项目账号进度须为对象")
             for identity, project in projects.items():
@@ -691,6 +760,23 @@ class UnifiedGateway:
                 if not isinstance(project["source_key"], str) or not isinstance(project["accounts"], dict):
                     raise ValueError("项目账号进度无效")
                 comments = []
+                assignment = project.get("assignment")
+                if assignment is not None:
+                    roster = _connected_devices(assignment["connected_devices"])
+                    selected = assignment["selected_accounts"]
+                    count = _target_count(assignment["target_device_count"])
+                    if (not isinstance(selected, list) or len(selected) != count
+                            or len(set(selected)) != count or set(selected) != set(project["accounts"])
+                            or not set(selected).issubset({v["sender_account_id"] for v in roster})
+                            or not isinstance(assignment["assignment_id"], str) or not assignment["assignment_id"]):
+                        raise ValueError("固定设备分配记录无效")
+                    _timestamp(assignment["allocated_at"])
+                    bindings = {v["sender_account_id"]: v["device_id"] for v in roster}
+                    for account, entry in project["accounts"].items():
+                        if entry.get("physical_device_id") != bindings[account]:
+                            raise ValueError("分配账号与物理设备不一致")
+                        if entry["status"] == "PENDING" and (entry.get("run_token") or entry.get("result")):
+                            raise ValueError("待领取分配已有运行结果")
                 for account, entry in project["accounts"].items():
                     if not isinstance(account, str) or not account:
                         raise ValueError("发送账号标识无效")
@@ -709,6 +795,16 @@ class UnifiedGateway:
                         plan = active.get("strategy")
                         if plan and plan.get("policy_version") == 2 and plan["comment_content"] != entry["comment_content"]:
                             raise ValueError("互动计划与分配评论不一致")
+                        if assignment and (active.get("assignment_id") != assignment["assignment_id"]
+                                           or active.get("physical_device_id") != entry["physical_device_id"]):
+                            raise ValueError("活动任务与固定设备分配不一致")
+                        if "action_results" in active:
+                            self._actions(active["action_results"])
+                    if assignment and entry["status"] in TERMINAL_STATUSES:
+                        result = entry.get("result")
+                        if not result or result["status"] != entry["status"]:
+                            raise ValueError("结束分配缺少结果")
+                        self._actions(result["executed_actions"])
                 if len(comments) != len(set(comments)):
                     raise ValueError("同一项目存在重复分配评论")
             return state
@@ -726,8 +822,10 @@ class UnifiedGateway:
         if state["pending_transaction"] is not None:
             raise EngineError("TRANSACTION_PENDING", "上次事务尚未完成")
         state["pending_transaction"] = update
+        state["exports_dirty"] = True
         self._save_state(state)
         self._replay(state)
+        self._flush_exports(state)
 
     def _replay(self, state: Dict[str, Any]) -> None:
         update = state["pending_transaction"]
@@ -750,6 +848,7 @@ class UnifiedGateway:
                 info = device["block_info"]
                 self._finish(state, identity, device, "FAILED", info["executed_actions"],
                              "SECURITY_CHALLENGE_DETECTED", info["log_message"], True)
+        self._flush_exports(state)
 
     def _register_active(self, state: Dict[str, Any], account_id: str,
                          active: Dict[str, Any]) -> Dict[str, Any]:
@@ -757,7 +856,7 @@ class UnifiedGateway:
         project = state["project_accounts"].setdefault(active["task_id"], {
             "source_key": _source_key(active), "accounts": {}})
         entry = project["accounts"].get(account_id)
-        if entry and entry.get("run_token") != active["run_token"]:
+        if entry and entry.get("run_token") not in (None, active["run_token"]):
             raise EngineError("STATE_CONFLICT", "账号任务令牌与分配记录不一致")
         if active.get("strategy") is not None and not entry:
             raise EngineError("LEGACY_STRATEGY", "已有旧版互动计划，请先核对执行进度")
@@ -766,6 +865,8 @@ class UnifiedGateway:
         pool = active.get("comments", [])
         comment = entry.get("comment_content", "") if entry else active.get("comment_content", "")
         if comment not in pool:
+            if project.get("assignment"):
+                raise EngineError("ASSIGNMENT_CHANGED", "固定分配已预留评论，不能自动更换")
             available = [value for value in pool if value not in reserved]
             if not available:
                 raise EngineError("COMMENTS_EXHAUSTED", "没有未分配的评论，请补充Comments")
@@ -777,15 +878,30 @@ class UnifiedGateway:
             entry = {"status": "RUNNING", "run_token": active["run_token"],
                      "claimed_at": active["claimed_at"], "comment_sent": False, "result": None}
             project["accounts"][account_id] = entry
+        elif entry["status"] == "PENDING":
+            entry.update(status="RUNNING", run_token=active["run_token"],
+                         claimed_at=active["claimed_at"])
         entry["comment_content"] = comment
+        if active.get("physical_device_id"):
+            entry["physical_device_id"] = active["physical_device_id"]
         return entry
+
+    def _set_workspace(self, active: Dict[str, Any]) -> None:
+        """Separate OCR/screenshot files for every account and claim."""
+        account_key = hashlib.sha256(self.device_id.encode("utf-8")).hexdigest()[:24]
+        token_key = hashlib.sha256(active["run_token"].encode("utf-8")).hexdigest()
+        path = self.root / "workspaces" / account_key / token_key
+        path.mkdir(parents=True, exist_ok=True)
+        active["workspace_path"] = str(path)
 
     def _project_update(self, state: Dict[str, Any], task_id: str) -> Dict[str, Any]:
         entries = state["project_accounts"][task_id]["accounts"]
         statuses = [entry["status"] for entry in entries.values()]
-        configured = self.settings["sender_accounts"]
+        assignment = state["project_accounts"][task_id].get("assignment")
+        configured = assignment["selected_accounts"] if assignment else self.settings["sender_accounts"]
         waiting = [account for account in configured if account not in entries]
-        status = ("RUNNING" if "RUNNING" in statuses else
+        status = (self._fixed_status(statuses) if assignment else
+                  "RUNNING" if "RUNNING" in statuses else
                   "PENDING" if waiting else
                   "FAILED" if "FAILED" in statuses else
                   "SUCCESS" if "SUCCESS" in statuses else "NOT_FOUND")
@@ -803,9 +919,15 @@ class UnifiedGateway:
             actions[account] = []
             summaries[account] = {"status": "PENDING", "comment_sent": False,
                                   "finished_at": None, "error_code": ""}
+        summary = {"scope": "selected_sender_accounts" if assignment else
+                            "configured_sender_accounts" if configured else "known_sender_accounts",
+                   "accounts": summaries}
+        if assignment:
+            summary.update(assignment_id=assignment["assignment_id"],
+                           target_device_count=assignment["target_device_count"],
+                           finished_device_count=sum(v in TERMINAL_STATUSES for v in statuses))
         fields = {"Status": status, "Executed_Actions": _json({"accounts": actions}),
-                  "Result_Message": _json({"scope": "configured_sender_accounts" if configured else
-                                            "known_sender_accounts", "accounts": summaries})}
+                  "Result_Message": _json(summary)}
         if any(len(value) > 32767 for value in fields.values()):
             raise EngineError("RESULT_TOO_LONG", "账号汇总超过Excel单元格上限；完整结果保留在状态文件")
         workbook, sheet, columns, rows, _ = self.scheduler.read()
@@ -818,6 +940,196 @@ class UnifiedGateway:
                     "old_fields": old_fields, "fields": fields}
         finally:
             workbook.close()
+
+    @staticmethod
+    def _fixed_status(statuses: List[str]) -> str:
+        if any(value not in TERMINAL_STATUSES for value in statuses):
+            return "PENDING" if all(value == "PENDING" for value in statuses) else "RUNNING"
+        if all(value == "SUCCESS" for value in statuses):
+            return "SUCCESS"
+        return "NOT_FOUND" if all(value == "NOT_FOUND" for value in statuses) else "FAILED"
+
+    def allocate_task(self, task_id: Union[str, int],
+                      connected_devices: List[Dict[str, str]]) -> Dict[str, Any]:
+        """Call from the ShadowBot controller with a current connection snapshot.
+
+        This method never enumerates phones and never treats sender_accounts as
+        connected phones. Selection and comment reservation commit exactly once.
+        """
+        identity = _task_id(task_id)
+        roster = _connected_devices(connected_devices)
+        configured = self.settings["sender_accounts"]
+        if configured and any(v["sender_account_id"] not in configured for v in roster):
+            raise EngineError("ACCOUNT_NOT_CONFIGURED", "连接名单含未登记的执行账号")
+        with self._session() as state:
+            workbook, sheet, columns, rows, _ = self.scheduler.read()
+            try:
+                if identity not in rows:
+                    raise EngineError("TASK_MISSING", "找不到项目：" + identity)
+                row = rows[identity]
+                task = self.scheduler.task_from_row(sheet, columns, row, identity)
+                count = task["target_device_count"]
+                if count is None:
+                    raise EngineError("TARGET_COUNT_REQUIRED", "请填写Target_Device_Count执行设备数量")
+                status = _text(sheet.cell(row, columns["Status"]).value).upper()
+                existing = state["project_accounts"].get(identity)
+                if existing:
+                    assignment = existing.get("assignment")
+                    if not assignment:
+                        raise EngineError("LEGACY_PROJECT_REVIEW_REQUIRED", "旧项目已有进度，不能重新随机分配；新分配使用新的Task_ID")
+                    if (_source_key(task) != existing["source_key"]
+                            or count != assignment["target_device_count"]
+                            or any(v["comment_content"] not in task["comments"] for v in existing["accounts"].values())):
+                        raise EngineError("ASSIGNMENT_CHANGED", "已分配的作品、设备数量或预留评论被更改")
+                    return self._project_progress(state, identity)
+                if status != "PENDING":
+                    raise EngineError("TASK_NOT_PENDING", "仅允许给新的PENDING项目分配设备")
+                if count > len(roster):
+                    raise EngineError("TARGET_COUNT_EXCEEDS_CONNECTED", "执行设备数量大于当前实际连接设备数量")
+                eligible = [v for v in roster if state["devices"].get(v["sender_account_id"], {}).get("state") != "BLOCKED"]
+                if count > len(eligible):
+                    raise EngineError("ELIGIBLE_DEVICES_INSUFFICIENT", "可执行设备不足；被锁定设备不能参与分配")
+                for value in roster:
+                    active = state["devices"].get(value["sender_account_id"], {}).get("active_task")
+                    if active and active.get("physical_device_id") not in (None, value["device_id"]):
+                        raise EngineError("ACCOUNT_DEVICE_CONFLICT", "账号已有任务，不能在执行中更换物理设备")
+                if count > len(task["comments"]):
+                    raise EngineError("COMMENTS_INSUFFICIENT", "去重后的候选评论数量少于本次执行设备数量")
+                # Validate the schedule before saving a permanent assignment.
+                self.scheduler.due_at(identity, sheet.cell(row, columns["Scheduled_Time"]).value, state, _utcnow())
+            finally:
+                workbook.close()
+            selected = secrets.SystemRandom().sample(eligible, count)
+            comments = secrets.SystemRandom().sample(task["comments"], count)
+            assignment = {"assignment_id": uuid.uuid4().hex, "allocated_at": _utcnow().isoformat(),
+                          "target_device_count": count, "connected_devices": roster,
+                          "selected_accounts": [v["sender_account_id"] for v in selected]}
+            state["project_accounts"][identity] = {
+                "source_key": _source_key(task), "assignment": assignment,
+                "accounts": {value["sender_account_id"]: {
+                    "physical_device_id": value["device_id"], "status": "PENDING",
+                    "comment_content": comment, "comment_sent": False, "run_token": None,
+                    "claimed_at": None, "result": None}
+                    for value, comment in zip(selected, comments)}}
+            self._commit(state, self._project_update(state, identity))
+            return self._project_progress(state, identity)
+
+    def _project_progress(self, state: Dict[str, Any], identity: str) -> Dict[str, Any]:
+        project = state["project_accounts"].get(identity)
+        if project is None:
+            raise EngineError("PROJECT_NOT_ALLOCATED", "项目尚无分配记录：" + identity)
+        assignment = project.get("assignment")
+        accounts = (assignment["selected_accounts"] if assignment else
+                    list(dict.fromkeys(self.settings["sender_accounts"] + list(project["accounts"]))))
+        details = []
+        for account in accounts:
+            entry = project["accounts"].get(account, {})
+            result = entry.get("result")
+            active = state["devices"].get(account, {}).get("active_task")
+            active = active if active and active["task_id"] == identity else None
+            actions = result["executed_actions"] if result else active.get("action_results", []) if active else []
+            passed = {v["action"] for v in actions if v["status"] == "PASSED"}
+            plan = active.get("strategy") if active else entry.get("plan")
+            details.append({"sender_account_id": account,
+                            "physical_device_id": entry.get("physical_device_id"),
+                            "status": entry.get("status", "PENDING"),
+                            "run_token": entry.get("run_token"),
+                            "claimed_at": entry.get("claimed_at"),
+                            "finished_at": result.get("finished_at") if result else None,
+                            "last_progress_at": (result.get("finished_at") if result else
+                                                 active.get("last_progress_at", active.get("claimed_at")) if active else None),
+                            "resume_requires_review": bool(active and active.get("strategy")),
+                            "comment_sent": entry.get("comment_sent", False),
+                            "executed_actions": _copy(actions),
+                            "planned_actions": plan.get("execution_order", []) if plan else [],
+                            "counts": {name: int(name in passed) for name in ACTIONS},
+                            "error_code": result.get("error_code", "") if result else "",
+                            "log_message": result.get("log_message", "") if result else ""})
+        statuses = [v["status"] for v in details]
+        finished = sum(value in TERMINAL_STATUSES for value in statuses)
+        return {"schema_version": 1, "task_id": identity, "source_key": project["source_key"],
+                "allocation_mode": "fixed_random" if assignment else "legacy",
+                "assignment_id": assignment["assignment_id"] if assignment else None,
+                "allocated_at": assignment["allocated_at"] if assignment else None,
+                "target_device_count": len(accounts), "assigned_device_count": len(accounts),
+                "finished_device_count": finished,
+                "pending_device_count": statuses.count("PENDING"),
+                "running_device_count": statuses.count("RUNNING"),
+                "success_device_count": statuses.count("SUCCESS"),
+                "failed_device_count": statuses.count("FAILED"),
+                "not_found_device_count": statuses.count("NOT_FOUND"),
+                "completed": bool(accounts) and finished == len(accounts),
+                "status": self._fixed_status(statuses) if accounts else "PENDING",
+                "counts": {name: sum(v["counts"][name] for v in details) for name in ACTIONS},
+                "accounts": details}
+
+    def get_project_progress(self, task_id: Union[str, int]) -> Dict[str, Any]:
+        """Stable JSON contract for later frontend/table integrations."""
+        with self._session() as state:
+            return _copy(self._project_progress(state, _task_id(task_id)))
+
+    def _flush_exports(self, state: Dict[str, Any]) -> None:
+        if not state.get("exports_dirty"):
+            return
+        accounts = {account for project in state["project_accounts"].values()
+                    for account, entry in project["accounts"].items() if entry.get("result") is not None}
+        for account in sorted(accounts):
+            self._write_execution_data(state, account)
+        output = {"schema_version": 1, "projects": [self._project_progress(state, identity)
+                                                   for identity in state["project_accounts"]]}
+        path = self.root / "execution_data" / "project_progress.json"
+        try:
+            _atomic_bytes(path, (_json(output) + "\n").encode("utf-8"))
+        except OSError as exc:
+            raise EngineError("EXECUTION_DATA_WRITE_FAILED", "项目进度输出失败：" + str(path)) from exc
+        state["exports_dirty"] = False
+        self._save_state(state)
+
+    def save_action_results(self, task_id: Union[str, int], run_token: str,
+                            executed_actions: List[Any]) -> List[Dict[str, str]]:
+        """Save confirmations after each action; never retry mobile actions here."""
+        identity, actions = _task_id(task_id), self._actions(executed_actions)
+        with self._session() as state:
+            device = self.devices.get(state, self.device_id, _utcnow())
+            active = self._owned(device, identity, run_token)
+            plan = active.get("strategy")
+            if not plan or [v["action"] for v in actions] != plan["execution_order"][:len(actions)]:
+                raise EngineError("ACTION_ORDER_CONFLICT", "动作进度必须符合已保存计划的顺序")
+            saved = active.get("action_results", [])
+            if len(actions) < len(saved) or actions[:len(saved)] != saved:
+                raise EngineError("ACTION_RESULT_CONFLICT", "已保存动作结果不能覆盖或减少")
+            if actions == saved:
+                return _copy(actions)
+            active["action_results"] = actions
+            active["last_progress_at"] = _utcnow().isoformat()
+            entry = state["project_accounts"][identity]["accounts"][self.device_id]
+            entry["comment_sent"] = any(v["action"] == "Comment" and v["status"] == "PASSED" for v in actions)
+            state["exports_dirty"] = True
+            self._save_state(state)
+            self._flush_exports(state)
+            return _copy(actions)
+
+    def close_pending_assignment(self, task_id: Union[str, int], sender_account_id: str,
+                                 operator: str, reason: str) -> Dict[str, Any]:
+        """Explicit operator closure only; a running/uncertain task must be reviewed."""
+        if any(not isinstance(v, str) or not v.strip() for v in (operator, reason)):
+            raise EngineError("MANUAL_RESET_REQUIRED", "结束待领取分配须提供操作人和原因")
+        identity = _task_id(task_id)
+        with self._session() as state:
+            project = state["project_accounts"].get(identity)
+            entry = project["accounts"].get(sender_account_id) if project else None
+            if not project or not project.get("assignment") or not entry or entry["status"] != "PENDING":
+                raise EngineError("ASSIGNMENT_NOT_PENDING", "仅允许明确结束尚未领取的分配")
+            now = _utcnow().isoformat()
+            entry.update(status="FAILED", result={
+                "task_id": identity, "assignment_id": project["assignment"]["assignment_id"],
+                "sender_account_id": sender_account_id, "device_id": sender_account_id,
+                "physical_device_id": entry["physical_device_id"], "run_token": None,
+                "status": "FAILED", "executed_actions": [], "finished_at": now,
+                "error_code": "ASSIGNMENT_CLOSED_BY_OPERATOR", "log_message": reason,
+                "operator": operator})
+            self._commit(state, self._project_update(state, identity))
+            return self._project_progress(state, identity)
 
     def adopt_legacy_task(self, legacy_device_id: str = "default-device") -> bool:
         """Explicitly rename a pre-interaction legacy slot to the selected sender account."""
@@ -918,9 +1230,14 @@ class UnifiedGateway:
                 status: str, actions: List[Dict[str, str]], error_code: str,
                 message: str, blocked: bool = False) -> Dict[str, Any]:
         active = device["active_task"]
+        saved = active.get("action_results", [])
+        if len(actions) < len(saved) or actions[:len(saved)] != saved:
+            raise EngineError("ACTION_RESULT_CONFLICT", "结束结果不能覆盖已经保存的动作进度")
         now = _utcnow()
         result = {"task_id": active["task_id"], "run_token": active["run_token"],
                   "device_id": device_id, "sender_account_id": device_id,
+                  "physical_device_id": active.get("physical_device_id"),
+                  "assignment_id": active.get("assignment_id"),
                   "status": status, "executed_actions": actions,
                   "error_code": error_code, "log_message": message,
                   "finished_at": now.isoformat(), "elapsed_seconds":
@@ -941,10 +1258,14 @@ class UnifiedGateway:
                      comment_sent=any(value["action"] == "Comment" and value["status"] == "PASSED"
                                       for value in actions))
         self._commit(state, self._project_update(state, active["task_id"]))
-        self._write_execution_data(state, device_id)
         return _copy(result)
 
-    def get_next_task(self) -> Optional[Dict[str, Any]]:
+    def get_next_task(self, physical_device_id: Optional[str] = None,
+                      allocation_only: Optional[bool] = None) -> Optional[Dict[str, Any]]:
+        if allocation_only is None:
+            allocation_only = physical_device_id is not None
+        if not isinstance(allocation_only, bool):
+            raise EngineError("INVALID_PAYLOAD", "allocation_only必须为布尔值")
         with self._session() as state:
             now = _utcnow()
             device = self.devices.get(state, self.device_id, now)
@@ -952,7 +1273,7 @@ class UnifiedGateway:
                 self._save_state(state)
                 return None
             try:
-                task = self.scheduler.select(state, now, self.device_id)
+                task = self.scheduler.select(state, now, self.device_id, allocation_only)
             except EngineError:
                 self._save_state(state)
                 raise
@@ -961,27 +1282,43 @@ class UnifiedGateway:
                 return None
             project = state["project_accounts"].setdefault(task["task_id"], {
                 "source_key": _source_key(task), "accounts": {}})
+            assignment = project.get("assignment")
+            entry = project["accounts"].get(self.device_id)
+            if assignment:
+                if not physical_device_id:
+                    raise EngineError("PHYSICAL_DEVICE_REQUIRED", "固定分配任务需传入影刀本线程实际连接的设备标识")
+                if physical_device_id != entry["physical_device_id"]:
+                    raise EngineError("PHYSICAL_DEVICE_MISMATCH", "本线程设备与项目分配设备不一致")
+            if physical_device_id:
+                if not isinstance(physical_device_id, str) or not physical_device_id.strip():
+                    raise EngineError("INVALID_DEVICE_ID", "实际设备标识必须为非空字符串")
+                for account, other in state["devices"].items():
+                    active = other.get("active_task")
+                    if account != self.device_id and active and active.get("physical_device_id") == physical_device_id:
+                        raise EngineError("PHYSICAL_DEVICE_BUSY", "同一物理设备正在被另一个执行账号使用")
+                task["physical_device_id"] = physical_device_id
             reserved = {entry["comment_content"] for entry in project["accounts"].values()
                         if entry.get("comment_content")}
             available = [comment for comment in task["comments"] if comment not in reserved]
-            if not available:
+            if not assignment and not available:
                 raise EngineError("COMMENTS_EXHAUSTED", "项目 " + task["task_id"] +
                                   " 没有未分配评论，请先补充Comments")
-            task["comment_content"] = secrets.choice(available)
+            task["comment_content"] = entry["comment_content"] if assignment else secrets.choice(available)
             active = self.devices.claim(device, task, now)
-            project["accounts"][self.device_id] = {
-                "status": "RUNNING", "run_token": active["run_token"],
-                "claimed_at": active["claimed_at"], "comment_content": task["comment_content"],
-                "comment_sent": False, "result": None}
+            self._set_workspace(active)
+            self._register_active(state, self.device_id, active)
             self._commit(state, self._project_update(state, task["task_id"]))
             return _copy(active)
 
-    def get_active_task(self) -> Optional[Dict[str, Any]]:
+    def get_active_task(self, physical_device_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
         """Read surviving context without replaying uncertain mobile actions."""
         with self._session() as state:
             device = self.devices.get(state, self.device_id, _utcnow())
             active = device.get("active_task")
             if active is not None and device["state"] == "BUSY":
+                if active.get("assignment_id") and physical_device_id != active.get("physical_device_id"):
+                    raise EngineError("PHYSICAL_DEVICE_MISMATCH", "恢复任务必须核对本线程实际连接的物理设备")
+                self._set_workspace(active)
                 workbook, sheet, columns, rows, _ = self.scheduler.read()
                 try:
                     row = rows.get(active["task_id"])
@@ -1009,6 +1346,11 @@ class UnifiedGateway:
                         raise EngineError("INVALID_TASK", "关键词和预期作者必须非空")
                     changed = (_source_key(refreshed) != _source_key(active)
                                or active.get("comment_content") not in refreshed["comments"])
+                    if active.get("assignment_id"):
+                        count = (_target_count(sheet.cell(row, columns["Target_Device_Count"]).value)
+                                 if "Target_Device_Count" in columns else None)
+                        if changed or count != active["target_device_count"]:
+                            raise EngineError("ASSIGNMENT_CHANGED", "固定分配的作品、设备数量或预留评论被更改")
                     if changed and active.get("strategy") is not None:
                         raise EngineError("TASK_SOURCE_CHANGED", "当前作品或已分配评论被更改，且已有互动策略；请先核对进度")
                     self._register_active(state, self.device_id, refreshed)
@@ -1067,7 +1409,12 @@ class UnifiedGateway:
             plan.update(task_id=active["task_id"], run_token=active["run_token"],
                         sender_account_id=self.device_id, content_type=active["content_type"])
             active["strategy"] = plan
+            entry = state["project_accounts"].get(active["task_id"], {}).get("accounts", {}).get(self.device_id)
+            if entry is not None:
+                entry["plan"] = _copy(plan)
+            state["exports_dirty"] = True
             self._save_state(state)
+            self._flush_exports(state)
             return _copy(plan)
 
     def record_result(self, task_id: Union[str, int], status: str,
@@ -1089,7 +1436,8 @@ class UnifiedGateway:
         error_code = error_code or ("TEST_FAILED" if status == "FAILED" else "")
         with self._session() as state:
             device = self.devices.get(state, self.device_id, _utcnow())
-            last = device.get("last_result")
+            entry = state["project_accounts"].get(identity, {}).get("accounts", {}).get(self.device_id)
+            last = entry.get("result") if entry else device.get("last_result")
             if last and last["task_id"] == identity and last["run_token"] == run_token:
                 expected = (status, actions, error_code, log_message)
                 stored = (last["status"], last["executed_actions"], last["error_code"], last["log_message"])
@@ -1098,6 +1446,9 @@ class UnifiedGateway:
                 self._write_execution_data(state, self.device_id)
                 return _copy(last)
             active = self._owned(device, identity, run_token)
+            saved = active.get("action_results", [])
+            if len(actions) < len(saved) or actions[:len(saved)] != saved:
+                raise EngineError("ACTION_RESULT_CONFLICT", "最终结果不能覆盖已保存的动作进度")
             if status == "SUCCESS":
                 plan = active["strategy"]
                 if not plan:
@@ -1121,6 +1472,12 @@ class UnifiedGateway:
             raise EngineError("INVALID_RESULT", "熔断说明须为不超过 8000 字符的字符串")
         with self._session(recover=False) as state:
             device = self.devices.get(state, self.device_id, _utcnow())
+            if device.get("active_task"):
+                saved = device["active_task"].get("action_results", [])
+                if executed_actions is None:
+                    actions = _copy(saved)
+                elif len(actions) < len(saved) or actions[:len(saved)] != saved:
+                    raise EngineError("ACTION_RESULT_CONFLICT", "锁定结果不能覆盖已经保存的动作进度")
             if device["state"] != "BLOCKED":
                 device.update(state="BLOCKED", cooldown_until=None, block_info={
                     "blocked_at": _utcnow().isoformat(), "log_message": log_message,
@@ -1163,13 +1520,14 @@ def initialize_project(root: str) -> Dict[str, Any]:
             workbook = Workbook()
             sheet = workbook.active
             sheet.title = "TaskCases"
-            sheet.append(list(HEADERS + ("Expected_Douyin_ID", "Content_Type", "Comments")))
+            sheet.append(list(HEADERS + ("Expected_Douyin_ID", "Content_Type", "Comments", "Target_Device_Count")))
             sheet.freeze_panes = "A2"
             for column, width in zip("ABCDEFGHIJ", (20, 40, 30, 25, 18, 40, 70, 28, 22, 48)):
                 sheet.column_dimensions[column].width = width
             sheet.column_dimensions["H"].number_format = "@"
             sheet.column_dimensions["I"].number_format = "@"
             sheet.column_dimensions["J"].number_format = "@"
+            sheet.column_dimensions["K"].width = 24
             output = io.BytesIO()
             workbook.save(output)
             workbook.close()
@@ -1178,8 +1536,9 @@ def initialize_project(root: str) -> Dict[str, Any]:
     return {"root": str(gateway.root), "created": created}
 
 
-def get_next_task(root: Optional[str] = None, device_id: str = "default-device") -> Optional[Dict[str, Any]]:
-    return UnifiedGateway(root, device_id).get_next_task()
+def get_next_task(root: Optional[str] = None, device_id: str = "default-device",
+                  physical_device_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    return UnifiedGateway(root, device_id).get_next_task(physical_device_id)
 
 
 def assert_author(expected: Any, actual: Any, root: Optional[str] = None) -> str:
@@ -1212,7 +1571,8 @@ def main() -> int:
     parser.add_argument("--init", action="store_true")
     parser.add_argument("--operation", default="get_device_status", choices=(
         "get_next_task", "get_active_task", "get_device_status", "assert_author",
-        "generate_strategy", "record_result", "trigger_security_block", "reset_blocked_device"))
+        "generate_strategy", "record_result", "trigger_security_block", "reset_blocked_device",
+        "allocate_task", "get_project_progress", "save_action_results", "close_pending_assignment"))
     parser.add_argument("--payload", default="{}", help="JSON 对象，作为方法关键字参数")
     args = parser.parse_args()
     try:
@@ -1232,3 +1592,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+validation.log
+data/
+logs/
+workspaces/
+execution_data/

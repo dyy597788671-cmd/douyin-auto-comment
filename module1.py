@@ -7,7 +7,8 @@ if PROJECT_ROOT not in sys.path:
 import core_runner
 
 
-def read_task(sender_account_id="手机01", adopt_legacy=False):
+def read_task(sender_account_id="手机01", adopt_legacy=False, physical_device_id=None,
+              resume_active=False):
     """每个发送账号使用固定且不同的标识；旧default-device只在明确指定时转交。"""
     gateway = core_runner.UnifiedGateway(
         root=PROJECT_ROOT,
@@ -16,13 +17,29 @@ def read_task(sender_account_id="手机01", adopt_legacy=False):
     if adopt_legacy:
         gateway.adopt_legacy_task()
 
-    task = gateway.get_active_task()
+    task = gateway.get_active_task(physical_device_id=physical_device_id)
     if task is not None:
+        if physical_device_id is not None and not task.get("assignment_id"):
+            raise RuntimeError("该账号仍有旧模式活动任务，请先核对处理，不能混入新的随机分配")
+        if task.get("assignment_id") and not resume_active:
+            raise RuntimeError("该账号的分配任务已领取；不能重复启动。明确核对后才允许恢复")
         if task.get("strategy") is not None:
             raise RuntimeError("已有互动策略，请先核对执行进度再恢复")
         return task
 
-    return gateway.get_next_task()
+    return gateway.get_next_task(physical_device_id=physical_device_id)
+
+
+def allocate_task(task_id, connected_devices):
+    """影刀管理流程传入当前实际连接设备列表；本函数不连接或操作手机。"""
+    roster = core_runner._connected_devices(connected_devices)
+    gateway = core_runner.UnifiedGateway(PROJECT_ROOT, roster[0]["sender_account_id"])
+    return gateway.allocate_task(task_id, roster)
+
+
+def project_progress(task_id, sender_account_id="手机01"):
+    """供后续前端读取固定分配名单、结束数量、实际计数与各设备结果。"""
+    return core_runner.UnifiedGateway(PROJECT_ROOT, sender_account_id).get_project_progress(task_id)
 
 
 def verify_author(task_data, profile_douyin_id_raw, profile_author_name_raw):
@@ -69,7 +86,7 @@ def prepare_interactions(task_data):
     return plan
 
 
-def record_action_result(executed_actions, action, status, message=""):
+def record_action_result(executed_actions, action, status, message="", task_data=None):
     """保存影刀确认后的动作结果到返回列表；本函数不点击或发送。"""
     if not isinstance(executed_actions, list):
         raise ValueError("executed_actions 必须是列表")
@@ -78,7 +95,13 @@ def record_action_result(executed_actions, action, status, message=""):
         "status": status,
         "message": message
     }]
-    return core_runner.UnifiedGateway._actions(result)
+    result = core_runner.UnifiedGateway._actions(result)
+    if task_data is not None:
+        if not isinstance(task_data, dict):
+            raise ValueError("task_data 必须是当前任务对象")
+        gateway = core_runner.UnifiedGateway(PROJECT_ROOT, task_data["sender_account_id"])
+        return gateway.save_action_results(task_data["task_id"], task_data["run_token"], result)
+    return result
 
 
 def finish_task(task_data, executed_actions, status="SUCCESS",
@@ -157,3 +180,4 @@ def make_nav_swipe_points(bounds):
         "left": {"start_x": right_x, "start_y": middle_y, "end_x": left_x, "end_y": middle_y},
         "right": {"start_x": left_x, "start_y": middle_y, "end_x": right_x, "end_y": middle_y},
     }
+

@@ -2782,10 +2782,10 @@
     "interaction_executed": false,
     "cross_device_verified": false
   },
-  "next_stage": "以后用户授权继续时接续170首头像原生点击未完成问题，然后分享发送、动作结果记录及收尾；本次只补同步，不执行这些待办",
+  "next_stage": "install_current_complete_core_and_module_then_integrate_shadowbot_one_card_at_a_time",
   "confirmed_requirements": {
     "confirmed_at": "2026-10-07T17:44:09+08:00",
-    "implementation_status": "installation_and_task_read_verified_shadowbot_actions_configuring",
+    "implementation_status": "backend_fixed_allocation_implemented_offline_passed_shadowbot_integration_pending",
     "one_project_one_work": true,
     "multiple_sender_accounts_per_project": true,
     "table": {
@@ -2814,7 +2814,26 @@
       "comments_separator": "newline",
       "library_file_id": "libfile_1fa6375c0b4c8191b47c772a19292e90",
       "library_version": 1,
-      "placeholder_count": 6
+      "placeholder_count": 6,
+      "target_headers": [
+        "Task_ID",
+        "Query_Keyword",
+        "Expected_Author",
+        "Scheduled_Time",
+        "Status",
+        "Executed_Actions",
+        "Result_Message",
+        "Expected_Douyin_ID",
+        "Content_Type",
+        "Comments",
+        "Target_Device_Count"
+      ],
+      "new_input_field": {
+        "name": "Target_Device_Count",
+        "purpose": "requested_participating_device_count",
+        "positive_integer": true,
+        "installed_in_user_workbook": false
+      }
     },
     "search": {
       "first": "task_data.content_type",
@@ -2829,7 +2848,7 @@
         "Comment",
         "Favorite"
       ],
-      "order": "unspecified",
+      "order": "required_actions_random_order_optional_share_last",
       "optional": [
         "Share"
       ],
@@ -2845,7 +2864,7 @@
         "nickname_binding": false,
         "random_friend_selection": false
       },
-      "share_target_status": "user_confirmed_position_rule; avatar_card170_unfinished"
+      "share_target_status": "avatar_card_configured_final_unique_validation_not_separately_confirmed"
     },
     "comments": {
       "source": "per_project_Comments",
@@ -2867,14 +2886,41 @@
       ],
       "one_account_completion_does_not_complete_other_accounts": true,
       "replace_default_device_identity": true,
-      "preserve_existing_recovery_guards": true
+      "preserve_existing_recovery_guards": true,
+      "physical_device_identity_separate": true,
+      "allocation": {
+        "scope": "one_project",
+        "choose": "random_without_replacement",
+        "count_field": "Target_Device_Count",
+        "source": "actual_shadowbot_connection_snapshot",
+        "freeze_on_first_allocation": true,
+        "only_selected_accounts_can_claim": true,
+        "completion_scope": "selected_accounts",
+        "configured_accounts_are_not_connection_inventory": true
+      },
+      "output": {
+        "legacy_account_csv_columns": [
+          "执行账号",
+          "项目ID",
+          "点赞次数",
+          "收藏次数",
+          "评论次数",
+          "分享次数"
+        ],
+        "progress_json": "execution_data/project_progress.json",
+        "schema_version": 1,
+        "per_action_max_success": 1,
+        "uncertain_is_not_success": true
+      }
     },
     "changes_pending": [
-      "share_first_upper_row_avatar_click_170",
-      "share_send_click",
-      "action_result_readback_record_action_result_and_executed_actions",
-      "finish_task_and_return_desktop",
-      "unified_live_phone_verification_after_complete_configuration"
+      "install_current_backend_core_and_module",
+      "shadowbot_actual_connected_roster_and_worker_identity_integration",
+      "isolated_screenshot_and_ocr_paths",
+      "persist_each_action_with_task_data",
+      "verify_not_found_and_failed_result_exit_paths",
+      "verify_return_home_interval",
+      "live_multi_device_interactions_and_confirmed_success"
     ]
   },
   "latest_ui_tree_removal": {
@@ -3140,13 +3186,7 @@
     "total_line_count_confirmed": false,
     "unconfirmed_from_line": 170
   },
-  "current_request": {
-    "text": "把每次回话没完成同步的内容完成同步。不做其它任何操作",
-    "scope": "documentation_sync_only",
-    "no_card_changes": true,
-    "no_business_code_changes": true,
-    "no_new_phone_tests": true
-  },
+  "current_request": "backend_allocation_outputs_completed_offline_shadowbot_integration_pending",
   "photo_comment_retry": {
     "first_click_line": 133,
     "retry_loop_line": 134,
@@ -3507,5 +3547,23 @@
         "version": 7
       }
     }
+  },
+  "latest_checkpoint_2026_10_08_session": {
+    "source": "current_user_confirmations_and_backend_tests",
+    "saved_home_if_and_break": true,
+    "saved_back_key": true,
+    "saved_finish_task": true,
+    "video_comment_input_card_saved": true,
+    "video_comment_input_new_row": 132,
+    "derived_action_record_row": 178,
+    "derived_finish_task_row": 186,
+    "full_export_row_audit": false,
+    "home_two_second_wait_separately_confirmed": false,
+    "task_1006_status_confirmed_blank": true,
+    "status_correction_confirmed": false,
+    "backend_offline_tests_passed": 29,
+    "shadowbot_integration_confirmed": false,
+    "live_multi_device_test_passed": false,
+    "contract": "MULTI_DEVICE_CONTRACT.md"
   }
 }
