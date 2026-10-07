@@ -2554,5 +2554,23 @@
     "interaction_block_enabled_confirmed": false,
     "disabled_block_guidance_withdrawn": true,
     "photo_state_read_target_configured": false
+  },
+  "latest_checkpoint_2026_10_07_1949": {
+    "status": "row119_configured_runtime_not_verified",
+    "row119": {
+      "command": "设置变量",
+      "变量类型": "字符串",
+      "变量值_python": "photo_like_element.get_attribute(\"content-desc\")",
+      "变量名": "like_state_raw"
+    },
+    "interaction_block_enabled": true,
+    "next_instruction_pending": {
+      "insert_after_current_row": 120,
+      "insert_before_current_row": 121,
+      "command": "IF 条件",
+      "对象1_python": "\"未点赞\" in like_state_raw",
+      "关系": "等于",
+      "对象2_python": "True"
+    }
   }
 }

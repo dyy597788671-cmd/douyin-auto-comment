@@ -1,3 +1,12 @@
+## 2026-10-07 19:49 第119行设置变量已配置（运行待验证）
+
+- 用户已启用整个互动区块；无需再次要求启用。
+- 19:43真实面板确认“获取手机元素信息”的操作目标仅为元素库选择；撤回要求从该列表选择photo_like_element的错误入口。
+- 用户确认完成119。截图核实119为设置变量：变量类型=字符串；指令输入的变量值=Python `photo_like_element.get_attribute("content-desc")`；指令输出的变量名=like_state_raw。不再保留该行原视频元素信息卡。
+- MobileElement.get_attribute(name)接口依据原影刀开发手册xbot.mobile.element核实；https://geekdaxue.co/read/shibu@winrobot/kvaafl 。当前配置尚未运行通过，不宣称XPath唯一性或跨手机验证通过。
+- 当前118获取photo_like_element，119读取图文状态，120结束115视频/图文判断，121结束114 Like判断。视频116保持已准确定位的原设置。
+- 下一条待实施：在当前120 End IF之后、121 End IF之前添加IF条件；对象1 Python `"未点赞" in like_state_raw`，关系=等于，对象2 Python True。仅此卡完整配置一次交付。新增条件及自动End IF将改变后续行号，尚未由用户确认插入。
+
 # 互动适配离线验证
 
 ## 2026-10-07 19:37 更正互动块禁用安排（当前入口）
