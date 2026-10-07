@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T14:27:57+08:00",
+  "checkpoint_time": "2026-10-07T14:33:09+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1205,7 +1205,9 @@
       "command": "获取元素对象(手机)",
       "config": "phone_device；查找方式XPath；XPath值Python candidate_xpath → mobile_element_result；复用原获取元素对象卡片",
       "source": "原24",
-      "disabled": false
+      "disabled": false,
+      "runtime_verified": false,
+      "last_runtime_error": "2026-10-07 14:31:35.580：未找到元素，字段已用Python candidate_xpath；根因待已有封面条目证据"
     },
     {
       "line": 60,
@@ -1644,7 +1646,7 @@
   "phone_test_complete": false,
   "phone_test_passed": false,
   "cross_device_tested": false,
-  "phone_test_status": "当前单手机未找到分支已运行到107日志并正常结束，52初始化错误已消除；目标能找到的作者ID核验分支待测，互动110—120仍禁用",
+  "phone_test_status": "未找到分支已通过；新可找到任务在图文命中昵称后59获取封面元素报未找到元素，作者核验未执行，等待核对已有封面条目定位",
   "last_filter_test": {
     "reported_date": "2026-10-07",
     "scope": "one_template_one_phone",
@@ -1660,7 +1662,7 @@
     "ocr_status": "all_three_dynamic_filter_clicks_user_verified_single_phone",
     "next_step": "筛选已通过，保持43—49配置；当前复测52行变量初始化及三次无进展退出"
   },
-  "current_runtime_revision": "2026-10-07-THREE-IDLE-NOT-FOUND-PASS",
+  "current_runtime_revision": "2026-10-07-FOUND-CANDIDATE-LOCATOR-FAIL",
   "ocr_validation": {
     "basis": "完整文字精确匹配",
     "screenshot_line": 43,
@@ -1742,11 +1744,23 @@
       ]
     },
     "next_action": {
-      "command": "运行新建的可找到任务",
-      "status": "user_updating_task_table_then_testing",
-      "test_scope": "搜索→动态OCR筛选→遍历结果→命中候选→主页昵称和抖音号核验→返回作品页→102成功日志；当前110—120互动块保持禁用",
-      "success_evidence": "102行作者抖音号核验成功日志，实际返回正确作品页",
-      "task_requirement": "使用24小时内、相同关键词和栏目筛选后可见的真实作品，表格作者昵称、抖音号与作品类型一致"
+      "command": "检查已有元素库条目",
+      "element_name": "抖音搜索结果封面",
+      "status": "awaiting_current_element_selector_evidence",
+      "needed_evidence": "打开现有条目的编辑界面，显示已勾选层级及属性；不重新捕获；据此核对58同卡片XPath",
+      "preserve_rows": [
+        46,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59
+      ],
+      "note": "59截图已显示Python candidate_xpath，保存至mobile_element_result名称正确；诊断前不盲改XPath、序号或直接点击任意封面"
     },
     "text_points_implemented": true,
     "text_points_line": 46,
@@ -1853,7 +1867,7 @@
     "task_age_verified": false,
     "actual_bottom_screen_available": true,
     "root_cause_confirmed": false,
-    "next_action": "test_recent_known_findable_work_then_author_identity_match_branch",
+    "next_action": "resolve_candidate_cover_locator_then_resume_known_work_test",
     "fixed_iteration_cap_allowed": false,
     "loop_end_line": 96,
     "actual_bottom_screen_text": "暂无更多，查看所有内容",
@@ -1949,10 +1963,10 @@
   },
   "progress_sync": {
     "requested_by_user": true,
-    "checkpoint_at": "2026-10-07T14:27:57+08:00",
+    "checkpoint_at": "2026-10-07T14:33:09+08:00",
     "confirmed_current_rows": 120,
     "row_count_basis": "由119行记录增加90计数卡；新增普通IF替换旧图像IF净增0；88—99截图确认，未全面重审所有行",
-    "next_action": "await_findable_work_author_verification_test"
+    "next_action": "inspect_existing_verified_cover_selector_for_same_card_xpath"
   },
   "last_not_found_test": {
     "reported_at": "2026-10-07T14:27:57+08:00",
@@ -1970,10 +1984,73 @@
     "interactions_executed": false
   },
   "next_found_test": {
-    "command": "运行新建的可找到任务",
-    "status": "user_updating_task_table_then_testing",
-    "test_scope": "搜索→动态OCR筛选→遍历结果→命中候选→主页昵称和抖音号核验→返回作品页→102成功日志；当前110—120互动块保持禁用",
-    "success_evidence": "102行作者抖音号核验成功日志，实际返回正确作品页",
-    "task_requirement": "使用24小时内、相同关键词和栏目筛选后可见的真实作品，表格作者昵称、抖音号与作品类型一致"
+    "command": "检查已有元素库条目",
+    "element_name": "抖音搜索结果封面",
+    "status": "awaiting_current_element_selector_evidence",
+    "needed_evidence": "打开现有条目的编辑界面，显示已勾选层级及属性；不重新捕获；据此核对58同卡片XPath",
+    "preserve_rows": [
+      46,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59
+    ],
+    "note": "59截图已显示Python candidate_xpath，保存至mobile_element_result名称正确；诊断前不盲改XPath、序号或直接点击任意封面"
+  },
+  "candidate_click_diagnosis": {
+    "reported_at": "2026-10-07T14:33:09+08:00",
+    "start_at": "2026-10-07T14:30:59.657+08:00",
+    "nickname_log_at": "2026-10-07T14:31:29.870+08:00",
+    "error_at": "2026-10-07T14:31:35.580+08:00",
+    "section": "图文",
+    "stop_line": 59,
+    "error": "未找到元素",
+    "nickname_read_succeeded": true,
+    "nickname_if_passed_inference": "运行已进入57候选循环、58模块调用后报59",
+    "xpath_variable": "candidate_xpath",
+    "xpath_field_mode_verified": "Python表达式；截图蓝色变量标记",
+    "output_variable": "mobile_element_result",
+    "module_function": "module1.build_author_cover_xpath",
+    "module_blob_sha": "7c2d536d1012d996bf09b82ee064e6b800ae2762",
+    "current_generator_constraints": {
+      "card_resource_id": "com.ss.android.ugc.aweme:id/dp7",
+      "cover_resource_id": "com.ss.android.ugc.aweme:id/rej",
+      "author_resource_id": "com.ss.android.ugc.aweme:id/-+",
+      "author_text": "expected_author精确匹配",
+      "cover_count_per_card": 1,
+      "global_occurrence": "current_candidate_number，从1开始"
+    },
+    "root_cause_confirmed": false,
+    "runtime_xpath_full_value_available": false,
+    "current_phone_xml_available": false,
+    "existing_cover_selector_current_attributes_available": false,
+    "existing_cover_element_known_verified": "抖音搜索结果封面；此前综合、视频、图文均校验通过，应复用、不重捕获",
+    "next_action": {
+      "command": "检查已有元素库条目",
+      "element_name": "抖音搜索结果封面",
+      "status": "awaiting_current_element_selector_evidence",
+      "needed_evidence": "打开现有条目的编辑界面，显示已勾选层级及属性；不重新捕获；据此核对58同卡片XPath",
+      "preserve_rows": [
+        46,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59
+      ],
+      "note": "59截图已显示Python candidate_xpath，保存至mobile_element_result名称正确；诊断前不盲改XPath、序号或直接点击任意封面"
+    },
+    "code_modified": false,
+    "flow_modified": false,
+    "forbidden_shortcut": "不能把独立昵称/封面列表按索引盲配，或用任意封面点击替代同卡片关联"
   }
 }
