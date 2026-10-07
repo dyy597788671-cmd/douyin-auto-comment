@@ -1,6 +1,6 @@
 {
-  "version": "2026-10-06-FINAL-3",
-  "total_lines": 109,
+  "version": "2026-10-08-DOC-SYNC-169",
+  "total_lines": null,
   "current_runtime_original_lines": 61,
   "phone_tested": true,
   "rows": [
@@ -768,7 +768,7 @@
       "disabled": true
     }
   ],
-  "current_runtime_lines": 120,
+  "current_runtime_lines": null,
   "completed_batches": [
     1,
     2,
@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T19:37:55+08:00",
+  "checkpoint_time": "2026-10-08T00:33:27+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1595,86 +1595,429 @@
     {
       "line": 110,
       "command": "IF 条件",
-      "config": "author_check_result 等于\"MATCH\"；整个后续互动块暂禁用",
-      "source": "原51",
-      "disabled": true
+      "config": "作者核验结果为 MATCH；既有外层保持",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
     },
     {
       "line": 111,
       "command": "调用模块",
-      "config": "module1.prepare_interactions(task_data) → interaction_plan；本阶段禁用",
-      "source": "原52",
-      "disabled": true
+      "config": "module1.prepare_interactions(task_data) → interaction_plan",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
     },
     {
       "line": 112,
       "command": "设置变量",
-      "config": "executed_actions = []；本阶段禁用",
-      "source": "原53",
-      "disabled": true
+      "config": "executed_actions = []",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
     },
     {
       "line": 113,
-      "command": "ForEach列表循环",
-      "config": "interaction_plan[\"execution_order\"] → current_action；本阶段禁用，恢复时核实实际键名",
-      "source": "原54",
-      "disabled": true
+      "command": "ForEach",
+      "config": "遍历 interaction_plan[\"execution_order\"] → current_action",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
     },
     {
       "line": 114,
       "command": "IF 条件",
-      "config": "current_action 等于\"Like\"；本阶段禁用",
-      "source": "原55",
-      "disabled": true
+      "config": "current_action 等于 Like",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
     },
     {
       "line": 115,
       "command": "IF 条件",
-      "config": "interaction_plan[\"content_type\"] 等于\"视频\"；本阶段禁用",
-      "source": "原56",
-      "disabled": true
+      "config": "interaction_plan[\"content_type\"] 等于 视频",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
     },
     {
       "line": 116,
       "command": "获取手机元素信息",
-      "config": "视频——点赞按钮；原属性参数 → like_state_raw；本阶段禁用",
-      "source": "原57",
-      "disabled": true
+      "config": "既有视频——点赞按钮，accessibility-id → like_state_raw",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
     },
     {
       "line": 117,
-      "command": "End IF",
-      "config": "结束115行；本阶段禁用",
-      "source": "原58",
-      "disabled": true
+      "command": "Else",
+      "config": "对应115",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
     },
     {
       "line": 118,
-      "command": "End IF",
-      "config": "结束114行；本阶段禁用",
-      "source": "原59",
-      "disabled": true
+      "command": "获取元素对象(手机)",
+      "config": "XPath \"/hierarchy//android.widget.LinearLayout[contains(@content-desc,'喜欢')]\" → photo_like_element",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
     },
     {
       "line": 119,
-      "command": "循环结束标记",
-      "config": "结束113行；本阶段禁用",
-      "source": "原60",
-      "disabled": true
+      "command": "设置变量",
+      "config": "字符串 like_state_raw = Python photo_like_element.get_attribute(\"content-desc\")",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
     },
     {
       "line": 120,
       "command": "End IF",
-      "config": "结束110行；本阶段禁用",
-      "source": "原61",
-      "disabled": true
+      "config": "结束115类型判断",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 121,
+      "command": "IF 条件",
+      "config": "Python \"未点赞\" in like_state_raw 等于 Python True",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 122,
+      "command": "IF 条件",
+      "config": "interaction_plan[\"content_type\"] 等于 视频",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 123,
+      "command": "点击元素(手机)",
+      "config": "既有视频——点赞按钮",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 124,
+      "command": "Else",
+      "config": "对应122",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 125,
+      "command": "设置变量",
+      "config": "布尔值 photo_like_clicked = Python photo_like_element.click() is None",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 126,
+      "command": "End IF",
+      "config": "结束122",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 127,
+      "command": "End IF",
+      "config": "结束121",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 128,
+      "command": "End IF",
+      "config": "结束114 Like",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 129,
+      "command": "IF 条件",
+      "config": "current_action 等于 Comment",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 130,
+      "command": "IF 条件",
+      "config": "interaction_plan[\"content_type\"] 等于 视频",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 131,
+      "command": "点击元素(手机)",
+      "config": "视频——评论按钮；已于上一检查点确认添加",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 132,
+      "command": "Else",
+      "config": "对应130，进入图文分支",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 133,
+      "command": "点击元素(手机)",
+      "config": "图文——评论按钮，第一次点击",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 134,
+      "command": "For次数循环",
+      "config": "开始1、结束2、步长1；保存当前循环至 photo_comment_retry_index；只补两次重试",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 135,
+      "command": "IF 手机包含元素",
+      "config": "原位置仍为图文——评论按钮",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 136,
+      "command": "点击元素(手机)",
+      "config": "再次点击同一图文——评论按钮；当前最终行号",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 137,
+      "command": "Else",
+      "config": "对应135，原按钮已不在原位置",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 138,
+      "command": "退出循环",
+      "config": "退出第134行循环",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 139,
+      "command": "End IF",
+      "config": "结束135",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 140,
+      "command": "循环结束标记",
+      "config": "结束134",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 141,
+      "command": "IF 手机包含元素",
+      "config": "最终仍检查原位置的图文——评论按钮",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 142,
+      "command": "引发异常",
+      "config": "普通文字：图文评论按钮已点击3次，仍未打开评论输入框。",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 143,
+      "command": "End IF",
+      "config": "结束141",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 144,
+      "command": "End IF",
+      "config": "结束130视频/图文判断",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 145,
+      "command": "输入文本(手机)",
+      "config": "输入位置=光标所在位置；Python task_data[\"comment_content\"]；追加关闭、回车关闭；无输出",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 146,
+      "command": "点击元素(手机)",
+      "config": "评论——发送按钮",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 147,
+      "command": "点击按键(手机)",
+      "config": "后退；沿用既有第70行设置；与145/146同层",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 148,
+      "command": "End IF",
+      "config": "结束129 Comment",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 149,
+      "command": "IF 条件",
+      "config": "current_action 等于 Favorite",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 150,
+      "command": "IF 条件",
+      "config": "interaction_plan[\"content_type\"] 等于 视频",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 151,
+      "command": "获取元素对象(手机)",
+      "config": "XPath \"/hierarchy//android.widget.LinearLayout[contains(@content-desc,'收藏')]\" → video_favorite_element",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 152,
+      "command": "设置变量",
+      "config": "字符串 favorite_state_raw = Python video_favorite_element.get_attribute(\"content-desc\")",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 153,
+      "command": "IF 条件",
+      "config": "Python \"未选中\" in favorite_state_raw 等于 Python True",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 154,
+      "command": "点击元素(手机)",
+      "config": "视频——收藏按钮；用户确认本机静态校验成功",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 155,
+      "command": "End IF",
+      "config": "结束153",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 156,
+      "command": "Else",
+      "config": "对应150，进入图文分支",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 157,
+      "command": "获取元素对象(手机)",
+      "config": "同151的收藏XPath → photo_favorite_element",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 158,
+      "command": "设置变量",
+      "config": "字符串 favorite_state_raw = Python photo_favorite_element.get_attribute(\"content-desc\")",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 159,
+      "command": "IF 条件",
+      "config": "Python \"未选中\" in favorite_state_raw 等于 Python True",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 160,
+      "command": "点击元素(手机)",
+      "config": "图文——收藏按钮；用户确认完成",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 161,
+      "command": "End IF",
+      "config": "结束159",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 162,
+      "command": "End IF",
+      "config": "结束150",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 163,
+      "command": "End IF",
+      "config": "结束149 Favorite",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 164,
+      "command": "IF 条件",
+      "config": "current_action 等于 Share",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 165,
+      "command": "IF 条件",
+      "config": "interaction_plan[\"content_type\"] 等于 视频",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 166,
+      "command": "点击元素(手机)",
+      "config": "视频——分享按钮；用户已确认添加",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 167,
+      "command": "Else",
+      "config": "对应165",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 168,
+      "command": "点击元素(手机)",
+      "config": "图文——分享按钮；用户已确认添加",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
+    },
+    {
+      "line": 169,
+      "command": "End IF",
+      "config": "结束165分享入口类型判断",
+      "disabled": false,
+      "status": "user_confirmed_configured_runtime_not_verified"
     }
   ],
   "batch5_status": "已配置，手机实测待执行",
   "phone_test_complete": false,
   "phone_test_passed": false,
   "cross_device_tested": false,
-  "phone_test_status": "用户报告单手机图文完整检索、进入作品/主页、作者抖音号核验成功及后退均通过；后续互动未完成，不代表互动或其它栏目/跨设备通过",
+  "phone_test_status": "此前单手机图文检索、作品/主页、抖音号核验及返回通过；图文评论按钮与视频收藏按钮各有本机静态校验反馈；自动完整互动、结果回写及收尾未验证",
   "last_filter_test": {
     "reported_date": "2026-10-07",
     "scope": "one_template_one_phone",
@@ -1690,7 +2033,7 @@
     "ocr_status": "all_three_dynamic_filter_clicks_user_verified_single_phone",
     "next_step": "按最新政策禁用47，保留一天内48和查看结果49，验证可找到任务"
   },
-  "current_runtime_revision": "2026-10-07 16:36图文完整检索及作者抖音号核验通过；新会话补齐互动",
+  "current_runtime_revision": "2026-10-08集中补同步：配置确认至169，170首头像未完成；总行数未核验",
   "ocr_validation": {
     "basis": "完整文字精确匹配",
     "screenshot_line": 43,
@@ -1982,17 +2325,38 @@
   },
   "progress_sync": {
     "requested_by_user": true,
-    "checkpoint_at": "2026-10-07T21:29:44+08:00",
-    "confirmed_current_rows": 120,
-    "row_count_basis": "由119行记录增加90计数卡；新增普通IF替换旧图像IF净增0；88—99截图确认，未全面重审所有行",
-    "next_action": "configure_photo_comment_entry_then_comment_input_send_close",
-    "last_checkpoint": "2026-10-07T21:29:44+08:00",
+    "checkpoint_at": "2026-10-08T00:33:27+08:00",
+    "confirmed_current_rows": null,
+    "row_count_basis": "连续已确认添加/删除形成110—169台账；未全面审核最终总行数，170未完成",
+    "next_action": "documentation_sync_only_now; future_authorized_continuation_at_unfinished_share_avatar170",
+    "last_checkpoint": "2026-10-08T00:33:27+08:00",
     "repository": "dyy597788671-cmd/dy-auto-comment",
     "branch": "main",
     "module_fix_commit": "ff6cdb955424f83fc39eede7b2c83ccc4f1fbaee",
     "library_record_id": "libfile_d824b90ccdfc8191940764a6d10f8637",
-    "status": "安装与任务读取已通过；Like114—128已配置；Comment129/130及131视频评论点击已添加保存，运行与跨手机未验证",
-    "library_version": 45
+    "status": "本轮未同步配置、要求与失败撤回集中登记；Like/Comment/Favorite及Share入口到169；170首头像失败未完成，发送与收尾未配置",
+    "library_version": 46,
+    "last_confirmed_configured_line": 169,
+    "library_documents": [
+      {
+        "name": "00_影刀新会话接续记录.md",
+        "library_file_id": "libfile_775a9181c9f48191ad6607ae188ae26d",
+        "file_id": "file_00000000a87481fd92212f6057690b05",
+        "version": 53
+      },
+      {
+        "name": "影刀_流程整理与待办记录.md",
+        "library_file_id": "libfile_d824b90ccdfc8191940764a6d10f8637",
+        "file_id": "file_00000000c73081fd9d382603a36375af",
+        "version": 46
+      },
+      {
+        "name": "影刀测试记录_20261006.md",
+        "library_file_id": "libfile_09de429b3640819193b8159f6a7e1161",
+        "file_id": "file_0000000000e481fd9a41c0a319ecca10",
+        "version": 7
+      }
+    ]
   },
   "last_not_found_test": {
     "reported_at": "2026-10-07T14:27:57+08:00",
@@ -2318,7 +2682,13 @@
     "list_every_retained_node_right_attributes": true,
     "preserve_reply_format_across_sessions": true,
     "do_not_request_reconfirmation_of_known_facts": true,
-    "sync_policy": "explicit_user_request_or_completed_full_phase_testing"
+    "sync_policy": "explicit_user_request_or_completed_full_phase_testing",
+    "never_request_additional_right_property_screenshots": true,
+    "do_not_repeat_requests_for_confirmed_add_save_delete_or_calibration": true,
+    "complete_all_settings_in_one_card_reply": true,
+    "preserve_native_click_route_unless_user_authorizes_change": true,
+    "do_not_replace_project_history_with_generic_web_search": true,
+    "maintain_confirmed_row_edits_without_routine_rescreenshot": true
   },
   "pending_diagnostic_insertion": {
     "command": "获取手机UI树",
@@ -2412,7 +2782,7 @@
     "interaction_executed": false,
     "cross_device_verified": false
   },
-  "next_stage": "第131行视频评论点击已添加；继续图文评论入口，再接输入评论、发送、收藏、随机好友分享及收尾；完整配置后统一运行测试",
+  "next_stage": "以后用户授权继续时接续170首头像原生点击未完成问题，然后分享发送、动作结果记录及收尾；本次只补同步，不执行这些待办",
   "confirmed_requirements": {
     "confirmed_at": "2026-10-07T17:44:09+08:00",
     "implementation_status": "installation_and_task_read_verified_shadowbot_actions_configuring",
@@ -2466,7 +2836,16 @@
       "share_destination": "friend",
       "share_probability": null,
       "share_friend": null,
-      "prefer_existing_native_element_capture": true
+      "prefer_existing_native_element_capture": true,
+      "share_recipient_rule": {
+        "type": "fixed_position",
+        "row": "upper",
+        "position": 1,
+        "independent_of_name_and_account": true,
+        "nickname_binding": false,
+        "random_friend_selection": false
+      },
+      "share_target_status": "user_confirmed_position_rule; avatar_card170_unfinished"
     },
     "comments": {
       "source": "per_project_Comments",
@@ -2491,9 +2870,11 @@
       "preserve_existing_recovery_guards": true
     },
     "changes_pending": [
-      "complete_comment_favorite_share_cards",
-      "action_result_recording_and_finish_task",
-      "unified_live_phone_verification"
+      "share_first_upper_row_avatar_click_170",
+      "share_send_click",
+      "action_result_readback_record_action_result_and_executed_actions",
+      "finish_task_and_return_desktop",
+      "unified_live_phone_verification_after_complete_configuration"
     ]
   },
   "latest_ui_tree_removal": {
@@ -2521,7 +2902,7 @@
     "user_install_confirmed": true,
     "live_phone_interactions_verified": false,
     "first_user_step": "stop debugging, install adjusted task table and core_runner.py",
-    "next_user_step": "恢复第110—123整段启用，继续第119行图文状态读取配置，配置完成后再测试",
+    "next_user_step": "当前只补同步；以后授权继续时解决170上排首头像原生点击",
     "account_example": "手机01",
     "legacy_adoption_argument": "adopt_legacy=True",
     "preserve_runtime_state": true,
@@ -2537,7 +2918,7 @@
       "strategy": null,
       "adopt_legacy": true
     },
-    "next_step": "恢复第110—123整段启用，继续第119行图文状态读取配置，配置完成后再测试",
+    "next_step": "share_avatar170_unfinished_then_send_results_finish",
     "photo_like_locator": {
       "instruction": "获取元素对象(手机)",
       "ui_labels": {
@@ -2557,10 +2938,10 @@
     },
     "interaction_else_added_confirmed": true,
     "phone_dropdown_restored_confirmed": true,
-    "interaction_block_enable_instruction": "enable_whole_block_110_to_123",
-    "interaction_block_enabled_confirmed": false,
+    "interaction_block_enable_instruction": "already_enabled_user_confirmed_do_not_repeat",
+    "interaction_block_enabled_confirmed": true,
     "disabled_block_guidance_withdrawn": true,
-    "photo_state_read_target_configured": false
+    "photo_state_read_target_configured": true
   },
   "latest_checkpoint_2026_10_07_1949": {
     "status": "row119_configured_runtime_not_verified",
@@ -2619,7 +3000,8 @@
       "128": "End IF Like"
     },
     "next_test_pending": null,
-    "test_instruction_withdrawn": true
+    "test_instruction_withdrawn": true,
+    "superseded_by": "latest_checkpoint_2026_10_08_sync"
   },
   "project_rules": {
     "source": "PROJECT_RULES.md",
@@ -2630,7 +3012,11 @@
     "no_guessed_ui_labels_or_node_positions": true,
     "preserve_verified_workflow_and_reply_format": true,
     "complete_left_nodes_and_each_right_attribute": true,
-    "do_not_transfer_selectors_between_different_purposes": true
+    "do_not_transfer_selectors_between_different_purposes": true,
+    "never_request_additional_right_property_screenshots": true,
+    "no_unseen_parent_index_values": true,
+    "no_unapproved_xpath_replacement_for_share_avatar": true,
+    "record_failed_and_withdrawn_proposals": true
   },
   "latest_checkpoint_2026_10_07_2114": {
     "status": "comment_selector_unresolved_top_rules_saved",
@@ -2738,6 +3124,387 @@
       "continuation": {
         "library_file_id": "libfile_775a9181c9f48191ad6607ae188ae26d",
         "version": 52
+      }
+    },
+    "superseded_by": "latest_checkpoint_2026_10_08_sync"
+  },
+  "original_plan_total_lines": 109,
+  "last_confirmed_configured_line": 169,
+  "current_rows_scope": {
+    "confirmed_latest_range": [
+      110,
+      169
+    ],
+    "earlier_rows": "preserved_from_existing_historical_table; search unchanged",
+    "full_final_row_audit": false,
+    "total_line_count_confirmed": false,
+    "unconfirmed_from_line": 170
+  },
+  "current_request": {
+    "text": "把每次回话没完成同步的内容完成同步。不做其它任何操作",
+    "scope": "documentation_sync_only",
+    "no_card_changes": true,
+    "no_business_code_changes": true,
+    "no_new_phone_tests": true
+  },
+  "photo_comment_retry": {
+    "first_click_line": 133,
+    "retry_loop_line": 134,
+    "loop_start": 1,
+    "loop_end": 2,
+    "loop_step": 1,
+    "save_current_iteration_to": "photo_comment_retry_index",
+    "max_total_clicks": 3,
+    "same_original_button_same_original_position_only": true,
+    "no_association_to_upper_comment_area": true,
+    "contains_condition_lines": [
+      135,
+      141
+    ],
+    "retry_click_line": 136,
+    "break_line": 138,
+    "loop_exit_target": 134,
+    "final_failure_line": 142,
+    "final_failure_message": "图文评论按钮已点击3次，仍未打开评论输入框。",
+    "input_line": 145,
+    "input_location": "cursor_position",
+    "text_python": "task_data[\"comment_content\"]",
+    "append": false,
+    "enter": false,
+    "send_line": 146,
+    "send_element": "评论——发送按钮",
+    "back_line": 147,
+    "configured": true,
+    "automated_loop_runtime_verified": false
+  },
+  "configured_interaction_selectors": {
+    "视频——评论按钮": {
+      "left_keep": [
+        "mobile",
+        "hierarchy"
+      ],
+      "root_settings": "preserve_existing_no_added_constraints",
+      "bottom_contiguous_nodes": [
+        {
+          "from_bottom": 4,
+          "class": "android.widget.FrameLayout",
+          "right_keep": {
+            "index-attribute": "6"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 3,
+          "class": "android.widget.LinearLayout",
+          "right_keep": {},
+          "match": "等于",
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 2,
+          "class": "android.widget.FrameLayout",
+          "right_keep": {},
+          "match": "等于",
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 1,
+          "class": "android.widget.ImageView",
+          "right_keep": {
+            "index": "0"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        }
+      ],
+      "other_left_nodes_checked": false,
+      "id_checked": false,
+      "accessibility_id_checked": false,
+      "cross_device_tested": false
+    },
+    "图文——评论按钮": {
+      "left_keep": [
+        "mobile",
+        "hierarchy"
+      ],
+      "root_settings": "preserve_existing_no_added_constraints",
+      "bottom_contiguous_nodes": [
+        {
+          "from_bottom": 2,
+          "class": "android.widget.LinearLayout",
+          "right_keep": {
+            "index-attribute": "1"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 1,
+          "class": "android.widget.ImageView",
+          "right_keep": {
+            "index": "0"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        }
+      ],
+      "other_left_nodes_checked": false,
+      "id_checked": false,
+      "accessibility_id_checked": false,
+      "cross_device_tested": false,
+      "single_phone_static_validation_passed": true
+    },
+    "评论——发送按钮": {
+      "left_keep": [
+        "mobile",
+        "hierarchy"
+      ],
+      "root_settings": "preserve_existing_no_added_constraints",
+      "bottom_contiguous_nodes": [
+        {
+          "from_bottom": 1,
+          "class": "android.widget.TextView",
+          "right_keep": {
+            "text": "发送"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        }
+      ],
+      "other_left_nodes_checked": false,
+      "id_checked": false,
+      "accessibility_id_checked": false,
+      "cross_device_tested": false
+    },
+    "视频——收藏按钮": {
+      "left_keep": [
+        "mobile",
+        "hierarchy"
+      ],
+      "root_settings": "preserve_existing_no_added_constraints",
+      "bottom_contiguous_nodes": [
+        {
+          "from_bottom": 4,
+          "class": "android.widget.FrameLayout",
+          "right_keep": {
+            "index-attribute": "7"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 3,
+          "class": "android.widget.LinearLayout",
+          "right_keep": {},
+          "match": "等于",
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 2,
+          "class": "android.widget.FrameLayout",
+          "right_keep": {},
+          "match": "等于",
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 1,
+          "class": "android.widget.ImageView",
+          "right_keep": {
+            "index": "0"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        }
+      ],
+      "other_left_nodes_checked": false,
+      "id_checked": false,
+      "accessibility_id_checked": false,
+      "cross_device_tested": false,
+      "single_phone_static_validation_passed": true
+    },
+    "图文——收藏按钮": {
+      "left_keep": [
+        "mobile",
+        "hierarchy"
+      ],
+      "root_settings": "preserve_existing_no_added_constraints",
+      "bottom_contiguous_nodes": [
+        {
+          "from_bottom": 2,
+          "class": "android.widget.LinearLayout",
+          "right_keep": {
+            "index-attribute": "2"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 1,
+          "class": "android.widget.ImageView",
+          "right_keep": {
+            "index": "0"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        }
+      ],
+      "other_left_nodes_checked": false,
+      "id_checked": false,
+      "accessibility_id_checked": false,
+      "cross_device_tested": false
+    },
+    "视频——分享按钮": {
+      "left_keep": [
+        "mobile",
+        "hierarchy"
+      ],
+      "root_settings": "preserve_existing_no_added_constraints",
+      "bottom_contiguous_nodes": [
+        {
+          "from_bottom": 4,
+          "class": "android.widget.FrameLayout",
+          "right_keep": {
+            "index-attribute": "8"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 3,
+          "class": "android.widget.LinearLayout",
+          "right_keep": {},
+          "match": "等于",
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 2,
+          "class": "android.widget.FrameLayout",
+          "right_keep": {},
+          "match": "等于",
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 1,
+          "class": "android.widget.ImageView",
+          "right_keep": {
+            "index": "0"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        }
+      ],
+      "other_left_nodes_checked": false,
+      "id_checked": false,
+      "accessibility_id_checked": false,
+      "cross_device_tested": false
+    },
+    "图文——分享按钮": {
+      "left_keep": [
+        "mobile",
+        "hierarchy"
+      ],
+      "root_settings": "preserve_existing_no_added_constraints",
+      "bottom_contiguous_nodes": [
+        {
+          "from_bottom": 2,
+          "class": "android.widget.LinearLayout",
+          "right_keep": {
+            "index-attribute": "3"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        },
+        {
+          "from_bottom": 1,
+          "class": "android.widget.ImageView",
+          "right_keep": {
+            "index": "0"
+          },
+          "match": "等于",
+          "other_attributes_checked": false
+        }
+      ],
+      "other_left_nodes_checked": false,
+      "id_checked": false,
+      "accessibility_id_checked": false,
+      "cross_device_tested": false
+    }
+  },
+  "share_avatar170": {
+    "status": "unfinished_failed_static_calibration",
+    "configured_successfully": false,
+    "target": {
+      "row": "upper",
+      "position": 1,
+      "no_nickname_or_id_binding": true
+    },
+    "original_screenshot": "image(20261007-160150).png",
+    "original_screenshot_library_file_id": "libfile_e00e0c76f0648191ae23af4757a4c682",
+    "original_bottom_nodes": [
+      "androidx.recyclerview.widget.RecyclerView",
+      "android.view.ViewGroup",
+      "android.widget.ImageView"
+    ],
+    "original_leaf_right_checked": {
+      "id": "com.ss.android.ugc.aweme:id/0h-",
+      "accessibility-id": "菜狗多多"
+    },
+    "original_leaf_right_unchecked": {
+      "index-attribute": "0",
+      "index": "0"
+    },
+    "parent_right_values_visible": false,
+    "user_failure": "校验找不到元素",
+    "single_root_cause_identified": false,
+    "withdrawn_proposals": [
+      "three_bottom_nodes_with_recycler_id_and_unverified_parent_index0_leaf_index0",
+      "remove_recycler_id_keep_unverified_parent_index0_leaf_index0",
+      "partial_parent_index_removal_followed_by_repeated_right_screenshot_requests",
+      "unapproved_hardcoded_full_class_xpath_get_element_object_to_share_first_avatar_element"
+    ],
+    "xpath_replacement_added_user_confirmed": false,
+    "existing_route": "native_click",
+    "additional_right_property_screenshot_requests_forbidden": true,
+    "active_successful_selector": null,
+    "share_send_card_added": false,
+    "manual_behavior_confirmed": "select_first_upper_avatar_then_bottom_send_appears_click_send_completes",
+    "panel_appearance": "photo_and_video_look_similar; structural_identity_not_verified"
+  },
+  "latest_checkpoint_2026_10_08_sync": {
+    "status": "configured_through169_share_avatar170_unfinished",
+    "confirmed_range": [
+      110,
+      169
+    ],
+    "newly_synced_range": [
+      132,
+      169
+    ],
+    "total_rows_unconfirmed": true,
+    "automated_interactions_runtime_verified": false,
+    "cross_device_verified": false,
+    "all_withdrawn_share_proposals_recorded": true,
+    "sync_requested_by_user": true,
+    "task_scope": "documentation_only",
+    "original_case_sources": [
+      "00_影刀新会话接续记录.md",
+      "影刀_流程整理与待办记录.md",
+      "影刀测试记录_20261006.md"
+    ],
+    "history_policy": "prior_dated_current_next_total_disabled_states_are_historical; latest_checkpoint_controls",
+    "library_records": {
+      "continuation": {
+        "library_file_id": "libfile_775a9181c9f48191ad6607ae188ae26d",
+        "version": 53
+      },
+      "plan": {
+        "library_file_id": "libfile_d824b90ccdfc8191940764a6d10f8637",
+        "version": 46
+      },
+      "test": {
+        "library_file_id": "libfile_09de429b3640819193b8159f6a7e1161",
+        "version": 7
       }
     }
   }
