@@ -1,5 +1,17 @@
 # 影刀抖音搜索与作者核验
 
+## 2026-10-07 12:03 三次无新内容计数配置进度（当前）
+
+- 用户已确认复制设置变量到50行初始化：列表result_scan_state，Python单行[[], 0]，每个栏目在While之前初始化一次。原section_finished=False顺延51、While顺延52。
+- 用户12:03确认已添加89行内容快照：列表result_content_signature，Python单行 `[sorted("".join(item["text"].split()) for item in result_ocr_result if item["box"][1] > nav_swipe_points["left"]["start_y"] and item["text"].strip())]`。依据现有导航动态start_y排除顶部/时钟，比较结果区OCR文字；去空白并排序，忽略score与输出顺序。外层列表确保空内容快照[[]]与首次初始化[]不同，第一轮建立基线不算一次滑动无变化。module1.make_nav_swipe_points实际字典键left/start_y已读库核实，不是猜测。
+- 当前已确认总119行：50初始化state、51finished=False、52While；86结果截图、87OCR、88日志、89快照、90旧图像IF、91finished=True、92退出While、93EndIF、94结果滑动、95循环结束。原互动109—119禁用。
+- 当前下一步复制设置变量到89之后成为90：变量类型列表，变量名仍result_scan_state，Python单行 `[result_content_signature, result_scan_state[1] + 1 if result_content_signature == result_scan_state[0] else 0]`，错误处理默认。同屏加一，新内容清零，并保存本屏供下次比较。此更新卡尚未由用户确认，current_rows保留119行。
+- 添加更新卡后总120，旧图像IF为91、finished设置92、退出93、EndIF94、结果滑动95、循环结束96。之后将旧图像结束判断改成普通条件IF，连续无新内容计数>=3即可复用finished=True及退出当前结果循环；这项尚未实施。还应保持足够的滑动后加载等待再计数，实际参数待核对。
+- 用户明确规则继续有效：图文/视频结果无新内容连刷三次后转综合；综合同样三次无新内容后结束查找。有新内容清零，各栏目独立计数；不是总屏数仅三屏，不要求结束词出现，不把无提示状态强制改成异常。
+- 筛选三条动态OCR点击及结果页OCR日志已有运行证据；初始化/快照/新计数尚未整体运行验证，循环退出仍未修复。其他栏目、跨手机、完整作者核验未通过。不要提前运行未完成的退出逻辑验证而称已解决。
+
+以下历史内容的行号与待办以本节为准。
+
 ## 2026-10-07 11:52 用户确定：连续三次无新内容后结束当前栏目（当前）
 
 - 11:49用户日志截图确认第87结果页OCR日志已添加并运行：多次第53昵称日志与第87结果页OCR完整结果交替出现，文字输出含上午11:48等。此前result_ocr_result未定义的截图是历史；本次结果页截图→OCR→日志链已出结果。完整OCR正文仍未复制提供。
