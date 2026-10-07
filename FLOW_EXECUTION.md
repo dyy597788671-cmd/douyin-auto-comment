@@ -1,5 +1,38 @@
 # 流程执行进度
 
+## 2026-10-07 14:17 三次无新内容退出已配置，初始化修正后待复测（当前）
+
+- 最新状态：用户已完成连续无新内容计数、普通IF及复用退出动作。13:54实际截图确认88—99行的结构正确。14:10从头运行到52行报`free variable 'section_finished' referenced before assignment in enclosing scope`，本次未进入结果循环；14:17用户确认已按下表修正51行初始化，正在完整复测，尚无新运行结果。不能写成三次退出已实测成功。
+- 46行仍为列表filter_text_points，保留原筛选OCR文字中心坐标计算表达式；不要因本次初始化错误改掉46行，也不要重做已通过的43—49筛选动作。51行是独立的section_finished初始化。
+- 当前行号依据120行：在119行检查点新增90行计数卡；普通IF及End IF替换旧图像IF及其End IF，净增0行。13:54截图验证如下结构，其他保留行从旧90起顺延1；这不是全流程重新截图审计。
+
+| 行号 | 指令／配置 |
+|---|---|
+| 50 | 设置变量：列表result_scan_state；Python单行`[[], 0]`，每个栏目进入While前初始化 |
+| 51 | 设置变量：布尔section_finished；Python单行`False`，已启用；在52行While外、与While同级；14:17用户确认已修改 |
+| 52 | While：Python单行`(not section_finished) and author_check_result != "MATCH"` 等于Python `True` |
+| 86—88 | 结果页截图dy_result_screen.png → 离线OCR完整结果result_ocr_result → 信息日志；沿用已验证链 |
+| 89 | 列表result_content_signature；结果区OCR文字去空白、排序，排除顶部时钟与导航 |
+| 90 | 列表result_scan_state；保存本屏快照、同屏计数加1、新内容计数清零 |
+| 91 | 普通IF：Python `result_scan_state[1] >= 3` 等于Python `True` |
+| 92—93 | 在91判断内：布尔section_finished=True → 退出当前52行结果While |
+| 94 | 结束91行判断 |
+| 95—96 | 原向上滑动（在IF外、While内） → 结束52行While |
+| 97—99 | 原MATCH判断及退出15行栏目循环，保留 |
+| 110—120 | 原互动块仍全部禁用 |
+
+89行完整Python表达式（单行）：
+`[sorted("".join(item["text"].split()) for item in result_ocr_result if item["box"][1] > nav_swipe_points["left"]["start_y"] and item["text"].strip())]`
+
+90行完整Python表达式（单行）：
+`[result_content_signature, result_scan_state[1] + 1 if result_content_signature == result_scan_state[0] else 0]`
+
+- 第一屏建立基线计数0；每次结果滑动后，文字快照相同才加1，新内容出现清零。外层列表区分首次无基线[]与空屏快照[[]]。按每次运行OCR文字比较，不是固定坐标，也不是整个栏目总共仅查三屏。旧“暂无更多”图像判断及配对End IF已删除；无需结束词出现。
+- 类型栏目（图文／视频）连续三次滑动无新内容后进入综合；综合同样连续三次后结束搜索，沿用原结果分支：遇过ID不同仍无MATCH提示抖音号不同；否则未找到目标作品。MATCH仍立即退出，原候选遍历和作者ID核验均保留。
+- 当前待办只等复测结果：52行能否进入；图文／视频三次无新内容能否切综合；综合同样三次后是否正常结束。若继续报错，按实际行号和错误处理，不猜配置。95滑动后应给内容加载时间，当前高级等待参数尚未在这轮截图中核对，不能称已设置5秒。
+- 筛选OCR动态点击仅当前单手机图文已通过；本轮退出、其他栏目、跨手机及完整作者核验未验证。OCR快照比较的是结果文字，新图像但相同文字并不保证被判为新内容，不夸大覆盖。
+
+以下各节为历史检查点；其中旧行号、已完成待办及未实施结论均以上述最新记录为准。
 ## 2026-10-07 12:03 三次无新内容计数配置进度（当前）
 
 - 用户已确认复制设置变量到50行初始化：列表result_scan_state，Python单行[[], 0]，每个栏目在While之前初始化一次。原section_finished=False顺延51、While顺延52。
