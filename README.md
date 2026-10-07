@@ -1,8 +1,10 @@
-## 2026-10-07 20:25 点赞分支配置完成，运行待验证（当前接续点）
+> 操作指导先完整读取 [PROJECT_RULES.md](PROJECT_RULES.md) 与 [NEW_SESSION_START.md](NEW_SESSION_START.md)。下方旧日期内容是历史依据，已撤回方案不能继续执行。
+
+## 2026-10-07 20:25 点赞分支配置记录（历史检查点）
 
 ### 固定提供步骤格式
 - 用户明确要求位置必须写“第N行后、第N+1行前”；禁止“内部”“原多少行”等替代说法。一次给齐一条指令的实际面板、字段、填写内容、Python/普通文字格式及确定按钮。新会话保持此格式，不自行更换。
-- 禁止每配置一条就更新MD。只在一段流程配置完成、测试结果确定或准备切换会话时统一同步。本次为点赞分支配置完成的统一检查点。
+- 同步约定已由用户更新：只在用户明确要求，或完整阶段测试结束后统一同步；不得每卡片写MD，也不得因未测试的配置完成自动同步。
 
 ### 已确认当前流程
 - 114 IF current_action == Like；115 IF content_type == 视频；116原视频获取手机元素信息，以accessibility-id读取like_state_raw；117 Else；118图文XPath获取photo_like_element；119设置字符串like_state_raw=Python photo_like_element.get_attribute("content-desc")；120 End IF。
@@ -12,8 +14,8 @@
 - 已核实MobileElement.click()为单击手机元素，默认成功后延迟1秒、无返回值；布尔表达式仅承接返回，不证明按钮已变为点赞状态。原影刀开发手册：https://geekdaxue.co/read/shibu@winrobot/kvaafl 。
 - 整个互动区块已由用户启用；phone_device来自第3行已确认连接设置，不重复问连接参数，不重捕正确视频元素。
 
-### 下一步待测试
-- 仅先检验状态读取：在第120行设置断点，保存流程，从头调试运行，停在120后查看like_state_raw真实值。截图122已有断点可保留。此测试指令尚未执行，不宣称状态读取、图文点击或跨手机成功。
+### 运行测试安排（已后置）
+- 用户已撤回本处120/121断点测试安排。先配置完整互动和收尾，再统一运行测试；不按本历史检查点启动测试。
 - 不盲目反复从头运行：prepare_interactions会持久化计划；module1.read_task存在已有计划保护。第一次测试若在prepare之后失败或停住，后续先根据实际状态继续，不删除runtime_state或换任务掩盖失败。
 - 点赞点击实际效果、必要结果回读与record_action_result/executed_actions仍未完成；Comment、Favorite、Share执行与收尾未配置。
 
@@ -442,4 +444,3 @@
 保留原昵称IF，在其中遍历同屏候选，复用作品点击和主页ID核验。先查对应类型再查综合；ID不同继续查完，最终无MATCH提示“抖音号不同”。MATCH退出全部搜索循环并留在作品。导航通过全局nav_section绑定栏目text，等待保持5秒。企业及互动后续接入。
 
 本仓库不是包含core_runner和影刀客户端的完整独立运行包。
-
