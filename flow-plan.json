@@ -768,7 +768,7 @@
       "disabled": true
     }
   ],
-  "current_runtime_lines": 119,
+  "current_runtime_lines": 120,
   "completed_batches": [
     1,
     2,
@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T12:03:30+08:00",
+  "checkpoint_time": "2026-10-07T14:17:22+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1141,9 +1141,12 @@
     {
       "line": 51,
       "command": "设置变量",
-      "config": "section_finished = False（布尔）",
+      "config": "布尔；变量名section_finished；Python False；在52行While外、各栏目进入While前初始化；错误处理默认",
       "source": "新增",
-      "disabled": false
+      "disabled": false,
+      "configuration_confirmed": true,
+      "confirmation_at": "2026-10-07T14:17:22+08:00",
+      "runtime_verified": false
     },
     {
       "line": 52,
@@ -1413,211 +1416,223 @@
     },
     {
       "line": 90,
-      "command": "IF 图像存在(手机)",
-      "config": "原“暂无更多，查看所有内容”匹配图与原参数；先处理完本屏候选再判到底",
-      "source": "原46",
-      "disabled": false
+      "command": "设置变量",
+      "config": "列表；Python [result_content_signature, result_scan_state[1] + 1 if result_content_signature == result_scan_state[0] else 0] → result_scan_state；错误处理默认；保存当前快照并更新连续无变化计数",
+      "source": "复用46复制；12:07用户确认",
+      "disabled": false,
+      "configuration_confirmed": true,
+      "runtime_verified": false
     },
     {
       "line": 91,
+      "command": "IF 条件",
+      "config": "对象1 Python result_scan_state[1] >= 3；关系等于；对象2 Python True；内部92设置section_finished=True、93退出52行While",
+      "source": "新建普通IF替换原图像IF；13:54截图确认层级",
+      "disabled": false,
+      "configuration_confirmed": true,
+      "runtime_verified": false
+    },
+    {
+      "line": 92,
       "command": "设置变量",
       "config": "section_finished = True（布尔）",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 92,
+      "line": 93,
       "command": "退出循环",
       "config": "退出52行逐屏循环",
       "source": "原47",
       "disabled": false
     },
     {
-      "line": 93,
+      "line": 94,
       "command": "End IF",
-      "config": "结束90行",
-      "source": "原48",
-      "disabled": false
+      "config": "结束91行普通IF；95滑动在IF外",
+      "source": "新普通IF的End IF；旧图像IF及其End IF已删除",
+      "disabled": false,
+      "configuration_confirmed": true
     },
     {
-      "line": 94,
+      "line": 95,
       "command": "滑动手机屏幕",
       "config": "向上滑动结果列表；保留原49参数；不滑顶部导航",
       "source": "原49",
       "disabled": false
     },
     {
-      "line": 95,
+      "line": 96,
       "command": "循环结束标记",
       "config": "结束52行逐屏循环",
       "source": "原50",
       "disabled": false
     },
     {
-      "line": 96,
+      "line": 97,
       "command": "IF 条件",
       "config": "author_check_result 等于\"MATCH\"",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 97,
+      "line": 98,
       "command": "退出循环",
       "config": "退出15行栏目循环，不再查综合",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 98,
+      "line": 99,
       "command": "End IF",
-      "config": "结束96行",
+      "config": "结束97行",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 99,
+      "line": 100,
       "command": "循环结束标记",
       "config": "结束15行栏目循环；只有类型栏目到底未匹配才进入综合",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 100,
+      "line": 101,
       "command": "IF 条件",
       "config": "author_check_result 等于\"MATCH\"",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 101,
+      "line": 102,
       "command": "打印日志",
       "config": "作者抖音号核验成功；当前保留作品页，尚未执行互动",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 102,
+      "line": 103,
       "command": "Else",
-      "config": "对应100行",
+      "config": "对应101行",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 103,
+      "line": 104,
       "command": "IF 条件",
       "config": "saw_id_mismatch 等于True",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 104,
+      "line": 105,
       "command": "打印日志",
       "config": "抖音号不同；仅两个栏目查完仍无MATCH才到此处",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 105,
+      "line": 106,
       "command": "Else",
-      "config": "对应103行",
+      "config": "对应104行",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 106,
+      "line": 107,
       "command": "打印日志",
       "config": "未找到目标作品；只用于全程未遇到ID不同且没有MATCH",
       "source": "新增",
       "disabled": false
     },
     {
-      "line": 107,
-      "command": "End IF",
-      "config": "结束103行",
-      "source": "新增",
-      "disabled": false
-    },
-    {
       "line": 108,
       "command": "End IF",
-      "config": "结束100行",
+      "config": "结束104行",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 109,
+      "command": "End IF",
+      "config": "结束101行",
+      "source": "新增",
+      "disabled": false
+    },
+    {
+      "line": 110,
       "command": "IF 条件",
       "config": "author_check_result 等于\"MATCH\"；整个后续互动块暂禁用",
       "source": "原51",
       "disabled": true
     },
     {
-      "line": 110,
+      "line": 111,
       "command": "调用模块",
       "config": "module1.prepare_interactions(task_data) → interaction_plan；本阶段禁用",
       "source": "原52",
       "disabled": true
     },
     {
-      "line": 111,
+      "line": 112,
       "command": "设置变量",
       "config": "executed_actions = []；本阶段禁用",
       "source": "原53",
       "disabled": true
     },
     {
-      "line": 112,
+      "line": 113,
       "command": "ForEach列表循环",
       "config": "interaction_plan[\"execution_order\"] → current_action；本阶段禁用，恢复时核实实际键名",
       "source": "原54",
       "disabled": true
     },
     {
-      "line": 113,
+      "line": 114,
       "command": "IF 条件",
       "config": "current_action 等于\"Like\"；本阶段禁用",
       "source": "原55",
       "disabled": true
     },
     {
-      "line": 114,
+      "line": 115,
       "command": "IF 条件",
       "config": "interaction_plan[\"content_type\"] 等于\"视频\"；本阶段禁用",
       "source": "原56",
       "disabled": true
     },
     {
-      "line": 115,
+      "line": 116,
       "command": "获取手机元素信息",
       "config": "视频——点赞按钮；原属性参数 → like_state_raw；本阶段禁用",
       "source": "原57",
       "disabled": true
     },
     {
-      "line": 116,
+      "line": 117,
       "command": "End IF",
-      "config": "结束114行；本阶段禁用",
+      "config": "结束115行；本阶段禁用",
       "source": "原58",
       "disabled": true
     },
     {
-      "line": 117,
+      "line": 118,
       "command": "End IF",
-      "config": "结束113行；本阶段禁用",
+      "config": "结束114行；本阶段禁用",
       "source": "原59",
       "disabled": true
     },
     {
-      "line": 118,
+      "line": 119,
       "command": "循环结束标记",
-      "config": "结束112行；本阶段禁用",
+      "config": "结束113行；本阶段禁用",
       "source": "原60",
       "disabled": true
     },
     {
-      "line": 119,
+      "line": 120,
       "command": "End IF",
-      "config": "结束109行；本阶段禁用",
+      "config": "结束110行；本阶段禁用",
       "source": "原61",
       "disabled": true
     }
@@ -1626,7 +1641,7 @@
   "phone_test_complete": false,
   "phone_test_passed": false,
   "cross_device_tested": false,
-  "phone_test_status": "state初始化和结果文字快照已添加；连续无新内容计数更新待添加，退出IF未改，尚未整体验证",
+  "phone_test_status": "三次无新内容退出结构已配置；首次运行在52行因section_finished未赋值停止；14:17用户确认51初始化已修改，完整复测待用户结果",
   "last_filter_test": {
     "reported_date": "2026-10-07",
     "scope": "one_template_one_phone",
@@ -1639,10 +1654,10 @@
     "current_threshold_percent": 55,
     "threshold_status": "provisional_not_cross_device_validated",
     "other_templates_tested": false,
-    "ocr_status": "runtime_output_verified_wrong_screen_captured",
-    "next_step": "第41设置断点，从头运行，结果页加载完成后单步执行41，观察筛选弹窗是否打开；不继续新增固定等待"
+    "ocr_status": "all_three_dynamic_filter_clicks_user_verified_single_phone",
+    "next_step": "筛选已通过，保持43—49配置；当前复测52行变量初始化及三次无进展退出"
   },
-  "current_runtime_revision": "2026-10-07-THREE-IDLE-SETUP-1",
+  "current_runtime_revision": "2026-10-07-THREE-IDLE-CONFIGURED-INIT-FIX",
   "ocr_validation": {
     "basis": "完整文字精确匹配",
     "screenshot_line": 43,
@@ -1724,11 +1739,14 @@
       ]
     },
     "next_action": {
-      "command": "复制设置变量",
-      "insert_after_line": 89,
-      "variable_name": "result_scan_state",
-      "python_expression": "[result_content_signature, result_scan_state[1] + 1 if result_content_signature == result_scan_state[0] else 0]",
-      "status": "pending_user_confirmation"
+      "command": "完整运行并观察",
+      "status": "awaiting_user_runtime_result",
+      "checks": [
+        "52行While可进入且不再报section_finished未赋值",
+        "图文或视频无新内容连续三次滑动后进入综合",
+        "综合同样三次无新内容后结束查找并走原结果分支"
+      ],
+      "initialization_confirmed_at": "2026-10-07T14:17:22+08:00"
     },
     "text_points_implemented": true,
     "text_points_line": 46,
@@ -1814,19 +1832,19 @@
     },
     "calibration_matches": 1,
     "runtime_effect_confirmed": true,
-    "next_step": "configure_existing_three_click_cards_to_consume_dynamic_ocr_points_then_run",
+    "next_step": "preserve_verified_filter_setup_and_retest_result_loop",
     "runtime_effect_scope": "paused_then_下一步_executed_line41",
     "continuous_run_resolved": true,
     "continuous_run_resolution_scope": "single_phone_single_run_after_wait_moved"
   },
-  "current_runtime_reference_basis": 119,
+  "current_runtime_reference_basis": 120,
   "results_loop_diagnosis": {
     "while_line": 52,
     "nickname_line": 53,
-    "bottom_image_if_line": 90,
-    "set_finished_line": 91,
-    "exit_while_line": 92,
-    "swipe_line": 94,
+    "bottom_image_if_line": null,
+    "set_finished_line": 92,
+    "exit_while_line": 93,
+    "swipe_line": 95,
     "reported_repeated_lines": [
       85,
       89
@@ -1835,9 +1853,9 @@
     "task_age_verified": false,
     "actual_bottom_screen_available": true,
     "root_cause_confirmed": false,
-    "next_action": "insert_state_counter_update_after_signature_line89",
+    "next_action": "await_full_run_after_section_finished_initialization_fix",
     "fixed_iteration_cap_allowed": false,
-    "loop_end_line": 95,
+    "loop_end_line": 96,
     "actual_bottom_screen_text": "暂无更多，查看所有内容",
     "other_end_states_reported": true,
     "other_end_texts_verified": false,
@@ -1847,15 +1865,15 @@
     "result_ocr_variable": "result_ocr_result",
     "result_ocr_runtime_verified": true,
     "pending_logging_card": {
-      "line": 87,
+      "line": 88,
       "inserted": true,
-      "status": "runtime_log_screenshot_confirmed"
+      "status": "runtime_log_screenshot_confirmed_prior_to_this_revision"
     },
     "ocr_end_if_implemented": false,
-    "no_progress_handling_implemented": false,
+    "no_progress_handling_implemented": true,
     "result_ocr_logging_line": 88,
     "actual_bottom_without_end_text_reported": true,
-    "last_runtime_evidence": "11:49截图第53/87重复，无新内容（用户观察）",
+    "last_runtime_evidence": "14:10:06从头运行；14:10:35第45筛选OCR日志；14:10:41在52行报section_finished未赋值，未进入本轮结果循环",
     "full_result_ocr_output_available": false,
     "no_progress_rule": {
       "user_authorized": true,
@@ -1870,7 +1888,7 @@
       "on_type_section_end": "continue_to_综合",
       "on_综合_end": "finish_original_search_result_branch",
       "is_total_page_cap": false,
-      "status": "initializer_and_signature_configured_counter_and_exit_if_pending"
+      "status": "configured_initializer_corrected_pending_runtime_result"
     },
     "pending_state_initializer": {
       "variable_type": "列表",
@@ -1893,14 +1911,45 @@
       "variable_name": "result_scan_state",
       "variable_type": "列表",
       "python_expression": "[result_content_signature, result_scan_state[1] + 1 if result_content_signature == result_scan_state[0] else 0]",
-      "inserted": false
+      "inserted": true,
+      "line": 90,
+      "runtime_verified": false
+    },
+    "bottom_image_if_removed": true,
+    "ordinary_no_progress_if_line": 91,
+    "no_progress_runtime_verified": false,
+    "structure_verified_scope": "13:54实际截图88—99行；91内92/93，94EndIF，95滑动在IF外，96While结束",
+    "last_error": {
+      "line": 52,
+      "at": "2026-10-07T14:10:41.205+08:00",
+      "message": "free variable 'section_finished' referenced before assignment in enclosing scope",
+      "runtime_result": "stopped_before_result_scanning",
+      "initializer_line": 51,
+      "correction": {
+        "variable_type": "布尔",
+        "variable_name": "section_finished",
+        "python_value": "False",
+        "user_confirmed": true,
+        "confirmed_at": "2026-10-07T14:17:22+08:00",
+        "runtime_verified": false
+      }
+    },
+    "section_finished_initializer": {
+      "line": 51,
+      "variable_type": "布尔",
+      "variable_name": "section_finished",
+      "python_value": "False",
+      "outside_while": true,
+      "reset_per_section": true,
+      "user_confirmed_corrected": true,
+      "runtime_verified": false
     }
   },
   "progress_sync": {
     "requested_by_user": true,
-    "synced_at": "2026-10-07T10:54:21+08:00",
-    "confirmed_current_rows": 116,
-    "possible_rows_after_pending_log": 117,
-    "next_action": "confirm_result_ocr_logging_card_then_collect_last_bottom_ocr_output"
+    "checkpoint_at": "2026-10-07T14:17:22+08:00",
+    "confirmed_current_rows": 120,
+    "row_count_basis": "由119行记录增加90计数卡；新增普通IF替换旧图像IF净增0；88—99截图确认，未全面重审所有行",
+    "next_action": "await_full_run_after_initializer_fix"
   }
 }
