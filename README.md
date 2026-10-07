@@ -1,6 +1,15 @@
 # 影刀抖音搜索与作者核验
 
-## 2026-10-07 14:33 新任务在59行定位封面失败（当前）
+## 2026-10-07 14:39 已收到通用封面条目，辅助函数已改好待影刀替换（当前）
+
+- 用户提供已有“抖音搜索结果封面”编辑器截图：mobile/hierarchy/RecyclerView/三层LinearLayout/FrameLayout/ViewGroup/View各节点勾选；末级android.view.View仅显示index=0勾选，id=.../rej及index-attribute=1未勾选。祖先层级的属性面板本图未展示，不宣称其属性全部已核对。不要再要求用户重新抓取此封面。
+- 已修改GitHub module1.py的build_author_cover_xpath，提交`67c475d2952711bf48d34ed023487b1cd1889aae`。封面查找依据图中层级与View[index=0]，去掉固定dp7/rej/-+ resource-id约束；再要求其RecyclerView内的LinearLayout祖先同卡片包含目标昵称精确text和唯一封面，保留同名候选序号occurrence与原昵称引号处理。不使用全局昵称列表与封面列表按索引盲配，也不改为固定坐标。
+- 18项模拟XML与参数校验通过：同名多个卡片及序号、不同昵称不串卡、搜索结果外同名文字排除、index=1非封面排除、歧义封面不盲选、中文/单引号/双引号昵称、非法参数；模块语法检查通过，确认只有build_author_cover_xpath变更。测试基于截图结构模拟，没有真实手机XML，因此59故障尚不能标为手机修复通过。
+- 当前下一步：在影刀module1.py代码页仅替换build_author_cover_xpath从def到最后return的整个函数，make_nav_swipe_points及其它函数保留。58调用参数expected_author=task_data["expected_author"]、occurrence=current_candidate_number、返回字符串candidate_xpath，以及59 phone_device/Python candidate_xpath/输出mobile_element_result都不改。用户尚未确认影刀本地替换，不能把仓库更新当作运行环境已更新。
+- 替换保存后，从主界面完整运行可找到的新任务，观察59取到正确候选封面、60打开对应作品、随后主页昵称与抖音号核验及102成功日志。保留51初始化和三次无进展退出；当前仍120行，110—120互动禁用，未找到分支此前已正常结束。找到分支、实际同名多候选、其他栏目、跨手机与随机互动尚未通过。
+
+此前59失败及未找到通过的证据保留在下方；最新下一步以上述辅助函数替换为准。
+## 2026-10-07 14:33 新任务在59行定位封面失败（诊断检查点）
 
 - 用户新增可找到任务后从头运行。截图：14:30:59.657开始；14:31:25第45筛选OCR有输出；14:31:29.870第54日志栏目=图文并读到昵称；14:31:35.580第59获取元素对象报“未找到元素”。已进入昵称命中后的候选流程，但尚未完成进入作品、主页ID核验及102成功分支。
 - 59实际界面：phone_device；XPath值蓝色Python变量candidate_xpath；保存至mobile_element_result。名称和表达式使用方式有截图证据，不是把candidate_xpath当普通文字。不要再盲改变量名或新增等待来掩盖定位失败。
