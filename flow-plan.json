@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T16:00:09+08:00",
+  "checkpoint_time": "2026-10-07T16:23:51+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1981,13 +1981,13 @@
     "confirmed_current_rows": 120,
     "row_count_basis": "由119行记录增加90计数卡；新增普通IF替换旧图像IF净增0；88—99截图确认，未全面重审所有行",
     "next_action": "confirm_line47_disabled_and_test_new_filter_policy",
-    "last_checkpoint": "2026-10-07T16:00:09+08:00",
+    "last_checkpoint": "2026-10-07T16:23:51+08:00",
     "repository": "dyy597788671-cmd/dy-auto-comment",
     "branch": "main",
     "module_fix_commit": "ff6cdb955424f83fc39eede7b2c83ccc4f1fbaee",
     "library_record_id": "libfile_d824b90ccdfc8191940764a6d10f8637",
-    "status": "真实XML定位修复记录同步；手机验证仍待完成",
-    "library_version": 30
+    "status": "218行用户旧模块逻辑核对完成，手机测试待继续",
+    "library_version": 31
   },
   "last_not_found_test": {
     "reported_at": "2026-10-07T14:27:57+08:00",
@@ -2006,10 +2006,10 @@
   },
   "next_found_test": {
     "command": "停止调试；全文替换影刀module1.py；获取元素对象卡片XPath恢复Python candidate_xpath；从头运行到获取断点后单次下一步",
-    "status": "awaiting_user_module_and_lookup_restoration",
+    "status": "old_module_comparison_passed_awaiting_user_install_and_lookup_restore",
     "preserve": "58参数、其它模块接口、一天内OCR、5秒等待及三次无新内容退出",
     "test_scope": "先获取正确封面对象，再继续点击及作者ID核验；互动保持禁用",
-    "module_installation": "新ff6cdb修复尚待用户全文替换，旧暂停candidate_xpath须从头重算"
+    "module_installation": "用户旧218行源码完整逻辑已核对；156行修正版仅定位条件变化，其它减少为排版；待用户完成全文替换和candidate_xpath恢复"
   },
   "candidate_click_diagnosis": {
     "reported_at": "2026-10-07T14:33:09+08:00",
@@ -2228,7 +2228,9 @@
         },
         "full_module_copy_provided_at": "2026-10-07T14:49:19+08:00"
       }
-    ]
+    ],
+    "user_old_module_available": true,
+    "user_old_module_logic_preserved_verified": true
   },
   "filter_policy": {
     "requested_at": "2026-10-07T15:05:12+08:00",
@@ -2305,5 +2307,34 @@
     "xml_file_id": "file_0000000074e081f789991edcb3c684d3",
     "actual_position_verified": false,
     "next_step": "保留UI树卡；恢复其后的获取元素对象为candidate_xpath并测试，新60以按要求插入为条件"
+  },
+  "module_source_comparison": {
+    "provided_at": "2026-10-07T16:23:51+08:00",
+    "source": "用户粘贴旧module1.py全文；还原聊天富文本格式",
+    "pasted_normalized_lines": 218,
+    "delivered_lines": 156,
+    "function_names": [
+      "read_task",
+      "verify_author",
+      "prepare_interactions",
+      "record_action_result",
+      "finish_task",
+      "main",
+      "build_author_cover_xpath",
+      "make_nav_swipe_points"
+    ],
+    "deleted_functions": [],
+    "added_functions": [],
+    "changed_functions": [
+      "build_author_cover_xpath"
+    ],
+    "complete_module_ast_identical_after_only_cover_predicate_change": true,
+    "normalization_scope": "还原聊天富文本的加粗、缩进和Markdown转义；不是本地原文件逐字节比较",
+    "line_reduction": 62,
+    "repository_lines_before_and_after": 156,
+    "formatting_changes_acknowledged": true,
+    "old_source_needed": false,
+    "code_modified_this_turn": false,
+    "phone_runtime_verified": false
   }
 }
