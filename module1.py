@@ -7,11 +7,14 @@ if PROJECT_ROOT not in sys.path:
 import core_runner
 
 
-def read_task():
+def read_task(sender_account_id="手机01", adopt_legacy=False):
+    """每个发送账号使用固定且不同的标识；旧default-device只在明确指定时转交。"""
     gateway = core_runner.UnifiedGateway(
         root=PROJECT_ROOT,
-        device_id="default-device"
+        device_id=sender_account_id
     )
+    if adopt_legacy:
+        gateway.adopt_legacy_task()
 
     task = gateway.get_active_task()
     if task is not None:
@@ -28,7 +31,7 @@ def verify_author(task_data, profile_douyin_id_raw, profile_author_name_raw):
 
     gateway = core_runner.UnifiedGateway(
         root=PROJECT_ROOT,
-        device_id="default-device"
+        device_id=task_data["sender_account_id"]
     )
 
     return gateway.assert_author(
@@ -59,7 +62,7 @@ def prepare_interactions(task_data):
 
     gateway = core_runner.UnifiedGateway(
         root=PROJECT_ROOT,
-        device_id="default-device"
+        device_id=task_data["sender_account_id"]
     )
     plan = gateway.generate_strategy(task_id=task_id, run_token=run_token)
     plan["content_type"] = content_type
@@ -89,7 +92,7 @@ def finish_task(task_data, executed_actions, status="SUCCESS",
         raise ValueError("当前任务缺少 task_id 或 run_token")
     gateway = core_runner.UnifiedGateway(
         root=PROJECT_ROOT,
-        device_id="default-device"
+        device_id=task_data["sender_account_id"]
     )
     return gateway.record_result(
         task_id=task_id,

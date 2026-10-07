@@ -1,5 +1,19 @@
 # 当前影刀实际流程
 
+## 2026-10-07 程序适配已完成；下一步安装文件与设置账号
+
+- core_runner.py现已支持新10列表格；不要求Search_Section，综合仍由原影刀列表循环补搜。评论来自每项目Comments，领取时在项目锁内分配并预留，同项目各账号不重复；空行和相同文本去重，用尽后停止当前账号并提示补充，不复用。
+- 进度按Task_ID与sender_account_id分别保存。一个账号完成后，其它账号仍可领取同项目；Excel汇总已登记账号，完整结果在现有runtime_state.json中保留。可在现有settings.json的sender_accounts填写全部参与账号，提前检查评论容量，并让整条项目状态等待全部配置账号完成；不填写时按实际登记账号汇总，后加入账号仍可领取。
+- 策略固定包含Like、Comment、Favorite，可随机排列；Share随机是否加入，目标为好友。默认share_probability为0.5，这是当前可调整的程序默认值，不是已确认的用户比例。好友选择与真实分享面板仍待影刀配置。
+- module1.read_task增加sender_account_id与adopt_legacy参数；其它接口从task_data取账号标识，避免都落入default-device。当前这台对应手机01；其它账号用不同固定标识，例如手机02。同一手机切换发送账号也应使用新的账号标识，不能把目标作者UID当作发送账号。
+- 旧default-device活动任务如尚未生成策略，可在当前实际所属账号的read_task调用中明确传adopt_legacy=True转交；保留原run_token和状态，不删除runtime_state.json。已有旧策略或熔断状态拒绝自动转交，需先核对进度。
+- 已通过15项离线检查，包括6进程同时领取且6条评论不同、后续账号领取同项目、评论不足后补充、已分配评论和计划重启保持、Excel占用后事务恢复、结果令牌与动作校验、旧状态转交及人工重置兼容。作者核验、冷却、锁和原子保存的AST与原版一致；原封面XPath及导航计算保持。离线检查不等于影刀或手机实测。
+- 用户安装尚未确认。第一步停止影刀调试，将调整后的表格保存为D:\备份文件\项目库\抖音自动发布工具\data\task_cases.xlsx，再用本轮完整core_runner.py覆盖D:\备份文件\项目库\抖音自动发布工具\core_runner.py。
+- 下一步在影刀应用模块module1中用本轮全文替换，保持原排版；随后第1行调用module1.read_task，当前账号传sender_account_id="手机01"，如接续当前旧default-device任务同时传adopt_legacy=True。只处理这一张卡片，一次给齐实际参数；不让用户自己找函数局部替换。
+- 手机互动骨架继续保持禁用。完成读取和账号参数验证后，复用prepare_interactions、record_action_result、finish_task逐条补齐点赞、评论、收藏与分享到好友，不重建已通过的搜索和作者核验。
+
+本节更新下方旧“程序适配待修改”的实施状态；下方表格与动作业务规则仍有效。
+
 ## 2026-10-07 已确认的表格与互动规则（当前执行依据）
 
 本节替代下方历史记录中的 Search_Section、随机选1—3个动作、全局评论TXT、评论用尽后复用，以及保留UI树诊断卡的旧安排。
@@ -12,10 +26,10 @@
 - 分配及结果按项目与真实发送账号分别保存。共享分配时锁定并预留文本，重试沿用该账号已分配评论；发送成功后记录成功，失败不能冒充已发送。账号A完成不能让账号B跳过整个项目。不能继续把所有手机记成default-device。
 - 表格示例保留项目1005和6条不同的占位评论，用户自行修改。原RUNNING及Result_Message保留是原始数据，不表示互动已经完成；替换运行表前需按现有恢复规则处理任务状态，不得为了测试清空全部状态。
 - 获取手机UI树诊断卡已删除。已确认第59行获取元素对象：phone_device、XPath、Python candidate_xpath、输出mobile_element_result；第60行点击mobile_element_result。UI树不是业务依赖，不能因删除它而再删获取元素对象。17:02:49图文搜索、封面打开、作者抖音号核验和回退作品成功；视频与跨手机完整流程不因此宣称已实测。
-- 当前状态：表格和需求已定稿，程序适配与四项互动尚待修改和手机实测。core_runner.py仍使用旧动作/评论策略；module1.py仍需真实账号/设备身份适配。本次同步不把这些需求写成已实现，也不启用未补齐的互动块。
+- 当前状态：表格和需求已定稿，core_runner.py与module1.py已完成离线代码适配；用户安装、账号参数设置及四项影刀互动尚待执行和手机实测，不启用未补齐的互动块。
 - 修改顺序：先适配任务读取（Content_Type、Comments）、账号独立状态与不重复评论分配，并让策略固定含点赞/评论/收藏及随机分享；再复用已有module1.prepare_interactions、record_action_result、finish_task接口和禁用互动骨架，逐条补齐影刀操作。读取接口按字段名映射，不依赖旧I/J列位置。
 - 保持已通过的检索核验链路、现有昵称/封面/主页元素、一天内筛选、原等待与三次无新内容退出规则。明确真实卡片行号、面板及字段，一次给齐当前卡片配置，表达式只给单行；模块改动全文交付并保持原排版，不要求用户找函数局部替换。
-- 当前仓库为 https://github.com/dyy597788671-cmd/dy-auto-comment ，旧douyin-auto-comment地址会跳转。仓库目前含module1.py与流程文档，不含core_runner.py；下一阶段从已有core_runner.py版本及用户运行工程核对适配，不能把缺失路径当成网络故障。
+- 当前仓库为 https://github.com/dyy597788671-cmd/dy-auto-comment ，旧douyin-auto-comment地址会跳转。仓库现已包含core_runner.py、module1.py与流程文档；新会话从本仓库的适配版继续。
 
 表格详细字段及待接入要求见TASK_SCHEMA.md；机器可读当前要求见flow-plan.json的confirmed_requirements。以下较早日期的内容保留为历史证据，不是当前操作指令。
 

@@ -1985,14 +1985,14 @@
     "checkpoint_at": "2026-10-07T15:05:12+08:00",
     "confirmed_current_rows": 120,
     "row_count_basis": "由119行记录增加90计数卡；新增普通IF替换旧图像IF净增0；88—99截图确认，未全面重审所有行",
-    "next_action": "adapt_task_reader_account_state_comment_allocation_and_action_strategy",
+    "next_action": "install_table_core_and_module_then_configure_line1_sender",
     "last_checkpoint": "2026-10-07T17:44:09+08:00",
     "repository": "dyy597788671-cmd/dy-auto-comment",
     "branch": "main",
     "module_fix_commit": "ff6cdb955424f83fc39eede7b2c83ccc4f1fbaee",
     "library_record_id": "libfile_d824b90ccdfc8191940764a6d10f8637",
-    "status": "新表和互动需求已确认并同步，代码适配及手机动作待修改",
-    "library_version": 36
+    "status": "代码适配与15项离线检查已完成；用户安装和手机互动待执行",
+    "library_version": 37
   },
   "last_not_found_test": {
     "reported_at": "2026-10-07T14:27:57+08:00",
@@ -2401,9 +2401,9 @@
     "cross_device_verified": false
   },
   "next_stage": {
-    "name": "先适配已确认表格和账号策略，再补齐影刀互动",
-    "status": "requirements_confirmed_implementation_pending",
-    "entry": "NEW_SESSION_START.md最新已确认表格与互动规则",
+    "name": "安装程序与表格，设置第1行账号，再补齐影刀互动",
+    "status": "offline_code_done_user_deployment_pending",
+    "entry": "NEW_SESSION_START.md最新程序适配段落",
     "reuse_disabled_block": {
       "last_confirmed_lines": [
         110,
@@ -2431,7 +2431,7 @@
   },
   "confirmed_requirements": {
     "confirmed_at": "2026-10-07T17:44:09+08:00",
-    "implementation_status": "requirements_and_table_confirmed_runtime_changes_pending",
+    "implementation_status": "offline_code_verified_user_install_and_phone_actions_pending",
     "one_project_one_work": true,
     "multiple_sender_accounts_per_project": true,
     "table": {
@@ -2507,13 +2507,10 @@
       "preserve_existing_recovery_guards": true
     },
     "changes_pending": [
-      "core_runner task field mapping",
-      "per-account scheduling and progress",
-      "shared distinct comment allocation",
-      "Like Comment Favorite plus optional Share strategy",
-      "result validation",
-      "module1 sender identity adaptation",
-      "ShadowBot action cards"
+      "user installs new task table and core_runner.py",
+      "user replaces ShadowBot module1",
+      "line1 sender identity and optional explicit legacy adoption",
+      "ShadowBot action cards and live phone verification"
     ]
   },
   "latest_ui_tree_removal": {
@@ -2524,5 +2521,27 @@
     "xpath": "candidate_xpath",
     "verified_tuwen_author_match_after_removal": true,
     "full_tail_row_map_verified": false
+  },
+  "runtime_adaptation": {
+    "core_runner": "core_runner.py",
+    "bridge": "module1.py",
+    "implemented": [
+      "new task schema",
+      "per sender account task progress",
+      "atomic distinct comment reservation",
+      "mandatory Like Comment Favorite and optional Share",
+      "result validation and transactional recovery"
+    ],
+    "offline_checks_passed": 15,
+    "concurrent_accounts_tested": 6,
+    "share_probability_default": 0.5,
+    "user_install_confirmed": false,
+    "live_phone_interactions_verified": false,
+    "first_user_step": "stop debugging, install adjusted task table and core_runner.py",
+    "next_user_step": "replace module1 in ShadowBot, set line1 sender_account_id; explicitly adopt legacy slot only for its actual owner",
+    "account_example": "手机01",
+    "legacy_adoption_argument": "adopt_legacy=True",
+    "preserve_runtime_state": true,
+    "comments_reservation_stage": "task_claim_before_phone_actions"
   }
 }
