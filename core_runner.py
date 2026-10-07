@@ -467,9 +467,10 @@ class InteractionStrategyEngine:
             raise EngineError("INVALID_SEED", "随机种子必须为整数或整数字符串")
         rng = random.Random(int(seed))
         order = list(REQUIRED_ACTIONS)
-        if rng.random() < self.share_probability:
-            order.append("Share")
+        share_selected = rng.random() < self.share_probability
         rng.shuffle(order)
+        if share_selected:
+            order.append("Share")
         return {"policy_version": 2, "seed": str(seed), "actions": order[:],
                 "execution_order": order, "comment_content": comment_content,
                 "share_selected": "Share" in order, "share_destination": "friend",
