@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T10:22:30+08:00",
+  "checkpoint_time": "2026-10-07T10:31:29+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1108,21 +1108,28 @@
       "source": "原16",
       "disabled": false,
       "configuration_confirmed": true,
-      "runtime_click_verified": false
+      "runtime_click_verified": true,
+      "runtime_verification_scope": "user_reported_single_phone_filter_actions"
     },
     {
       "line": 48,
       "command": "点击屏幕(手机)",
-      "config": "原“一天内”匹配图与原参数",
+      "config": "phone_device；通过坐标指定；横坐标Python [item[\"x\"] for item in filter_text_points if item[\"text\"] == \"一天内\"][0]；纵坐标Python [item[\"y\"] for item in filter_text_points if item[\"text\"] == \"一天内\"][0]；单击；高级/错误处理保留原设置",
       "source": "原17",
-      "disabled": false
+      "disabled": false,
+      "configuration_confirmed": true,
+      "runtime_click_verified": true,
+      "runtime_verification_scope": "user_reported_single_phone_filter_actions"
     },
     {
       "line": 49,
       "command": "点击屏幕(手机)",
-      "config": "原红底“查看结果”匹配图与原参数",
+      "config": "phone_device；通过坐标指定；横坐标Python [item[\"x\"] for item in filter_text_points if item[\"text\"] == \"查看结果\"][0]；纵坐标Python [item[\"y\"] for item in filter_text_points if item[\"text\"] == \"查看结果\"][0]；单击；高级/错误处理保留原设置",
       "source": "原18",
-      "disabled": false
+      "disabled": false,
+      "configuration_confirmed": true,
+      "runtime_click_verified": true,
+      "runtime_verification_scope": "user_reported_single_phone_filter_actions"
     },
     {
       "line": 50,
@@ -1169,7 +1176,7 @@
     {
       "line": 56,
       "command": "ForEach列表循环",
-      "config": "Python candidate_numbers → current_candidate_number；在53行昵称IF内遍历同屏候选",
+      "config": "Python candidate_numbers → current_candidate_number；在55行昵称IF内遍历同屏候选",
       "source": "新增",
       "disabled": false
     },
@@ -1218,7 +1225,7 @@
     {
       "line": 63,
       "command": "Else",
-      "config": "对应59行",
+      "config": "对应61行",
       "source": "原29",
       "disabled": false
     },
@@ -1232,7 +1239,7 @@
     {
       "line": 65,
       "command": "End IF",
-      "config": "结束59行",
+      "config": "结束61行",
       "source": "原31",
       "disabled": false
     },
@@ -1274,14 +1281,14 @@
     {
       "line": 71,
       "command": "退出循环",
-      "config": "退出54行当前屏候选循环",
+      "config": "退出56行当前屏候选循环",
       "source": "原37",
       "disabled": false
     },
     {
       "line": 72,
       "command": "End IF",
-      "config": "结束68行",
+      "config": "结束70行",
       "source": "原38",
       "disabled": false
     },
@@ -1309,7 +1316,7 @@
     {
       "line": 76,
       "command": "End IF",
-      "config": "结束71行",
+      "config": "结束73行",
       "source": "原41",
       "disabled": false
     },
@@ -1330,21 +1337,21 @@
     {
       "line": 79,
       "command": "End IF",
-      "config": "结束75行",
+      "config": "结束77行",
       "source": "原44",
       "disabled": false
     },
     {
       "line": 80,
       "command": "循环结束标记",
-      "config": "结束54行候选循环",
+      "config": "结束56行候选循环",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 81,
       "command": "End IF",
-      "config": "结束53行原昵称IF；保留其外层结构",
+      "config": "结束55行原昵称IF；保留其外层结构",
       "source": "原45保留",
       "disabled": false
     },
@@ -1358,14 +1365,14 @@
     {
       "line": 83,
       "command": "退出循环",
-      "config": "退出49行逐屏循环",
+      "config": "退出51行逐屏循环",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 84,
       "command": "End IF",
-      "config": "结束80行",
+      "config": "结束82行",
       "source": "新增",
       "disabled": false
     },
@@ -1386,14 +1393,14 @@
     {
       "line": 87,
       "command": "退出循环",
-      "config": "退出49行逐屏循环",
+      "config": "退出51行逐屏循环",
       "source": "原47",
       "disabled": false
     },
     {
       "line": 88,
       "command": "End IF",
-      "config": "结束83行",
+      "config": "结束85行",
       "source": "原48",
       "disabled": false
     },
@@ -1407,7 +1414,7 @@
     {
       "line": 90,
       "command": "循环结束标记",
-      "config": "结束49行逐屏循环",
+      "config": "结束51行逐屏循环",
       "source": "原50",
       "disabled": false
     },
@@ -1428,7 +1435,7 @@
     {
       "line": 93,
       "command": "End IF",
-      "config": "结束89行",
+      "config": "结束91行",
       "source": "新增",
       "disabled": false
     },
@@ -1456,7 +1463,7 @@
     {
       "line": 97,
       "command": "Else",
-      "config": "对应93行",
+      "config": "对应95行",
       "source": "新增",
       "disabled": false
     },
@@ -1477,7 +1484,7 @@
     {
       "line": 100,
       "command": "Else",
-      "config": "对应96行",
+      "config": "对应98行",
       "source": "新增",
       "disabled": false
     },
@@ -1491,14 +1498,14 @@
     {
       "line": 102,
       "command": "End IF",
-      "config": "结束96行",
+      "config": "结束98行",
       "source": "新增",
       "disabled": false
     },
     {
       "line": 103,
       "command": "End IF",
-      "config": "结束93行",
+      "config": "结束95行",
       "source": "新增",
       "disabled": false
     },
@@ -1554,28 +1561,28 @@
     {
       "line": 111,
       "command": "End IF",
-      "config": "结束107行；本阶段禁用",
+      "config": "结束109行；本阶段禁用",
       "source": "原58",
       "disabled": true
     },
     {
       "line": 112,
       "command": "End IF",
-      "config": "结束106行；本阶段禁用",
+      "config": "结束108行；本阶段禁用",
       "source": "原59",
       "disabled": true
     },
     {
       "line": 113,
       "command": "循环结束标记",
-      "config": "结束105行；本阶段禁用",
+      "config": "结束107行；本阶段禁用",
       "source": "原60",
       "disabled": true
     },
     {
       "line": 114,
       "command": "End IF",
-      "config": "结束102行；本阶段禁用",
+      "config": "结束104行；本阶段禁用",
       "source": "原61",
       "disabled": true
     }
@@ -1584,7 +1591,7 @@
   "phone_test_complete": false,
   "phone_test_passed": false,
   "cross_device_tested": false,
-  "phone_test_status": "移动等待后单次连续运行成功打开筛选；第47动态点击已配置但未实测，48已提供49待设置",
+  "phone_test_status": "用户反馈OCR筛选三点击通过；结果遍历85/89重复，待核查到底退出",
   "last_filter_test": {
     "reported_date": "2026-10-07",
     "scope": "one_template_one_phone",
@@ -1600,7 +1607,7 @@
     "ocr_status": "runtime_output_verified_wrong_screen_captured",
     "next_step": "第41设置断点，从头运行，结果页加载完成后单步执行41，观察筛选弹窗是否打开；不继续新增固定等待"
   },
-  "current_runtime_revision": "2026-10-07-OCR-TEST-3",
+  "current_runtime_revision": "2026-10-07-OCR-FILTER-PASSED-1",
   "ocr_validation": {
     "basis": "完整文字精确匹配",
     "screenshot_line": 43,
@@ -1682,22 +1689,8 @@
       ]
     },
     "next_action": {
-      "command": "修改已有点击屏幕(手机)",
-      "line": 49,
-      "target": "查看结果",
-      "config": {
-        "line": 49,
-        "text": "查看结果",
-        "phone": "phone_device",
-        "click_position": "通过坐标指定",
-        "click_type": "单击",
-        "python_x": "[item[\"x\"] for item in filter_text_points if item[\"text\"] == \"查看结果\"][0]",
-        "python_y": "[item[\"y\"] for item in filter_text_points if item[\"text\"] == \"查看结果\"][0]",
-        "advanced": "保留原设置",
-        "error_handling": "保留原设置",
-        "status": "config_next_to_provide"
-      },
-      "status": "pending_user_confirmation"
+      "command": "核查结果列表退出",
+      "status": "pending_phone_bottom_screen_evidence"
     },
     "text_points_implemented": true,
     "text_points_line": 46,
@@ -1711,7 +1704,7 @@
       "filter_open_observed": false,
       "full_ocr_text_available": false
     },
-    "text_click_implementation_scope": "latest_publish_configuration_only_not_runtime_verified",
+    "text_click_implementation_scope": "all_three_existing_filter_click_cards",
     "dynamic_clicks": [
       {
         "line": 47,
@@ -1723,7 +1716,7 @@
         "python_y": "[item[\"y\"] for item in filter_text_points if item[\"text\"] == \"最新发布\"][0]",
         "advanced": "保留原设置",
         "error_handling": "保留原设置",
-        "status": "user_confirmed_configured"
+        "status": "user_confirmed_configured_and_filter_actions_passed"
       },
       {
         "line": 48,
@@ -1735,7 +1728,7 @@
         "python_y": "[item[\"y\"] for item in filter_text_points if item[\"text\"] == \"一天内\"][0]",
         "advanced": "保留原设置",
         "error_handling": "保留原设置",
-        "status": "config_provided_user_requested_continue"
+        "status": "user_confirmed_configured_and_filter_actions_passed"
       },
       {
         "line": 49,
@@ -1747,10 +1740,10 @@
         "python_y": "[item[\"y\"] for item in filter_text_points if item[\"text\"] == \"查看结果\"][0]",
         "advanced": "保留原设置",
         "error_handling": "保留原设置",
-        "status": "config_next_to_provide"
+        "status": "user_confirmed_configured_and_filter_actions_passed"
       }
     ],
-    "text_click_verified": false,
+    "text_click_verified": true,
     "last_continuous_run_after_wait_moved": {
       "started_at": "2026-10-07T10:14:25.599+08:00",
       "ocr_logged_at": "2026-10-07T10:14:54.626+08:00",
@@ -1760,7 +1753,8 @@
       "filter_open_observed": true,
       "latest_publish_selected": true,
       "latest_publish_method": "原图像匹配"
-    }
+    },
+    "text_click_verification_scope": "user_reported_current_phone_filter_actions_only"
   },
   "filter_click_diagnosis": {
     "line": 42,
@@ -1786,5 +1780,24 @@
     "runtime_effect_scope": "paused_then_下一步_executed_line41",
     "continuous_run_resolved": true,
     "continuous_run_resolution_scope": "single_phone_single_run_after_wait_moved"
+  },
+  "current_runtime_reference_basis": 114,
+  "results_loop_diagnosis": {
+    "while_line": 51,
+    "nickname_line": 52,
+    "bottom_image_if_line": 85,
+    "set_finished_line": 86,
+    "exit_while_line": 87,
+    "swipe_line": 89,
+    "reported_repeated_lines": [
+      85,
+      89
+    ],
+    "suspected_task_older_than_24_hours": true,
+    "task_age_verified": false,
+    "actual_bottom_screen_available": false,
+    "root_cause_confirmed": false,
+    "next_action": "stop_run_then_inspect_actual_phone_screen_and_bottom_or_empty_result_text",
+    "fixed_iteration_cap_allowed": false
   }
 }
