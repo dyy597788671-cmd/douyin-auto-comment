@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T15:17:01+08:00",
+  "checkpoint_time": "2026-10-07T15:27:49+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1214,7 +1214,13 @@
       "source": "原24",
       "disabled": false,
       "runtime_verified": false,
-      "last_runtime_error": "2026-10-07 15:17再次反馈未找到元素；本次完整candidate_xpath与实跑模块版本未提供"
+      "last_runtime_error": "2026-10-07 15:17再次反馈未找到元素；本次完整candidate_xpath与实跑模块版本未提供",
+      "pending_diagnostic": {
+        "expression": "\"(/hierarchy//androidx.recyclerview.widget.RecyclerView/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@index='0'])[1]\"",
+        "user_confirmed": false,
+        "restore_target": "Python candidate_xpath，正式条件待诊断",
+        "stop_before_line": 60
+      }
     },
     {
       "line": 60,
@@ -1982,11 +1988,11 @@
     "interactions_executed": false
   },
   "next_found_test": {
-    "command": "59行断点查看candidate_xpath与current_candidate_number，先定位重复封面查找失败",
-    "status": "blocked_by_line59_awaiting_runtime_variable_values",
+    "command": "59基础封面XPath临时探测，观察获取成功或未找到；停在60点击前",
+    "status": "awaiting_base_xpath_probe_result",
     "preserve": "46的OCR坐标表达式、48一天内、49查看结果、58/59封面定位卡片保持",
     "test_scope": "按新筛选策略验证可找到任务的封面点击与作者ID核验，互动110—120仍禁用",
-    "module_installation": "14:49已提供完整module1.py供Ctrl+A覆盖；用户尚未明确确认已替换，后续只提供完整可复制模块，不要求拆段修改"
+    "module_installation": "15:27实际candidate_xpath确认新版build_author_cover_xpath参与生成；其它模块函数部署不扩展推断"
   },
   "candidate_click_diagnosis": {
     "reported_at": "2026-10-07T14:33:09+08:00",
@@ -2004,19 +2010,23 @@
     "module_function": "module1.build_author_cover_xpath",
     "module_blob_sha": "7c2d536d1012d996bf09b82ee064e6b800ae2762",
     "root_cause_confirmed": false,
-    "runtime_xpath_full_value_available": false,
+    "runtime_xpath_full_value_available": true,
     "current_phone_xml_available": false,
     "existing_cover_selector_current_attributes_available": true,
     "existing_cover_element_known_verified": "抖音搜索结果封面；此前综合、视频、图文均校验通过，应复用、不重捕获",
     "next_action": {
-      "command": "在59行设断点并从头运行，停在59尚未执行时查看调试变量",
-      "required_values": [
-        "candidate_xpath（完整字符串）",
-        "current_candidate_number"
-      ],
-      "status": "awaiting_runtime_variable_values",
-      "preserve": "59已有配置与58调用；不新建卡片、不重新捕获元素",
-      "reason": "确认实跑版本、候选序号后才排查XPath约束"
+      "command": "临时测试59基础封面XPath；停止调试后改字段，重新从头运行至59断点，下一步仅执行59",
+      "status": "awaiting_user_base_xpath_probe",
+      "phone": "phone_device",
+      "find_mode": "XPath",
+      "field_mode": "Python表达式",
+      "temporary_expression": "\"(/hierarchy//androidx.recyclerview.widget.RecyclerView/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@index='0'])[1]\"",
+      "save_to": "mobile_element_result",
+      "stop_before_line": 60,
+      "interpretation": {
+        "success": "基础封面路径可匹配，再诊断昵称关联和唯一封面条件；不能点击本探测元素",
+        "failure": "基础封面路径未匹配，需真实节点结构证据"
+      }
     },
     "code_modified": true,
     "flow_modified": false,
@@ -2057,7 +2067,7 @@
     "repository_patch": {
       "function": "build_author_cover_xpath",
       "commit": "67c475d2952711bf48d34ed023487b1cd1889aae",
-      "status": "runtime_failure_reported_local_installation_unknown",
+      "status": "new_xpath_generation_confirmed_cover_lookup_not_fixed",
       "no_resource_id_constraint": true,
       "cover_xpath": "/hierarchy//androidx.recyclerview.widget.RecyclerView/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@index='0']",
       "card_relationship": "封面的LinearLayout祖先须位于同RecyclerView内、包含目标昵称精确text、且包含唯一FrameLayout/ViewGroup/View[index=0]封面；避免整屏昵称/封面列表按索引对应",
@@ -2083,6 +2093,21 @@
       "current_phone_xml_available": false,
       "no_new_screenshot": true,
       "code_changed_this_turn": false
+    },
+    "runtime_xpath": "(/hierarchy//androidx.recyclerview.widget.RecyclerView/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@index='0'][ancestor::android.widget.LinearLayout[ancestor::androidx.recyclerview.widget.RecyclerView and count(.//android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@index='0'])=1 and .//*[@text=concat('','版纳向南*民宿*短租房*旅居')]]])[1]",
+    "runtime_candidate_number": 1,
+    "runtime_value_evidence": {
+      "reported_at": "2026-10-07T15:27:49+08:00",
+      "section": "图文",
+      "target_nickname_in_author_name_list": "版纳向南*民宿*短租房*旅居",
+      "candidate_numbers": [
+        1
+      ],
+      "visible_integer_value": 1,
+      "variable_name_display_truncated": true,
+      "xpath_version": "structural_helper_67c475d2952711bf48d34ed023487b1cd1889aae",
+      "xpath_full_value_source": "用户复制文本；截图用于变量序号和昵称值",
+      "screenshot_file_id": "file_00000000b19481faa8e9fe48d103210b"
     }
   },
   "filter_policy": {
