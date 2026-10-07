@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T15:27:49+08:00",
+  "checkpoint_time": "2026-10-07T15:36:12+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1210,17 +1210,20 @@
     {
       "line": 59,
       "command": "获取元素对象(手机)",
-      "config": "phone_device；查找方式XPath；XPath值Python candidate_xpath → mobile_element_result；复用原获取元素对象卡片",
+      "config": "phone_device；查找方式XPath；Python \"(/hierarchy//androidx.recyclerview.widget.RecyclerView/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@index='0'])[1]\" → mobile_element_result；临时诊断基础封面路径，执行后停在60点击前",
       "source": "原24",
       "disabled": false,
       "runtime_verified": false,
       "last_runtime_error": "2026-10-07 15:17再次反馈未找到元素；本次完整candidate_xpath与实跑模块版本未提供",
       "pending_diagnostic": {
         "expression": "\"(/hierarchy//androidx.recyclerview.widget.RecyclerView/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.view.View[@index='0'])[1]\"",
-        "user_confirmed": false,
+        "user_confirmed": true,
         "restore_target": "Python candidate_xpath，正式条件待诊断",
-        "stop_before_line": 60
-      }
+        "stop_before_line": 60,
+        "installed_at": "2026-10-07T15:36:12+08:00",
+        "runtime_tested": false
+      },
+      "production_config_before_probe": "phone_device；查找方式XPath；XPath值Python candidate_xpath → mobile_element_result；复用原获取元素对象卡片"
     },
     {
       "line": 60,
@@ -1989,7 +1992,7 @@
   },
   "next_found_test": {
     "command": "59基础封面XPath临时探测，观察获取成功或未找到；停在60点击前",
-    "status": "awaiting_base_xpath_probe_result",
+    "status": "probe_installed_awaiting_runtime_result",
     "preserve": "46的OCR坐标表达式、48一天内、49查看结果、58/59封面定位卡片保持",
     "test_scope": "按新筛选策略验证可找到任务的封面点击与作者ID核验，互动110—120仍禁用",
     "module_installation": "15:27实际candidate_xpath确认新版build_author_cover_xpath参与生成；其它模块函数部署不扩展推断"
@@ -2015,8 +2018,8 @@
     "existing_cover_selector_current_attributes_available": true,
     "existing_cover_element_known_verified": "抖音搜索结果封面；此前综合、视频、图文均校验通过，应复用、不重捕获",
     "next_action": {
-      "command": "临时测试59基础封面XPath；停止调试后改字段，重新从头运行至59断点，下一步仅执行59",
-      "status": "awaiting_user_base_xpath_probe",
+      "command": "保留59断点，从头运行至暂停；仅点一次下一步执行59，停在60点击前，报告取得元素或未找到",
+      "status": "probe_installed_awaiting_single_step_result",
       "phone": "phone_device",
       "find_mode": "XPath",
       "field_mode": "Python表达式",
@@ -2026,7 +2029,8 @@
       "interpretation": {
         "success": "基础封面路径可匹配，再诊断昵称关联和唯一封面条件；不能点击本探测元素",
         "failure": "基础封面路径未匹配，需真实节点结构证据"
-      }
+      },
+      "user_confirmed_at": "2026-10-07T15:36:12+08:00"
     },
     "code_modified": true,
     "flow_modified": false,
