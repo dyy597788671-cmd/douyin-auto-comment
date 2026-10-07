@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T17:44:09+08:00",
+  "checkpoint_time": "2026-10-07T19:28:50+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -2306,7 +2306,9 @@
     "avoid_complex_code_for_simple_checks": true,
     "avoid_redundant_checks_and_long_exploration": true,
     "preserve_source_format_when_full_replacement_is_needed": true,
-    "avoid_retesting_already_passed_chain_without_new_failure": true
+    "avoid_retesting_already_passed_chain_without_new_failure": true,
+    "use_exact_visible_field_labels": true,
+    "do_not_call_save_element_object_output_variable": true
   },
   "pending_diagnostic_insertion": {
     "command": "获取手机UI树",
@@ -2400,35 +2402,7 @@
     "interaction_executed": false,
     "cross_device_verified": false
   },
-  "next_stage": {
-    "name": "安装程序与表格，设置第1行账号，再补齐影刀互动",
-    "status": "offline_code_done_user_deployment_pending",
-    "entry": "NEW_SESSION_START.md最新程序适配段落",
-    "reuse_disabled_block": {
-      "last_confirmed_lines": [
-        110,
-        120
-      ],
-      "expected_lines_after_ui_tree_insert": null,
-      "actual_tail_line_map_verified": false,
-      "ui_tree_diagnostic_removed": true
-    },
-    "reuse_module_interfaces": [
-      "prepare_interactions",
-      "record_action_result",
-      "finish_task"
-    ],
-    "required_actions": [
-      "读取Content_Type和每项目Comments",
-      "按真实发送账号独立处理任务及评论分配",
-      "固定点赞/评论/收藏，随机是否分享到好友",
-      "复用影刀互动骨架执行并记录真实结果",
-      "回写账号对应的任务结果",
-      "返回手机桌面"
-    ],
-    "do_not_enable_unfinished_block": true,
-    "do_not_rebuild_verified_search_chain": true
-  },
+  "next_stage": "保存图文点赞获取元素对象卡片，放回Else并保持互动块禁用；随后按真实界面配置图文状态读取",
   "confirmed_requirements": {
     "confirmed_at": "2026-10-07T17:44:09+08:00",
     "implementation_status": "offline_code_verified_user_install_and_phone_actions_pending",
@@ -2538,7 +2512,7 @@
     "user_install_confirmed": true,
     "live_phone_interactions_verified": false,
     "first_user_step": "stop debugging, install adjusted task table and core_runner.py",
-    "next_user_step": "replace module1 in ShadowBot, set line1 sender_account_id; explicitly adopt legacy slot only for its actual owner",
+    "next_user_step": "保存图文点赞获取元素对象卡片，放回Else并保持互动块禁用；随后按真实界面配置图文状态读取",
     "account_example": "手机01",
     "legacy_adoption_argument": "adopt_legacy=True",
     "preserve_runtime_state": true,
@@ -2554,6 +2528,25 @@
       "strategy": null,
       "adopt_legacy": true
     },
-    "next_step": "核对底部已有禁用互动骨架实际行号，再逐条补齐四项动作；先停止调试，不启用未完成块。"
+    "next_step": "保存图文点赞获取元素对象卡片，放回Else并保持互动块禁用；随后按真实界面配置图文状态读取",
+    "photo_like_locator": {
+      "instruction": "获取元素对象(手机)",
+      "ui_labels": {
+        "phone": "手机连接对象",
+        "mode": "定位方式",
+        "selector": "元素特征",
+        "save": "保存元素对象至"
+      },
+      "phone": "phone_device",
+      "mode": "xpath",
+      "selector_python": "\"/hierarchy//android.widget.LinearLayout[contains(@content-desc,'喜欢')]\"",
+      "save_element_object_to": "photo_like_element",
+      "configuration_visible": true,
+      "saved_confirmed": false,
+      "moved_into_else_confirmed": false,
+      "live_test_passed": false
+    },
+    "interaction_else_added_confirmed": true,
+    "phone_dropdown_restored_confirmed": true
   }
 }
