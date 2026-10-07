@@ -776,7 +776,7 @@
     4,
     5
   ],
-  "checkpoint_time": "2026-10-07T14:39:22+08:00",
+  "checkpoint_time": "2026-10-07T15:05:12+08:00",
   "batch4_status": "已配置，手机实测待执行",
   "current_rows": [
     {
@@ -1109,7 +1109,14 @@
       "disabled": false,
       "configuration_confirmed": true,
       "runtime_click_verified": true,
-      "runtime_verification_scope": "user_reported_single_phone_filter_actions"
+      "runtime_verification_scope": "user_reported_single_phone_filter_actions",
+      "pending_change": {
+        "disabled": true,
+        "reason": "最新用户筛选策略：全流程不点击最新发布",
+        "requested_at": "2026-10-07T15:05:12+08:00",
+        "status": "awaiting_user_confirmation"
+      },
+      "allowed_in_target_flow": false
     },
     {
       "line": 48,
@@ -1646,7 +1653,7 @@
   "phone_test_complete": false,
   "phone_test_passed": false,
   "cross_device_tested": false,
-  "phone_test_status": "未找到分支已通过；可找到任务在59封面XPath失败。已按已有封面层级更新仓库辅助函数并通过18项模拟XML/参数检查，等待用户替换影刀module1并手机验证",
+  "phone_test_status": "未找到分支此前已通过；封面函数仓库已修正、完整复制代码已提供但实机未确认；最新策略要求禁用47最新发布，仅选一天内，等待用户禁用及找到分支复测",
   "last_filter_test": {
     "reported_date": "2026-10-07",
     "scope": "one_template_one_phone",
@@ -1660,7 +1667,7 @@
     "threshold_status": "provisional_not_cross_device_validated",
     "other_templates_tested": false,
     "ocr_status": "all_three_dynamic_filter_clicks_user_verified_single_phone",
-    "next_step": "筛选已通过，保持43—49配置；当前复测52行变量初始化及三次无进展退出"
+    "next_step": "按最新政策禁用47，保留一天内48和查看结果49，验证可找到任务"
   },
   "current_runtime_revision": "2026-10-07-FOUND-CANDIDATE-LOCATOR-FAIL",
   "ocr_validation": {
@@ -1744,11 +1751,11 @@
       ]
     },
     "next_action": {
-      "command": "替换影刀module1.py中的build_author_cover_xpath整个函数",
-      "status": "repository_updated_awaiting_user_local_replacement",
-      "preserve": "make_nav_swipe_points及其余函数、58行调用参数和59行获取元素对象参数保持",
-      "after_replacement": "保存后从手机主界面完整运行，验证59是否获取正确候选封面、60是否打开对应作品",
-      "source_commit": "67c475d2952711bf48d34ed023487b1cd1889aae"
+      "command": "禁用47行点击最新发布，保存后运行新任务",
+      "status": "awaiting_user_disable_confirmation_and_runtime_test",
+      "preserve": "46的OCR坐标表达式、48一天内、49查看结果、58/59封面定位卡片保持",
+      "test_scope": "按新筛选策略验证可找到任务的封面点击与作者ID核验，互动110—120仍禁用",
+      "module_installation": "14:49已提供完整module1.py供Ctrl+A覆盖；用户尚未明确确认已替换，后续只提供完整可复制模块，不要求拆段修改"
     },
     "text_points_implemented": true,
     "text_points_line": 46,
@@ -1774,7 +1781,9 @@
         "python_y": "[item[\"y\"] for item in filter_text_points if item[\"text\"] == \"最新发布\"][0]",
         "advanced": "保留原设置",
         "error_handling": "保留原设置",
-        "status": "user_confirmed_configured_and_filter_actions_passed"
+        "status": "pending_disable_per_user_filter_policy",
+        "target_enabled": false,
+        "disable_confirmed": false
       },
       {
         "line": 48,
@@ -1812,7 +1821,8 @@
       "latest_publish_selected": true,
       "latest_publish_method": "原图像匹配"
     },
-    "text_click_verification_scope": "user_reported_current_phone_filter_actions_only"
+    "text_click_verification_scope": "user_reported_current_phone_filter_actions_only",
+    "new_filter_policy_runtime_verified": false
   },
   "filter_click_diagnosis": {
     "line": 42,
@@ -1834,7 +1844,7 @@
     },
     "calibration_matches": 1,
     "runtime_effect_confirmed": true,
-    "next_step": "preserve_verified_filter_setup_and_retest_result_loop",
+    "next_step": "disable_latest_publish_click47_preserve_day_and_apply_dynamic_clicks",
     "runtime_effect_scope": "paused_then_下一步_executed_line41",
     "continuous_run_resolved": true,
     "continuous_run_resolution_scope": "single_phone_single_run_after_wait_moved"
@@ -1855,7 +1865,7 @@
     "task_age_verified": false,
     "actual_bottom_screen_available": true,
     "root_cause_confirmed": false,
-    "next_action": "replace_existing_module_helper_then_retest_candidate_lookup",
+    "next_action": "test_findable_work_after_removing_latest_publish_click",
     "fixed_iteration_cap_allowed": false,
     "loop_end_line": 96,
     "actual_bottom_screen_text": "暂无更多，查看所有内容",
@@ -1951,10 +1961,10 @@
   },
   "progress_sync": {
     "requested_by_user": true,
-    "checkpoint_at": "2026-10-07T14:39:22+08:00",
+    "checkpoint_at": "2026-10-07T15:05:12+08:00",
     "confirmed_current_rows": 120,
     "row_count_basis": "由119行记录增加90计数卡；新增普通IF替换旧图像IF净增0；88—99截图确认，未全面重审所有行",
-    "next_action": "confirm_user_local_helper_replacement_and_run_found_branch"
+    "next_action": "confirm_line47_disabled_and_test_new_filter_policy"
   },
   "last_not_found_test": {
     "reported_at": "2026-10-07T14:27:57+08:00",
@@ -1972,11 +1982,11 @@
     "interactions_executed": false
   },
   "next_found_test": {
-    "command": "替换影刀module1.py中的build_author_cover_xpath整个函数",
-    "status": "repository_updated_awaiting_user_local_replacement",
-    "preserve": "make_nav_swipe_points及其余函数、58行调用参数和59行获取元素对象参数保持",
-    "after_replacement": "保存后从手机主界面完整运行，验证59是否获取正确候选封面、60是否打开对应作品",
-    "source_commit": "67c475d2952711bf48d34ed023487b1cd1889aae"
+    "command": "禁用47行点击最新发布，保存后运行新任务",
+    "status": "awaiting_user_disable_confirmation_and_runtime_test",
+    "preserve": "46的OCR坐标表达式、48一天内、49查看结果、58/59封面定位卡片保持",
+    "test_scope": "按新筛选策略验证可找到任务的封面点击与作者ID核验，互动110—120仍禁用",
+    "module_installation": "14:49已提供完整module1.py供Ctrl+A覆盖；用户尚未明确确认已替换，后续只提供完整可复制模块，不要求拆段修改"
   },
   "candidate_click_diagnosis": {
     "reported_at": "2026-10-07T14:33:09+08:00",
@@ -1999,11 +2009,9 @@
     "existing_cover_selector_current_attributes_available": true,
     "existing_cover_element_known_verified": "抖音搜索结果封面；此前综合、视频、图文均校验通过，应复用、不重捕获",
     "next_action": {
-      "command": "替换影刀module1.py中的build_author_cover_xpath整个函数",
-      "status": "repository_updated_awaiting_user_local_replacement",
-      "preserve": "make_nav_swipe_points及其余函数、58行调用参数和59行获取元素对象参数保持",
-      "after_replacement": "保存后从手机主界面完整运行，验证59是否获取正确候选封面、60是否打开对应作品",
-      "source_commit": "67c475d2952711bf48d34ed023487b1cd1889aae"
+      "command": "使用已提供完整module1.py覆盖后，在新筛选策略下复测",
+      "status": "awaiting_user_runtime_result",
+      "note": "不再要求用户仅定位并替换一个函数"
     },
     "code_modified": true,
     "flow_modified": false,
@@ -2057,7 +2065,51 @@
         "full_module_syntax_valid": true,
         "real_phone_xml_tested": false,
         "phone_runtime_tested": false
-      }
+      },
+      "full_module_copy_provided_at": "2026-10-07T14:49:19+08:00"
     }
+  },
+  "filter_policy": {
+    "requested_at": "2026-10-07T15:05:12+08:00",
+    "applies_to": [
+      "图文",
+      "视频",
+      "综合"
+    ],
+    "selection_texts": [
+      "一天内"
+    ],
+    "apply_text": "查看结果",
+    "latest_publish_click_allowed": false,
+    "sorting_action": "none",
+    "reason": "用户实测反馈选择最新发布会减少一天内可见内容，要求全流程取消该点击；不把该观察宣称为平台普遍规则",
+    "rpa_change": {
+      "line": 47,
+      "action": "禁用已有最新发布点击卡片，不删除，维持120行",
+      "status": "awaiting_user_confirmation",
+      "disabled_before_change": false,
+      "target_disabled": true
+    },
+    "preserved_rows": [
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      48,
+      49
+    ],
+    "coordinate_collection": "46继续使用原列表表达式；其中最新发布仅被识别/收集，不产生点击，无需额外改表达式",
+    "new_policy_runtime_verified": false,
+    "first_test_state_note": "若弹窗仍保留此前最新发布选中状态，手动恢复综合排序一次后测试；不新增常规排序点击"
+  },
+  "user_edit_preferences": {
+    "programming_experience": "非程序员",
+    "source_delivery": "提供完整可复制文件，用Ctrl+A全文覆盖",
+    "do_not_require_function_or_partial_replacement": true,
+    "single_line_expression_fields": true,
+    "retain_verified_elements": true,
+    "avoid_unnecessary_backups_and_recapture": true
   }
 }
