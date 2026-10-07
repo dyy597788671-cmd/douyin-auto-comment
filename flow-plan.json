@@ -2535,13 +2535,25 @@
     "offline_checks_passed": 15,
     "concurrent_accounts_tested": 6,
     "share_probability_default": 0.5,
-    "user_install_confirmed": false,
+    "user_install_confirmed": true,
     "live_phone_interactions_verified": false,
     "first_user_step": "stop debugging, install adjusted task table and core_runner.py",
     "next_user_step": "replace module1 in ShadowBot, set line1 sender_account_id; explicitly adopt legacy slot only for its actual owner",
     "account_example": "手机01",
     "legacy_adoption_argument": "adopt_legacy=True",
     "preserve_runtime_state": true,
-    "comments_reservation_stage": "task_claim_before_phone_actions"
+    "comments_reservation_stage": "task_claim_before_phone_actions",
+    "task_read_verified": true,
+    "task_read_verification": {
+      "local_time": "2026-10-07 18:18 +08:00",
+      "task_id": "1005",
+      "sender_account_id": "手机01",
+      "content_type": "图文",
+      "comment_candidates_count": 3,
+      "selected_comment": "[鼓掌][鼓掌][鼓掌]",
+      "strategy": null,
+      "adopt_legacy": true
+    },
+    "next_step": "核对底部已有禁用互动骨架实际行号，再逐条补齐四项动作；先停止调试，不启用未完成块。"
   }
 }
