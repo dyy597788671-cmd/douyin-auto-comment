@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-08-DOC-SYNC-169",
+  "version": "2026-10-08-DOC-SYNC-0753",
   "total_lines": null,
   "current_runtime_original_lines": 61,
   "phone_tested": true,
@@ -3565,5 +3565,29 @@
     "shadowbot_integration_confirmed": false,
     "live_multi_device_test_passed": false,
     "contract": "MULTI_DEVICE_CONTRACT.md"
+  },
+  "latest_sync": {
+    "as_of": "2026-10-08T07:53:00+08:00",
+    "scope": "documentation_only",
+    "source_snapshot_instruction_count": 187,
+    "current_final_total_lines": null,
+    "current_issue": "图文收藏跨作品定位失败；视频收藏沿用正确定位",
+    "click_requirement": "识别正确精准元素后点击一次；不做点击前状态判断",
+    "retracted": "倒数连续四行未验证建议",
+    "user_reported_runtime": [
+      "Favorite真实收藏",
+      "Comment真实评论",
+      "Like真实点赞",
+      "第四次取消收藏，随后第191行找不到元素"
+    ],
+    "share_passed": false,
+    "cross_work_favorite_locator_passed": false,
+    "ui_search_and_validation": "用户已要求，尚未完成",
+    "legacy_rows": "仅历史台账，不作为本轮最终行号或设置",
+    "read_first": [
+      "PROJECT_RULES.md",
+      "NEW_SESSION_START.md"
+    ],
+    "runtime_code_changed": false
   }
 }
