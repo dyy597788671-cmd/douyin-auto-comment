@@ -1,13 +1,15 @@
-请通过原始资料获取影刀手机元素编辑器中精准定位的节点信息和属性信息。
+任务：从用户提供的原始UI树和元素编辑器截图中，获取精准定位的节点信息和属性信息，综合比对全部UI树。
 
-资料位置：
-GitHub仓库：https://github.com/dyy597788671-cmd/dy-auto-comment
-目录：ui_sources/2026-10-09/
-必须完整读取六份文件：poagesource.txt、poagesource(1).txt、poagesource(2).txt、poagesource(3).txt、poagesource(4).txt、poagesource(5).txt，并核对用户已经上传的元素编辑器截图。不要要求用户重新上传RAR或补发右侧内容。
+原始UI树位置：
+https://github.com/dyy597788671-cmd/dy-auto-comment/tree/main/ui_sources/2026-10-09
 
-用户要求：
-分别综合比较图文、视频的多份UI树，核对不同作品、账号和设备中的真实层级与属性。针对用户指定的动作，从上到下逐层定位，保留必要中间层，做到识别正确且唯一。
+文件：
+poagesource.txt
+poagesource(1).txt
+poagesource(2).txt
+poagesource(3).txt
+poagesource(4).txt
+poagesource(5).txt
 
-完整展示顶层到目标节点的左侧层级，以及每层对应的右侧属性勾选、匹配方式和属性值。重复节点必须明确辨认，不能只用裸数字代替操作说明。属性来源及编辑器字段对应关系必须由原始资料核实，不能猜测或擅自新增、修改值。此手机元素编辑器不能使用XPath。
-
-本次作废会话中的全部助手分析、定位表、配置值和验证结果禁止调用、引用或继承。直接从上述原始资料重新核对，不引用本次会话回忆或上下文结论。
+用户原话要求：
+“通过用户已经上传过的多份的UI树，全部综合起来整理，做到跨层级匹配精确唯一，必须能识别到，又不会多识别到。”
