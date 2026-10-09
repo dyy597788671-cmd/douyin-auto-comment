@@ -175,6 +175,35 @@ def record_action_result(executed_actions, action, status, message="", task_data
     return result
 
 
+def _save_execution_error(task_data, executed_actions, error_code, log_message):
+    """错误独立留存；记录失败不阻塞当前任务的结果回写。"""
+    try:
+        import json
+        from datetime import datetime
+        from pathlib import Path
+
+        record = {
+            "recorded_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+            "task_id": task_data.get("task_id"),
+            "run_token": task_data.get("run_token"),
+            "sender_account_id": task_data.get("sender_account_id"),
+            "physical_device_id": task_data.get("physical_device_id"),
+            "assignment_id": task_data.get("assignment_id"),
+            "keyword": task_data.get("keyword"),
+            "expected_author": task_data.get("expected_author"),
+            "error_code": error_code,
+            "log_message": log_message,
+            "executed_actions": executed_actions,
+        }
+        line = json.dumps(record, ensure_ascii=False) + "\n"
+        path = Path(PROJECT_ROOT) / "logs" / "execution_errors.jsonl"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as stream:
+            stream.write(line)
+    except Exception as error:
+        print("独立错误记录写入失败：" + str(error))
+
+
 def finish_task(task_data, executed_actions, status="SUCCESS",
                 error_code="", log_message=""):
     """回写实际结果；SUCCESS 由底层校验动作顺序与结果。"""
@@ -184,6 +213,8 @@ def finish_task(task_data, executed_actions, status="SUCCESS",
     run_token = task_data.get("run_token")
     if not task_id or not run_token:
         raise ValueError("当前任务缺少 task_id 或 run_token")
+    if status == "FAILED" and error_code == "EXECUTION_ERROR":
+        _save_execution_error(task_data, executed_actions, error_code, log_message)
     gateway = core_runner.UnifiedGateway(
         root=PROJECT_ROOT,
         device_id=task_data["sender_account_id"]
