@@ -8,7 +8,7 @@ import core_runner
 
 
 def read_task(sender_account_id="手机01", adopt_legacy=False, physical_device_id=None,
-              resume_active=False):
+              resume_active=False, wait_for_task=False):
     """每个发送账号使用固定且不同的标识；旧default-device只在明确指定时转交。"""
     gateway = core_runner.UnifiedGateway(
         root=PROJECT_ROOT,
@@ -27,7 +27,78 @@ def read_task(sender_account_id="手机01", adopt_legacy=False, physical_device_
             raise RuntimeError("已有互动策略，请先核对执行进度再恢复")
         return task
 
-    return gateway.get_next_task(physical_device_id=physical_device_id)
+    if wait_for_task and not physical_device_id:
+        raise ValueError("等待分配任务需要当前手机的physical_device_id")
+    while True:
+        task = gateway.get_next_task(physical_device_id=physical_device_id)
+        if task is not None or not wait_for_task:
+            return task
+        seconds = _allocation_wait_seconds(gateway)
+        if seconds is None:
+            return None
+        import time
+        time.sleep(min(30.0, max(0.1, seconds)))
+
+
+def _allocation_wait_seconds(gateway):
+    """仅计算本设备已有分配的等待；项目锁在等待前释放。"""
+    with gateway._session() as state:
+        now = core_runner._utcnow()
+        device = gateway.devices.get(state, gateway.device_id, now)
+        if device["state"] not in ("READY", "COOLDOWN"):
+            raise core_runner.EngineError("DEVICE_NOT_READY", "当前设备状态：" + device["state"])
+        pending = [identity for identity, project in state["project_accounts"].items()
+                   if project.get("assignment") and
+                   project["accounts"].get(gateway.device_id, {}).get("status") == "PENDING"]
+        if not pending:
+            gateway._save_state(state)
+            return None
+        workbook, sheet, columns, rows, _ = gateway.scheduler.read()
+        try:
+            due_times = []
+            for identity in pending:
+                if identity not in rows:
+                    raise core_runner.EngineError("TASK_MISSING", "找不到已分配任务：" + identity)
+                due_times.append(gateway.scheduler.due_at(
+                    identity, sheet.cell(rows[identity], columns["Scheduled_Time"]).value, state, now))
+            cooldown = ((core_runner._timestamp(device["cooldown_until"]) - now).total_seconds()
+                        if device["state"] == "COOLDOWN" else 0.0)
+            gateway._save_state(state)
+            return max(0.0, cooldown, (min(due_times) - now).total_seconds())
+        finally:
+            workbook.close()
+
+
+def prepare_devices(connection_infos):
+    """读取影刀实际连接详情，沿用现有分配器；不生成第二套任务清单。"""
+    if not isinstance(connection_infos, list) or not connection_infos:
+        raise ValueError("connection_infos需要当前实际连接的手机详情列表")
+    bindings = [{"device_id": info["udid"], "sender_account_id": "设备_" + info["udid"],
+                 "connection_index": index} for index, info in enumerate(connection_infos)]
+    roster = core_runner._connected_devices(bindings)
+    gateway = core_runner.UnifiedGateway(PROJECT_ROOT, roster[0]["sender_account_id"])
+    workbook, sheet, columns, rows, _ = gateway.scheduler.read()
+    try:
+        task_ids = []
+        for identity, row in rows.items():
+            status = core_runner._text(sheet.cell(row, columns["Status"]).value).upper()
+            if status not in ("PENDING", "RUNNING"):
+                continue
+            count = (sheet.cell(row, columns["Target_Device_Count"]).value
+                     if "Target_Device_Count" in columns else None)
+            if count in (None, ""):
+                raise core_runner.EngineError("TARGET_COUNT_REQUIRED", "任务" + identity + "未填写执行设备数量")
+            task_ids.append(identity)
+    finally:
+        workbook.close()
+    for identity in task_ids:
+        gateway.allocate_task(identity, roster)
+    with gateway._session() as state:
+        # RUNNING也要显式交给原领取入口报告；不能静默当作没有任务。
+        accounts = {account for project in state["project_accounts"].values()
+                    if project.get("assignment") for account, entry in project["accounts"].items()
+                    if entry["status"] in ("PENDING", "RUNNING")}
+        return [dict(binding) for binding in bindings if binding["sender_account_id"] in accounts]
 
 
 def allocate_task(task_id, connected_devices):
@@ -180,4 +251,5 @@ def make_nav_swipe_points(bounds):
         "left": {"start_x": right_x, "start_y": middle_y, "end_x": left_x, "end_y": middle_y},
         "right": {"start_x": left_x, "start_y": middle_y, "end_x": right_x, "end_y": middle_y},
     }
+
 
