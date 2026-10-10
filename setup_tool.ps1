@@ -10,18 +10,103 @@ $package = $PSScriptRoot
 $root = (Resolve-Path -LiteralPath $ProjectRoot).ProviderPath
 $module = Join-Path $root 'xbot_robot\module1.py'
 $engine = Join-Path $root 'core_runner.py'
+# Select by successful execution, not merely by python.exe being present.
 $python = $null
-foreach ($candidate in @((Join-Path $root 'venv\Scripts\python.exe'), (Join-Path $root 'venv\python.exe'))) {
-    if (Test-Path -LiteralPath $candidate -PathType Leaf) { $python = $candidate; break }
+$pythonCandidates = [Collections.Generic.List[string]]::new()
+$pythonFailures = [Collections.Generic.List[string]]::new()
+$seenPython = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+$probeCode = "import sys,json; print('PYTHON_PROBE='+json.dumps(dict(executable=sys.executable,version=sys.version.split()[0]))); sys.stdout.flush(); sys.exit('PYTHON_VERSION_TOO_OLD: need 3.8+') if sys.version_info < (3,8) else None; import sqlite3,ast; sqlite3.connect(':memory:').execute('select 1'); print('PYTHON_READY=1')"
+
+function Test-ToolPython([string]$Candidate, [string]$Prefix = '') {
+    $info = [Diagnostics.ProcessStartInfo]::new()
+    $info.FileName = $Candidate
+    $info.Arguments = $Prefix + '-c "' + $probeCode + '"'
+    $info.WorkingDirectory = $root
+    $info.UseShellExecute = $false
+    $info.CreateNoWindow = $true
+    $info.RedirectStandardOutput = $true
+    $info.RedirectStandardError = $true
+    $info.StandardOutputEncoding = [Text.Encoding]::UTF8
+    $info.StandardErrorEncoding = [Text.Encoding]::UTF8
+    $probeProcess = [Diagnostics.Process]::new()
+    $probeProcess.StartInfo = $info
+    try {
+        [void]$probeProcess.Start()
+        $stdout = $probeProcess.StandardOutput.ReadToEndAsync()
+        $stderr = $probeProcess.StandardError.ReadToEndAsync()
+        if (-not $probeProcess.WaitForExit(15000)) {
+            $probeProcess.Kill()
+            throw '解释器启动检查超过15秒'
+        }
+        $probeProcess.WaitForExit()
+        $text = $stdout.Result
+        $errorText = $stderr.Result
+        if ($probeProcess.ExitCode -eq 0 -and $text -match '(?m)^PYTHON_READY=1\r?$') {
+            $line = @($text -split '\r?\n' | Where-Object { $_.StartsWith('PYTHON_PROBE=') })[-1]
+            $details = $line.Substring(13) | ConvertFrom-Json
+            if (-not (Test-Path -LiteralPath $details.executable -PathType Leaf)) { throw '解释器没有返回有效路径' }
+            Write-Host ('使用Python ' + $details.version + '：' + $details.executable)
+            return [string]$details.executable
+        }
+        $reason = ('退出码=' + $probeProcess.ExitCode + "`n" + $text + $errorText).Trim()
+        $pythonFailures.Add($Candidate + "`n" + $reason)
+    } catch {
+        $pythonFailures.Add($Candidate + "`n" + $_.Exception.Message)
+    } finally {
+        $probeProcess.Dispose()
+    }
+    return $null
+}
+
+$pythonCandidates.Add((Join-Path $root 'venv\Scripts\python.exe'))
+$pythonCandidates.Add((Join-Path $root 'venv\python.exe'))
+# The virtual environment itself may be unavailable; its recorded base is evidence.
+$venvConfig = Join-Path $root 'venv\pyvenv.cfg'
+if (Test-Path -LiteralPath $venvConfig -PathType Leaf) {
+    foreach ($line in Get-Content -LiteralPath $venvConfig) {
+        if ($line -match '^\s*home\s*=\s*(.+?)\s*$') {
+            $pythonCandidates.Add((Join-Path $Matches[1] 'python.exe'))
+        }
+    }
+}
+foreach ($name in @('python.exe', 'python3.exe')) {
+    foreach ($command in @(Get-Command $name -All -CommandType Application -ErrorAction SilentlyContinue)) {
+        if ($command.Source -notlike '*\WindowsApps\*') { $pythonCandidates.Add($command.Source) }
+    }
+}
+foreach ($candidate in $pythonCandidates) {
+    if ((Test-Path -LiteralPath $candidate -PathType Leaf) -and $seenPython.Add($candidate)) {
+        $python = Test-ToolPython $candidate
+        if ($python) { break }
+    }
 }
 if (-not $python) {
-    $command = Get-Command python.exe -ErrorAction SilentlyContinue
-    if ($command -and $command.Source -notlike '*WindowsApps*') { $python = $command.Source }
+    foreach ($launcher in @(Get-Command py.exe -All -CommandType Application -ErrorAction SilentlyContinue)) {
+        if ($launcher.Source -notlike '*\WindowsApps\*') {
+            $python = Test-ToolPython $launcher.Source '-3 '
+            if ($python) { break }
+        }
+    }
 }
-if (-not $python) { throw '未找到现有Python。请把此窗口输出发回，不要修改影刀任务数据。' }
-& $python -c 'import sys,sqlite3,ast; assert sys.version_info >= (3,8)'
-if ($LASTEXITCODE -ne 0) { throw '当前Python不能运行工具，需要Python 3.8或以上。' }
-
+if (-not $python) {
+    # Inspect existing ShadowBot installation files only after earlier candidates fail.
+    $shadowBotRoot = Split-Path -Parent (Split-Path -Parent $RuntimePath)
+    foreach ($directory in @($shadowBotRoot, (Join-Path $env:ProgramData 'ShadowBot'))) {
+        if (-not (Test-Path -LiteralPath $directory -PathType Container)) { continue }
+        foreach ($file in @(Get-ChildItem -LiteralPath $directory -Filter python.exe -File -Recurse -ErrorAction SilentlyContinue)) {
+            if ($file.FullName -like '*\WindowsApps\*' -or -not $seenPython.Add($file.FullName)) { continue }
+            $python = Test-ToolPython $file.FullName
+            if ($python) { break }
+        }
+        if ($python) { break }
+    }
+}
+if (-not $python) {
+    Write-Host '未找到能够启动且具备sqlite3的Python 3.8或以上解释器。实际检查结果：' -ForegroundColor Yellow
+    if ($pythonFailures.Count) { foreach ($failure in $pythonFailures) { Write-Host $failure } }
+    else { Write-Host '未发现Python可执行文件。' }
+    throw 'Python检查未通过，尚未安装或修改项目。请发送上方实际检查结果。'
+}
 $installed = (Test-Path -LiteralPath (Join-Path $root 'lan_tool\server.py')) -and
     ((Get-Content -LiteralPath $module -Raw -Encoding UTF8) -match 'LAN_TOOL_INTAKE_V1') -and
     ((Get-Content -LiteralPath $engine -Raw -Encoding UTF8) -match 'LAN_TOOL_INTAKE_V1')
