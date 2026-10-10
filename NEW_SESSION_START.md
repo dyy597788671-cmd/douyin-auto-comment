@@ -4,7 +4,7 @@
 
 交付包DouyinTaskTool_v1.0.0_B.zip。首次安装完全退出影刀，解压后双击Start-Tool.cmd；安装器只补已核对接口并备份原模块/引擎，使用B原生6.3.31 Runtime检查签名，不替换任务表、运行状态、元素或可视化.pybx。以后同一启动入口；后台窗口保持开启，再打开影刀使用原主流程。详见LAN_TOOL.md。
 
-代码：lan_bridge.py、lan_tool/、install_tool.py、setup_tool.ps1；core_runner拆出原锁内分配算法供原分配与网页接入复用，补清理事务恢复/事件历史；module1只补prepare_devices/read_task接入。实际连接设备保留供后续网页任务选择，未选中仍由原领取入口返回None。其他手机桥接函数及非网关业务类AST保持。
+代码：lan_bridge.py、lan_tool/、install_tool.py、setup_tool.ps1；core_runner拆出原锁内分配算法供原分配与网页接入复用，补清理事务恢复/事件历史；module1只补prepare_devices/read_task接入。原设备筛选返回名单保持；当前控制名单覆盖本次全部连接设备时read_task可直接接入，否则待prepare_devices再次取得名单后接入，不扩大到未选中手机。其他手机桥接函数及非网关业务类AST保持。
 
 新任务先暂存，只在一整个条目结束/下一条开始前，调用原随机分配。其他浏览器不能跨归属查询/清理；真实失败与混合SUCCESS/NOT_FOUND的汇总FAILED区分。原始日志缺失不能还原。清理保留错误和历史、只移除目标任务相关占用；RUNNING残留需B停止影刀及进程检查。状态JSON已损坏时拒绝猜测重建，保留独立历史查看。
 

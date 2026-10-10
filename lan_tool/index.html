@@ -10,7 +10,7 @@
 <div class="two"><label>作品类型<select name="content_type"><option value="视频">视频</option><option value="图文">图文</option></select></label><label>执行设备数量<input name="target_device_count" type="number" min="1" step="1" value="1" required></label></div>
 <label>执行时间<input name="scheduled_time" value="0" required placeholder="0 或 2026-10-10 12:00"><small>0 表示立即执行；也可填写完整日期和时间。</small></label>
 <label>候选评论<textarea name="comments" rows="6" maxlength="32767" required placeholder="每行一条评论&#10;各设备随机使用不同评论"></textarea><small id="comment-count">有效评论 0 条，至少需要 1 条。</small></label>
-<button type="submit" class="primary" id="submit">保存并提交 <span aria-hidden="true">→</span></button>
+<button type="submit" class="primary" id="submit" disabled>保存并提交 <span aria-hidden="true">→</span></button>
 <p class="form-note">自动生成任务 ID。当前整个条目完成后，接入下一轮执行。</p>
 </form><div class="browser-note">本浏览器保留你的提交历史。换浏览器或清除 Cookie 后，不会自动接续原历史。</div></aside>
 <section class="workspace"><div class="work-head"><div><span class="eyebrow">WORKSPACE</span><h2 id="workspace-title">执行记录</h2></div><nav aria-label="记录类型"><button id="history-tab" class="tab selected" type="button">执行记录</button><button id="errors-tab" class="tab" type="button">错误记录</button></nav></div>

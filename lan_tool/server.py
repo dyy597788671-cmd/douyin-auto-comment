@@ -36,7 +36,6 @@ class ToolServer(ThreadingHTTPServer):
                 raise RuntimeError("项目目录不正确，缺少：" + str(path))
         with bridge.Store(root) as store:
             self.secret = bytes.fromhex(store.meta("secret"))
-            store.put_meta("enabled", True)
         super().__init__(address, Handler)
 
 

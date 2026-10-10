@@ -91,7 +91,7 @@ class IntakeTests(Fixture):
 
     def test_runtime_submission_waits_for_whole_item(self):
         first = web.submit(self.root, OWNER, 'ip', payload(2))
-        devices = self.prepare()
+        devices = module1.prepare_devices(INFOS[:2])
         first_task = self.read(devices[0])
         second = web.submit(self.root, OWNER, 'ip', payload(2, keyword='新任务'))
         core.UnifiedGateway(str(self.root), devices[0]['sender_account_id']).record_result(first_task['task_id'], 'NOT_FOUND', [], run_token=first_task['run_token'])
@@ -154,16 +154,18 @@ class IntakeTests(Fixture):
         self.assertEqual(workbook.active.max_row, 2)
         workbook.close()
 
-    def test_enabled_tool_retains_all_connected_workers_for_future_tasks(self):
-        with web.Store(self.root) as store:
-            store.put_meta('enabled', True)
+    def test_tool_preserves_worker_list_and_stages_until_roster_refresh(self):
         identity = web.submit(self.root, OWNER, 'ip', payload())
         devices = self.prepare()
-        self.assertEqual(len(devices), 3)
+        self.assertEqual(len(devices), 1)
         selected = web.gateway_for(self.root).get_project_progress(identity)['accounts'][0]['sender_account_id']
         binding = next(v for v in devices if v['sender_account_id'] == selected)
         self.finish(binding)
         second = web.submit(self.root, OWNER, 'ip', payload(3, keyword='下一条'))
+        self.assertIsNone(self.read(binding))
+        self.assertFalse(next(v for v in web.records(self.root, OWNER, False)['records'] if v['task_id']==second)['admitted'])
+        devices = self.prepare()
+        self.assertEqual(len(devices), 3)
         for binding in devices:
             task = self.finish(binding)
             self.assertEqual(task['task_id'], second)
@@ -178,7 +180,7 @@ class IntakeTests(Fixture):
         with web.Store(self.root) as store:
             self.assertFalse(store.row(identity)['admitted'])
         owner_file.unlink()
-        web.before_read(gateway)
+        web.prepare(gateway, roster)
         self.assertTrue(web.records(self.root, OWNER, False)['records'][0]['admitted'])
 
 

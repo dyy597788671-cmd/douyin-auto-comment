@@ -322,18 +322,24 @@ def before_read(gateway):
             with Store(gateway.root) as store:
                 register_runner(store)
                 roster = store.meta("roster")
-            if roster:
+                workers = set(store.meta("workers", []))
+            # A controller's returned list is fixed for its current iteration.
+            # Do not assign new work to phones that iteration cannot reach.
+            if roster and {v["sender_account_id"] for v in roster}.issubset(workers):
                 _admit(gateway, state, roster)
     except Exception as exc:
         gateway.logger.warning("web_intake_unavailable reason=%s", exc)
 
 
 def worker_bindings(gateway, bindings, accounts):
-    # Keep every actually connected device reachable for later web submissions.
-    # Unselected phones still receive None from the existing allocation-only read.
-    with Store(gateway.root) as store:
-        enabled = store.meta("enabled", False)
-    return [dict(v) for v in bindings if accounts and (enabled or v["sender_account_id"] in accounts)]
+    # Return precisely the established filtered list; no new None/mobile path.
+    result = [dict(v) for v in bindings if v["sender_account_id"] in accounts]
+    try:
+        with Store(gateway.root) as store:
+            store.put_meta("workers", [v["sender_account_id"] for v in result])
+    except Exception as exc:
+        gateway.logger.warning("web_worker_list_unavailable reason=%s", exc)
+    return result
 
 
 def is_error(progress):
