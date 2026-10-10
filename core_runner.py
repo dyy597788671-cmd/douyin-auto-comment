@@ -962,57 +962,64 @@ class UnifiedGateway:
         if configured and any(v["sender_account_id"] not in configured for v in roster):
             raise EngineError("ACCOUNT_NOT_CONFIGURED", "连接名单含未登记的执行账号")
         with self._session() as state:
-            workbook, sheet, columns, rows, _ = self.scheduler.read()
-            try:
-                if identity not in rows:
-                    raise EngineError("TASK_MISSING", "找不到项目：" + identity)
-                row = rows[identity]
-                task = self.scheduler.task_from_row(sheet, columns, row, identity)
-                count = task["target_device_count"]
-                if count is None:
-                    raise EngineError("TARGET_COUNT_REQUIRED", "请填写Target_Device_Count执行设备数量")
-                status = _text(sheet.cell(row, columns["Status"]).value).upper()
-                existing = state["project_accounts"].get(identity)
-                if existing:
-                    assignment = existing.get("assignment")
-                    if not assignment:
-                        raise EngineError("LEGACY_PROJECT_REVIEW_REQUIRED", "旧项目已有进度，不能重新随机分配；新分配使用新的Task_ID")
-                    if (_source_key(task) != existing["source_key"]
-                            or count != assignment["target_device_count"]
-                            or any(v["comment_content"] not in task["comments"] for v in existing["accounts"].values())):
-                        raise EngineError("ASSIGNMENT_CHANGED", "已分配的作品、设备数量或预留评论被更改")
-                    return self._project_progress(state, identity)
-                if status != "PENDING":
-                    raise EngineError("TASK_NOT_PENDING", "仅允许给新的PENDING项目分配设备")
-                if count > len(roster):
-                    raise EngineError("TARGET_COUNT_EXCEEDS_CONNECTED", "执行设备数量大于当前实际连接设备数量")
-                eligible = [v for v in roster if state["devices"].get(v["sender_account_id"], {}).get("state") != "BLOCKED"]
-                if count > len(eligible):
-                    raise EngineError("ELIGIBLE_DEVICES_INSUFFICIENT", "可执行设备不足；被锁定设备不能参与分配")
-                for value in roster:
-                    active = state["devices"].get(value["sender_account_id"], {}).get("active_task")
-                    if active and active.get("physical_device_id") not in (None, value["device_id"]):
-                        raise EngineError("ACCOUNT_DEVICE_CONFLICT", "账号已有任务，不能在执行中更换物理设备")
-                if count > len(task["comments"]):
-                    raise EngineError("COMMENTS_INSUFFICIENT", "去重后的候选评论数量少于本次执行设备数量")
-                # Validate the schedule before saving a permanent assignment.
-                self.scheduler.due_at(identity, sheet.cell(row, columns["Scheduled_Time"]).value, state, _utcnow())
-            finally:
-                workbook.close()
-            selected = secrets.SystemRandom().sample(eligible, count)
-            comments = secrets.SystemRandom().sample(task["comments"], count)
-            assignment = {"assignment_id": uuid.uuid4().hex, "allocated_at": _utcnow().isoformat(),
-                          "target_device_count": count, "connected_devices": roster,
-                          "selected_accounts": [v["sender_account_id"] for v in selected]}
-            state["project_accounts"][identity] = {
-                "source_key": _source_key(task), "assignment": assignment,
-                "accounts": {value["sender_account_id"]: {
-                    "physical_device_id": value["device_id"], "status": "PENDING",
-                    "comment_content": comment, "comment_sent": False, "run_token": None,
-                    "claimed_at": None, "result": None}
-                    for value, comment in zip(selected, comments)}}
-            self._commit(state, self._project_update(state, identity))
-            return self._project_progress(state, identity)
+            return self._allocate_task_locked(state, identity, roster)
+
+    def _allocate_task_locked(self, state, identity, roster):
+        # LAN_TOOL_INTAKE_V1
+        configured = self.settings["sender_accounts"]
+        if configured and any(v["sender_account_id"] not in configured for v in roster):
+            raise EngineError("ACCOUNT_NOT_CONFIGURED", "连接名单含未登记的执行账号")
+        workbook, sheet, columns, rows, _ = self.scheduler.read()
+        try:
+            if identity not in rows:
+                raise EngineError("TASK_MISSING", "找不到项目：" + identity)
+            row = rows[identity]
+            task = self.scheduler.task_from_row(sheet, columns, row, identity)
+            count = task["target_device_count"]
+            if count is None:
+                raise EngineError("TARGET_COUNT_REQUIRED", "请填写Target_Device_Count执行设备数量")
+            status = _text(sheet.cell(row, columns["Status"]).value).upper()
+            existing = state["project_accounts"].get(identity)
+            if existing:
+                assignment = existing.get("assignment")
+                if not assignment:
+                    raise EngineError("LEGACY_PROJECT_REVIEW_REQUIRED", "旧项目已有进度，不能重新随机分配；新分配使用新的Task_ID")
+                if (_source_key(task) != existing["source_key"]
+                        or count != assignment["target_device_count"]
+                        or any(v["comment_content"] not in task["comments"] for v in existing["accounts"].values())):
+                    raise EngineError("ASSIGNMENT_CHANGED", "已分配的作品、设备数量或预留评论被更改")
+                return self._project_progress(state, identity)
+            if status != "PENDING":
+                raise EngineError("TASK_NOT_PENDING", "仅允许给新的PENDING项目分配设备")
+            if count > len(roster):
+                raise EngineError("TARGET_COUNT_EXCEEDS_CONNECTED", "执行设备数量大于当前实际连接设备数量")
+            eligible = [v for v in roster if state["devices"].get(v["sender_account_id"], {}).get("state") != "BLOCKED"]
+            if count > len(eligible):
+                raise EngineError("ELIGIBLE_DEVICES_INSUFFICIENT", "可执行设备不足；被锁定设备不能参与分配")
+            for value in roster:
+                active = state["devices"].get(value["sender_account_id"], {}).get("active_task")
+                if active and active.get("physical_device_id") not in (None, value["device_id"]):
+                    raise EngineError("ACCOUNT_DEVICE_CONFLICT", "账号已有任务，不能在执行中更换物理设备")
+            if count > len(task["comments"]):
+                raise EngineError("COMMENTS_INSUFFICIENT", "去重后的候选评论数量少于本次执行设备数量")
+            # Validate the schedule before saving a permanent assignment.
+            self.scheduler.due_at(identity, sheet.cell(row, columns["Scheduled_Time"]).value, state, _utcnow())
+        finally:
+            workbook.close()
+        selected = secrets.SystemRandom().sample(eligible, count)
+        comments = secrets.SystemRandom().sample(task["comments"], count)
+        assignment = {"assignment_id": uuid.uuid4().hex, "allocated_at": _utcnow().isoformat(),
+                      "target_device_count": count, "connected_devices": roster,
+                      "selected_accounts": [v["sender_account_id"] for v in selected]}
+        state["project_accounts"][identity] = {
+            "source_key": _source_key(task), "assignment": assignment,
+            "accounts": {value["sender_account_id"]: {
+                "physical_device_id": value["device_id"], "status": "PENDING",
+                "comment_content": comment, "comment_sent": False, "run_token": None,
+                "claimed_at": None, "result": None}
+                for value, comment in zip(selected, comments)}}
+        self._commit(state, self._project_update(state, identity))
+        return self._project_progress(state, identity)
 
     def _project_progress(self, state: Dict[str, Any], identity: str) -> Dict[str, Any]:
         project = state["project_accounts"].get(identity)
@@ -1084,6 +1091,11 @@ class UnifiedGateway:
             raise EngineError("EXECUTION_DATA_WRITE_FAILED", "项目进度输出失败：" + str(path)) from exc
         state["exports_dirty"] = False
         self._save_state(state)
+        try:
+            import lan_bridge
+            lan_bridge.snapshot(self, state)
+        except ImportError:
+            pass
 
     def save_action_results(self, task_id: Union[str, int], run_token: str,
                             executed_actions: List[Any]) -> List[Dict[str, str]]:
@@ -1156,6 +1168,9 @@ class UnifiedGateway:
         try:
             with _project_lock(self.lock_path, self.settings["lock_timeout_seconds"]):
                 state = self._load_state()
+                if state.get("web_cleanup_transaction"):
+                    import lan_bridge
+                    lan_bridge.recover_cleanup(self, state)
                 if recover:
                     self._recover(state)
                 yield state
@@ -1592,4 +1607,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
 

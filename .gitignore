@@ -5,3 +5,9 @@ data/
 logs/
 workspaces/
 execution_data/
+
+baseline/
+lan_tool/python_deps/
+data/lan_tool.sqlite3*
+tool-backups/
+validation-*.log

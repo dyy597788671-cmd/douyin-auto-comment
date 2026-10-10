@@ -17,6 +17,8 @@ def read_task(sender_account_id="手机01", adopt_legacy=False, physical_device_
     if adopt_legacy:
         gateway.adopt_legacy_task()
 
+    import lan_bridge
+    lan_bridge.before_read(gateway)
     task = gateway.get_active_task(physical_device_id=physical_device_id)
     if task is not None:
         if physical_device_id is not None and not task.get("assignment_id"):
@@ -30,6 +32,7 @@ def read_task(sender_account_id="手机01", adopt_legacy=False, physical_device_
     if wait_for_task and not physical_device_id:
         raise ValueError("等待分配任务需要当前手机的physical_device_id")
     while True:
+        lan_bridge.before_read(gateway)
         task = gateway.get_next_task(physical_device_id=physical_device_id)
         if task is not None or not wait_for_task:
             return task
@@ -77,6 +80,8 @@ def prepare_devices(connection_infos):
                  "connection_index": index} for index, info in enumerate(connection_infos)]
     roster = core_runner._connected_devices(bindings)
     gateway = core_runner.UnifiedGateway(PROJECT_ROOT, roster[0]["sender_account_id"])
+    import lan_bridge
+    lan_bridge.prepare(gateway, roster)
     workbook, sheet, columns, rows, _ = gateway.scheduler.read()
     try:
         task_ids = []
@@ -98,7 +103,7 @@ def prepare_devices(connection_infos):
         accounts = {account for project in state["project_accounts"].values()
                     if project.get("assignment") for account, entry in project["accounts"].items()
                     if entry["status"] in ("PENDING", "RUNNING")}
-        return [dict(binding) for binding in bindings if binding["sender_account_id"] in accounts]
+        return lan_bridge.worker_bindings(gateway, bindings, accounts)
 
 
 def allocate_task(task_id, connected_devices):
@@ -284,3 +289,6 @@ def make_nav_swipe_points(bounds):
     }
 
 
+
+
+# LAN_TOOL_INTAKE_V1
