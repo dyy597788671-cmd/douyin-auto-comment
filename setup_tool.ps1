@@ -1,12 +1,52 @@
 ﻿param(
     [string]$ProjectRoot = 'C:\Users\Administrator\AppData\Local\ShadowBot\users\894802265707544578\apps\84fca2ea-8671-4147-8b20-99d5663016e6',
     [string]$RuntimePath = 'D:\app\ShadowBot\shadowbot-6.3.31\ShadowBot.Runtime.dll',
-    [int]$Port = 8765,
-    [string]$LanIp = '192.168.11.10'
+    [ValidateRange(1, 65535)][int]$Port = 8765,
+    [string]$LanIp = ''
 )
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $package = $PSScriptRoot
+# A shared file path identifies storage, not the computer running this script.
+# Advertise only an address actually assigned to this computer.
+$localAddresses = @(Get-NetIPAddress -AddressFamily IPv4 -AddressState Preferred -ErrorAction Stop |
+    Where-Object { $_.IPAddress -notmatch '^(127\.|169\.254\.|0\.)' } |
+    Select-Object -ExpandProperty IPAddress -Unique)
+if ($LanIp) {
+    if ($localAddresses -notcontains $LanIp) {
+        throw ('指定网页IP不属于当前运行电脑：' + $LanIp + '。当前有效IPv4：' + ($localAddresses -join '、'))
+    }
+} elseif ($localAddresses.Count -eq 1) {
+    $LanIp = $localAddresses[0]
+} elseif ($localAddresses.Count -eq 0) {
+    throw '当前电脑没有有效的局域网IPv4地址，网页服务尚未启动。'
+} else {
+    throw ('当前电脑有多个有效IPv4，请用 -LanIp 指定其中一个：' + ($localAddresses -join '、'))
+}
+$lanUrl = 'http://' + $LanIp + ':' + $Port
+Write-Host ('运行电脑：' + $env:COMPUTERNAME + '；实际网页IP：' + $LanIp)
+
+function Get-ToolContext([string]$Address) {
+    # This self-check must not inherit a browser or system HTTP proxy.
+    $request = [Net.WebRequest]::Create($Address + '/api/context')
+    $request.Proxy = $null
+    $request.Timeout = 1000
+    $request.ReadWriteTimeout = 1000
+    $request.AllowAutoRedirect = $false
+    $response = $null
+    $reader = $null
+    try {
+        $response = $request.GetResponse()
+        $reader = [IO.StreamReader]::new($response.GetResponseStream())
+        return ($reader.ReadToEnd() | ConvertFrom-Json)
+    } catch {
+        return $null
+    } finally {
+        if ($reader) { $reader.Dispose() }
+        if ($response) { $response.Dispose() }
+    }
+}
+
 $root = (Resolve-Path -LiteralPath $ProjectRoot).ProviderPath
 $module = Join-Path $root 'xbot_robot\module1.py'
 $engine = Join-Path $root 'core_runner.py'
@@ -149,14 +189,61 @@ if (-not $rule) {
     }
 }
 
-try {
-    $response = Invoke-WebRequest -UseBasicParsing -Uri ('http://127.0.0.1:' + $Port + '/api/context') -TimeoutSec 2
-    $context = $response.Content | ConvertFrom-Json
-    if ($context.data.application -eq 'douyin-local-tool') {
-        Start-Process ('http://127.0.0.1:' + $Port)
-        Write-Host '工具已经运行，已打开本机管理页面。'
-        exit 0
+$localUrl = 'http://127.0.0.1:' + $Port
+$context = Get-ToolContext $localUrl
+if ($context -and $context.data.application -eq 'douyin-local-tool') {
+    $lanContext = Get-ToolContext $lanUrl
+    if ($context.data.lan_url -ne $lanUrl -or -not $lanContext -or $lanContext.data.application -ne 'douyin-local-tool') {
+        throw ('端口' + $Port + '已有旧配置的工具在运行。请关闭B电脑原工具后台窗口，再启动；本次实际地址为：' + $lanUrl)
     }
-} catch { }
-& $python (Join-Path $root 'lan_tool\server.py') --root $root --port $Port --lan-ip $LanIp --open
-if ($LASTEXITCODE -ne 0) { throw '网页服务启动失败，请保留窗口中的完整报错。' }
+    Write-Host ('已核实网页服务正在运行。其他电脑访问：' + $lanUrl) -ForegroundColor Green
+    Write-Host '本次没有新建后台；原工具后台窗口仍需保持开启。'
+    try { Start-Process $localUrl } catch { Write-Host ('请手动打开：' + $localUrl) }
+    exit 0
+}
+
+# Keep Python attached to this console and verify actual HTTP readiness.
+# An open PowerShell window alone is not proof that Python is still running.
+$serverInfo = [Diagnostics.ProcessStartInfo]::new()
+$serverInfo.FileName = $python
+$serverInfo.Arguments = '-u "' + (Join-Path $root 'lan_tool\server.py') + '" --root "' + $root + '" --port ' + $Port + ' --lan-ip ' + $LanIp
+$serverInfo.WorkingDirectory = $root
+$serverInfo.UseShellExecute = $false
+$serverProcess = [Diagnostics.Process]::new()
+$serverProcess.StartInfo = $serverInfo
+$serverStarted = $false
+try {
+    $serverStarted = $serverProcess.Start()
+    $deadline = [DateTime]::UtcNow.AddSeconds(20)
+    $ready = $false
+    while ([DateTime]::UtcNow -lt $deadline) {
+        if ($serverProcess.HasExited) { break }
+        $context = Get-ToolContext $localUrl
+        $lanContext = Get-ToolContext $lanUrl
+        if ($context -and $lanContext -and $context.data.application -eq 'douyin-local-tool' -and
+            $context.data.lan_url -eq $lanUrl -and $lanContext.data.application -eq 'douyin-local-tool' -and
+            -not $serverProcess.HasExited) {
+            $ready = $true
+            break
+        }
+        Start-Sleep -Milliseconds 250
+    }
+    if (-not $ready) {
+        if ($serverProcess.HasExited) {
+            $serverProcess.WaitForExit()
+            throw ('网页后台已退出，退出码=' + $serverProcess.ExitCode + '。请保留上方原始报错；当前没有可用网页服务。')
+        }
+        throw ('后台启动后未通过本机HTTP检查：' + $lanUrl + '。本次后台将停止，不把地址文字当作启动成功。')
+    }
+    Write-Host ('本机HTTP检查通过；其他电脑访问：' + $lanUrl) -ForegroundColor Green
+    Write-Host '此检查确认B本机服务已响应；其他电脑能否连接仍取决于实际网络路径。'
+    try { Start-Process $localUrl } catch { Write-Host ('请手动打开：' + $localUrl) }
+    $serverProcess.WaitForExit()
+    throw ('网页后台已经停止，退出码=' + $serverProcess.ExitCode + '。此PowerShell窗口仍开着也不能继续提供网页。')
+} finally {
+    if ($serverStarted -and -not $serverProcess.HasExited) {
+        $serverProcess.Kill()
+        $serverProcess.WaitForExit()
+    }
+    $serverProcess.Dispose()
+}
